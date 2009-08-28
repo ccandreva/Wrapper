@@ -24,6 +24,10 @@ $PHPdirs = Array("$nukeroot/PHPpages", $nukeroot.'/HTML');
                     // It's a good idea to place an empty index.html page in each directory to avoid indexing of content.
                     // Example: Array('/nuke/PHPpages', '/albums');
 
+$FileDirs = Array('/docs');
+                   // Array of directories to be used for files that are security protected only.
+                   // used by pnfile.php and type=file functions
+
 $NWkeywords = Array('admin', 'user', 'mem', 'me', 'who', 'members'); // '-', 'shtml'
                     // Keywords for use in the PostNuke security schema. They will be matched against the URI, so for instance
                     // filename-admin.php will match 'admin', or /HTML/path/filename-user.html could be matched against 'HTML', 'path', 'user' or just '-'.
