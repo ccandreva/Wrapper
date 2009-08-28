@@ -1,7 +1,8 @@
 <?PHP
 //////////////////////////////////////////////////////////////////////////////////////////
+// $Id:                                                                               $ //
 //                                                                                      //
-// NukeWrapper v2.7.13 Beta for Postnuke    19/8/2005                                   //
+// Wrapper v1.0 for Postnuke                                                            //
 // ==================================================================================== //
 // (c) 2005 Martin Stær Andersen                                                        //
 // msandersen@tpg.com.au                                                                //
@@ -36,16 +37,16 @@
 global $ModName, $DocRoot, $FullPath, $RelDir, $WebRoot, $nukeurl, $nukeroot;
 $ModName = basename( dirname( __FILE__ ) );
 $DocumentRoot = "";  // Set this if your ISP has no Document Root set. Else for your own server ensure the Document Root/Home directory is set.
-NukeWrapper_paths();
+Wrapper_paths();
 
 /**
  * the main user function
  * This function is the default function, and is called whenever the module is
  * initiated without defining arguments.  
  */
-function NukeWrapper_user_main($args) {
+function Wrapper_user_main($args) {
     // Security check - lowest level is generally either 'overview' or 'read'
-    if (!pnSecAuthAction(0, 'NukeWrapper::', '::', ACCESS_READ)) {
+    if (!pnSecAuthAction(0, 'Wrapper::', '::', ACCESS_READ)) {
        // return pnVarPrepHTMLDisplay(_MODULENOAUTH);
        wrap_opentable(1); 
        echo "<div style=\"padding: 30px 6px; color: red; font-weight: bold\" align=\"center\">"._NWNOAUTHORITY."</div>"; 
@@ -57,13 +58,15 @@ global $ModName, $DocRoot, $SiteRoot, $FullPath, $RelDir, $WebRoot, $WebDir, $nu
 	$extension, $URLwrap, $URLs, $query, $filewrap, $filewrapname, $FileBase, $PNGsuffix;
 
 $NWrap=true;
-$NWconfigload = include("modules/$ModName/NukeWrapper.conf.php");  // Configuration variables
+
+// Load config file from Zikulz config directory.
+$NWconfigload = include("config/Wrapper.conf.php");  // Configuration variables
 if($NWconfigload==false) echo '<div style="color: red" align="center">'._NWConfigLoadFailed.'</div><br />';
 
     if (is_array($URLkeys2))
         $URLkeys = array_merge($URLkeys, $URLkeys2);
 
-if ($WrapDebug && !pnSecAuthAction(0, 'NukeWrapper::', '::', ACCESS_ADMIN)) {
+if ($WrapDebug && !pnSecAuthAction(0, 'Wrapper::', '::', ACCESS_ADMIN)) {
 	$WrapDebug = false; // Only show debug info for Admins
 }
 // Start page if no file or URL given
@@ -93,8 +96,8 @@ global $PostnukeDir;
 $PostnukeDir = $DocRoot.$nukeroot."/";
 
 // If not allowing external connections, redirect to index page
-if ($WrapDebug) echo " Remote Address: ".NukeWrapper_user_getip()." <br> Server Address: &nbsp;".$_SERVER['SERVER_ADDR']."<br>\n";
-if (!empty($Request['url']) and $AllowExtLink==false and !empty($_SERVER['SERVER_ADDR']) and NukeWrapper_user_getip() !== $_SERVER['SERVER_ADDR']) // As Referer is easily spoofed and unreliable, use IP even though a server may host many domains on the one IP
+if ($WrapDebug) echo " Remote Address: ".Wrapper_user_getip()." <br> Server Address: &nbsp;".$_SERVER['SERVER_ADDR']."<br>\n";
+if (!empty($Request['url']) and $AllowExtLink==false and !empty($_SERVER['SERVER_ADDR']) and Wrapper_user_getip() !== $_SERVER['SERVER_ADDR']) // As Referer is easily spoofed and unreliable, use IP even though a server may host many domains on the one IP
     { session_write_close(); header("Location: ".$SiteRoot."index.php?External_links_not_allowed"); exit(); }
 
 if (isset($Request['opt'])) $opt=$Request['opt'];
@@ -197,14 +200,14 @@ if ($WrapDebug) { 	echo "<div style='margin-bottom: 0.5em;'> $dir<br /> Is ".$Do
 	$WebDir = dirname($filewrap);
 	$FileDir=$DocRoot.$PHPdir;
   } // end php
-  $fileOK=false; if ($WrapDebug)  echo "<BR /><strong>Security check:</strong><br /> Component: NukeWrapper : : file<br /> Instance: ".basename($filewrap)." : keyword : $extension<br />";
+  $fileOK=false; if ($WrapDebug)  echo "<BR /><strong>Security check:</strong><br /> Component: Wrapper : : file<br /> Instance: ".basename($filewrap)." : keyword : $extension<br />";
   $msg = "<div style=\"padding: 30px 6px;\" align=\"center\"><span style=\"color: red; font-weight: bold\">"._NWNoAuthorityForFile."</span>\n"
   	."<FORM>\n<INPUT class=\"pn-button\" TYPE=\"Button\" VALUE=\""._Back."\" onClick=\"history.go(-1)\">\n</FORM>\n"; 
   if (is_array($NWkeywords) && !empty($NWkeywords)) {
       foreach($NWkeywords as $key) {
           if (stristr($filewrap, $key)!==false) { 
 		if ($WrapDebug)  echo "Matched <em>$key</em> &nbsp;\n"; 
-		if (!pnSecAuthAction(0, 'NukeWrapper::file', basename($filewrap).":$key:$extension", ACCESS_READ)) { 
+		if (!pnSecAuthAction(0, 'Wrapper::file', basename($filewrap).":$key:$extension", ACCESS_READ)) { 
 			if ($WrapDebug)  echo "<span style=\"color: red;\">failed</span><br />";
     			wrap_opentable(1); echo "<div style=\"padding: 30px 6px;\" align=\"center\">$msg</div>"; wrap_closetable(1, 0); exit;
     		} 
@@ -213,7 +216,7 @@ if ($WrapDebug) { 	echo "<div style='margin-bottom: 0.5em;'> $dir<br /> Is ".$Do
       }
   } 
   if ($fileOK==false) { 
-    if (!pnSecAuthAction(0, 'NukeWrapper::file', basename($filewrap)."::$extension", ACCESS_READ)) {
+    if (!pnSecAuthAction(0, 'Wrapper::file', basename($filewrap)."::$extension", ACCESS_READ)) {
    	wrap_opentable(1); echo "<div style=\"padding: 30px 6px;\" align=\"center\">$msg</div>"; wrap_closetable(1, 0); exit;
     }
     if ($WrapDebug)  echo "<span style=\"color: green;\">passed</span><br />";
@@ -245,7 +248,7 @@ if ($WrapDebug) echo "<br /> WebDir: $WebDir<br /> FileDir: $FileDir &nbsp;&nbsp
 
 ////////// Target is a URL //////////
 elseif (!empty($Request['url']) && $AutoResize) {
-  $URLwrap = NukeWrapper_admin_checkurl($Request['url'], $WrapDebug);
+  $URLwrap = Wrapper_admin_checkurl($Request['url'], $WrapDebug);
   $URLarray = parse_url($URLwrap);
   $wrapHost = $_SERVER['HTTP_HOST'];
   $ExternalUrl = ($URLarray['host'] != $wrapHost);
@@ -254,7 +257,7 @@ elseif (!empty($Request['url']) && $AutoResize) {
   // If target site not local, read target page for processing, and embed in local page
   if ($ExternalUrl) {
   	if (ini_get('allow_url_fopen')==false) {
-	    	$msg = _FopenDisallowed1."<br />\n<strong><a href=\"index.php?module=NukeWrapper&url2=$URLwrap\"><span style=\"color: red;\">url2=$URLwrap</span></a></strong>";
+	    	$msg = _FopenDisallowed1."<br />\n<strong><a href=\"index.php?module=Wrapper&url2=$URLwrap\"><span style=\"color: red;\">url2=$URLwrap</span></a></strong>";
 		wrap_opentable(1); echo "<div style=\"padding: 30px 6px;\" align=\"center\">$msg</div>"; wrap_closetable(1, $WrapDebug); exit;
 	}
   	if (!empty($_SERVER['HTTP_USER_AGENT'])) { // Valid User-Agent required for some sites
@@ -428,7 +431,7 @@ $BaseURL = "<base href=\"$domain\"$target>\n";
 elseif(!empty($Request['url2']) or $AutoResize==false) { 
   if ($AutoResize==false && !empty($Request['url'])) 
       $Request['url2']=$Request['url']; 
-  $URLwrap = NukeWrapper_admin_checkurl($Request['url2'], $WrapDebug);
+  $URLwrap = Wrapper_admin_checkurl($Request['url2'], $WrapDebug);
 }
 
 
@@ -504,7 +507,7 @@ if (is_array($URLkeys) OR $all1 OR $all2) {
 
 ////////// Local file output //////////
 if (empty($filewrap)){ 
-  $msg = _NoFileSelected1.$SiteRoot."index.php?module=NukeWrapper&"._NoFileSelected2.$SiteRoot."index.php?module=NukeWrapper&"._NoFileSelected3; $checked=$opt; $opt="1";
+  $msg = _NoFileSelected1.$SiteRoot."index.php?module=Wrapper&"._NoFileSelected2.$SiteRoot."index.php?module=Wrapper&"._NoFileSelected3; $checked=$opt; $opt="1";
   // $msg="<strong>No file selected. Please enter filename and try again.<br />URL is in format <span style=\"color: red;\">www.yoursite.com/wrap.php?file=SomePage.html</span><br /><nobr><span style=\"margin-left:9em;\">or <span style=\"color: red;\">www.yoursite.com/wrap.php?url=www.somesite.com</span></span></nobr></strong>"; $checked=$opt; $opt="1";
   wrap_opentable($opt); wrap_output($msg, $filewrap, $checked, $index); wrap_closetable($opt, $WrapDebug); exit;
 } else {
@@ -582,13 +585,13 @@ if (empty($filewrap)){
 	  }
 	  if ($WrapLinks) { // Redirect links through NW. Convert /link.html to page.php?file=link.html for valid file types
 		$pattern[] = '%<a([^>]+)href\s*=\s*((["\'])?)(?!http)(?!ftp)(?!mailto)(?!javascript:)(?=[^\s#"\']*'.$ValidExpr.')%Ui'; // (?!page\.php.file=)
-		$replace[] = '<a$1href=$2'.$nukeurl.'/index.php?module=NukeWrapper&file=';
-		$pattern[] = '%<([^>]+'.$nukeurl.'/index.php?module=NukeWrapper&file=[^\s>]+)\?%Ui'; // Replace sub-query ? with &
+		$replace[] = '<a$1href=$2'.$nukeurl.'/index.php?module=Wrapper&file=';
+		$pattern[] = '%<([^>]+'.$nukeurl.'/index.php?module=Wrapper&file=[^\s>]+)\?%Ui'; // Replace sub-query ? with &
 		$replace[] = '<$1&'; 
 		// Add hidden form field where file=filename.ext
 		$pattern[] = '%<form([^>]+)action\s*=\s*(["\']?)(?!http)([^\s#"\']+'.$ValidExpr.')([^>]*)>%Ui';
 		$replace[] = "<form$1action=$2".$nukeurl."/index.php$5>\n"
-			."  <input type=\"hidden\" name=\"module\" value=\"NukeWrapper\">\n"
+			."  <input type=\"hidden\" name=\"module\" value=\"Wrapper\">\n"
 			."  <input type=\"hidden\" name=\"file\" value=\"$3\">";
 	  }
 	  $file = preg_replace($pattern, $replace, $file);
@@ -635,7 +638,7 @@ if (empty($filewrap)){
 
     // Return the output that has been generated by this function
 //    return $output->GetOutput();
-} // End NukeWrapper_user_main
+} // End Wrapper_user_main
 
 
 /******************* Functions *******************/
@@ -670,9 +673,9 @@ echo "<center>$msg</center><br /><br />\n"; ?>
     <tr>
       <td align="left">
         <form action="<?PHP echo $_SERVER['PHP_SELF'] ?>" method="get" name="WrapLocation" id="WrapLocation">
-          &nbsp;NukeWrapper<br />
+          &nbsp;Wrapper<br />
           <nobr>
-          <input type="hidden" name="module" value="NukeWrapper">
+          <input type="hidden" name="module" value="Wrapper">
           <input type="text" name="<?PHP echo $type ?>" size="35" value="<? echo $filewrap ?>">
           &nbsp;<?PHP echo _NWThemeTable."\n"; // Theme table ?>
           <input type="checkbox" name="opt" value="1" <?PHP if ($checked) echo "checked" ?>>
@@ -697,9 +700,9 @@ echo "<center>$msg</center><br /><br />\n"; ?>
 /********** Wrap Opentable **********/ 
 function wrap_opentable($opt) {
   include_once("header.php");
-  if ($opt=="1") { OpenTable(); echo "\n<DIV id=\"NukeWrapper\">\n"; }
+  if ($opt=="1") { OpenTable(); echo "\n<DIV id=\"Wrapper\">\n"; }
   else { 
-    echo "<DIV id=\"NukeWrapper\" style=\"margin-bottom: 1em;\">\n"; // class=\"NWopentable\" 
+    echo "<DIV id=\"Wrapper\" style=\"margin-bottom: 1em;\">\n"; // class=\"NWopentable\" 
   } 
 } //End opentable function
 
@@ -713,7 +716,7 @@ global $HTTP_POST_VARS, $HTTP_GET_VARS, $HTTP_COOKIE_VARS, $HTTP_SESSION_VARS,
   if ($CallHooks) { // Call hooks 
   // $pnRender->assign('hooks', ... ); // pnRender
   echo pnModCallHooks('item', 'display', $FileBase, 
-  		pnModURL('NukeWrapper', 'user', 'main', array('file' => $filewrapname)))."<br /><br />"; 
+  		pnModURL('Wrapper', 'user', 'main', array('file' => $filewrapname)))."<br /><br />"; 
   }
   include_once("footer.php");
 // Debug table output
@@ -725,8 +728,8 @@ if ($WrapDebug 		// && !isset($_REQUEST['WrapDebug']) && !isset($_SESSION['WrapD
   exit; 
 } // End closetable function
 
-/********** NukeWrapper System and Web Paths **********/
-function NukeWrapper_paths() {
+/********** Wrapper System and Web Paths **********/
+function Wrapper_paths() {
   global $DocRoot, $FullPath, $RelDir, $WebRoot, $nukeurl, $nukeroot, $DocumentRoot;
 // Determine if site outside Document Root, maybe due to site in User Dir ~user, if so make new DocRoot
 $nukeurl = $nukeroot = pnGetBaseURI();
@@ -765,8 +768,8 @@ if (strstr($_SERVER['SCRIPT_FILENAME'], $_SERVER['DOCUMENT_ROOT'])==false) {
   if ($RelDir=='\\') $RelDir="";
 }
 
-/********** NukeWrapper_user_getip **********/
-function NukeWrapper_user_getip() {
+/********** Wrapper_user_getip **********/
+function Wrapper_user_getip() {
 if (isset($_SERVER)) {
  if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
   $remoteIP = $_SERVER["HTTP_X_FORWARDED_FOR"];
@@ -793,8 +796,8 @@ if (strstr($remoteIP, ', ')) {
 return $remoteIP;
 }
 
-/********** NukeWrapper_admin_checkurl **********/
-function NukeWrapper_admin_checkurl($url, $WrapDebug=false) {
+/********** Wrapper_admin_checkurl **********/
+function Wrapper_admin_checkurl($url, $WrapDebug=false) {
 global $Request, $URLs, $URLkeys, $AllowURLs;
   $backbutton = "<FORM>\n<INPUT TYPE=\"Button\" VALUE=\""._Back."\" onClick=\"history.go(-1)\">\n</FORM>\n"; 
   if (!$AllowURLs) { 
@@ -805,7 +808,7 @@ global $Request, $URLs, $URLkeys, $AllowURLs;
   if (substr($url, 0, 1)=="/") $url = $GLOBALS['WebRoot'].$url; // allow url=/somedir/somefile.html for local files in frame
   $url = $URLwrap = strtok($url,"?&");
   $urlOK=false; 
-  if ($WrapDebug)  echo "URL: $url<br /><br />\n<strong>Security check:</strong><br /> Component: NukeWrapper : : url<br /> Instance:  filename : keyword : extension<br />";
+  if ($WrapDebug)  echo "URL: $url<br /><br />\n<strong>Security check:</strong><br /> Component: Wrapper : : url<br /> Instance:  filename : keyword : extension<br />";
   if (is_array($URLkeys) && !empty($URLkeys)) {
       if (isset($URLkeys[$url])) { // Get URL if $url is keyword  & set $key // array_key_exists($URLwrap, $URLkeys) in PHP4.1.0
     		$URLwrap = $URLkeys[$url]; $key = $url; 
@@ -815,7 +818,7 @@ global $Request, $URLs, $URLkeys, $AllowURLs;
 //      foreach($URLkeys as $key=>$value) {
   //        if (stristr($URLwrap, $key)!==false) {  
 		// if ($WrapDebug)  echo "Matched <em>$key:</em> $value &nbsp;\n";
-		if (!pnSecAuthAction(0, 'NukeWrapper::url', basename($URLwrap).":$key:$extension", ACCESS_READ)) { // basename($URLwrap)
+		if (!pnSecAuthAction(0, 'Wrapper::url', basename($URLwrap).":$key:$extension", ACCESS_READ)) { // basename($URLwrap)
 			if ($WrapDebug)  echo "<span style=\"color: red;\">failed</span><br />";
     			wrap_opentable(1); 
     			echo "<div style=\"padding: 30px 6px;\" align=\"center\">"._NWNoAuthorityForThisURL.$backbutton."</div>\n"; 
@@ -825,7 +828,7 @@ global $Request, $URLs, $URLkeys, $AllowURLs;
  //     }
  	}
   } 
-  if ($urlOK==false && !pnSecAuthAction(0, 'NukeWrapper::url', basename($URLwrap)."::$extension", ACCESS_READ)) {
+  if ($urlOK==false && !pnSecAuthAction(0, 'Wrapper::url', basename($URLwrap)."::$extension", ACCESS_READ)) {
     	wrap_opentable(1); 
     	echo "<div style=\"padding: 30px 6px;\" align=\"center\">"._NWNoAuthorityForExt.$backbutton."</div>\n"; 
     	wrap_closetable(1, 0); exit;
@@ -878,7 +881,7 @@ global $Request, $URLs, $URLkeys, $AllowURLs;
 }
 
 /************** Check file permission against Allow/Deny rules **************/
-function NukeWrapper_PermissionCheck($file, $NWFiles, $level, $WrapDebug=false) { // 'level' from listdir search dir level
+function Wrapper_PermissionCheck($file, $NWFiles, $level, $WrapDebug=false) { // 'level' from listdir search dir level
   global $DocRoot;
   $padding = str_repeat("|&nbsp;&nbsp;&nbsp;", $level);
   if(is_array($NWFiles['allow']) && !empty($NWFiles['allow'])) {
@@ -978,7 +981,7 @@ global $DocRoot;
 
 /******************* Debugging *******************/
 function debugtable() { 
-if (!pnSecAuthAction(0, 'NukeWrapper::', '::', ACCESS_ADMIN)) {
+if (!pnSecAuthAction(0, 'Wrapper::', '::', ACCESS_ADMIN)) {
 	return;
 } 
 if (phpversion() < "4.1.0") global $_GET, $_POST, $_REQUEST, $_FILES, $_SERVER;
@@ -1236,7 +1239,7 @@ if (!is_array($URLs['deny']) or empty($URLs['deny'])) {
   </tr>
   <tr>
     <td valign="top" align="right">Remote Address:</td>
-    <td><?PHP echo NukeWrapper_user_getip(); ?></td>
+    <td><?PHP echo Wrapper_user_getip(); ?></td>
   </tr>
   <tr>
     <td valign="top" align="right">$PATH_TRANSLATED:</td>
