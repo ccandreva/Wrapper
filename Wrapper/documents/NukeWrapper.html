@@ -1,0 +1,1387 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>NukeWrapper release notes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<!-- <link href="style.css" rel="stylesheet" type="text/css"> -->
+<style type="text/css">
+<!--
+BODY {
+	color: #232367;
+	background-color: #D4D4AE; /* #D5D3BD; */
+}
+TABLE.options TD{
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	line-height: 1.3em;
+	text-align: left;
+	vertical-align: top;
+	padding-right: 6px;
+	padding-bottom: .5em;
+}
+P, OL, A, TD, blockquote {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #232367; /* 5B5BA8 330099*/
+	line-height: 1.3em;
+	margin-bottom: 5px;
+	margin-top: 0px;
+}
+LI { margin-bottom: 8px; }
+A:hover, A:active {
+	background-color: #E4E4ED;
+	text-decoration: none;
+}
+#SectionIndex A:hover, 
+#SectionIndex A:hover {
+	color: #E4E4ED;
+	background-color: #232367;
+	padding: 1px 6px 1px 6px;
+	text-decoration: none;
+}
+H2 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 24px;
+	color: #52529A;  /* 330099 282875; 5B5BA8; */
+	padding: 0px;
+	margin-bottom: -2px;
+	margin-left: 80px;
+	line-height: 24px;
+	margin-top: 30px;
+}
+H3 {
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 20px;
+	font-weight: bold;
+	color: #454581;
+	margin-top: 2em;
+	margin-right: 0px;
+	margin-bottom: 6px;
+	margin-left: 0px;
+	padding: 2px 2px 2px 10px;
+	background-color: #E4E4ED;
+	border: 1px solid;
+}
+H4 {
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	font-weight: bold;
+	color: #454581;
+	margin-top: 1.8em;
+	margin-bottom: 3px;
+	margin-left: 1.5em;
+	margin-right: 0em;
+	padding: 2px 2px 2px 10px;
+	background-color: #E4E4ED;
+	border: 1px solid;
+}/* #E4E4ED */
+H5 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #454581;
+	margin-top: 1em;
+	margin-bottom: 3px;
+	margin-left: 10px;
+}
+.example, PRE {
+	margin-top: 3px;
+	margin-bottom: 6px;
+	margin-right: 0px;
+	margin-left: 0px;
+	padding: 6px;
+	padding-left: 15px;
+	background-color: #E4E4ED;
+}
+blockquote, P.example {
+	margin-top: 3px;
+	margin-bottom: 1em;
+}
+P.example, table.example {
+	margin-left:3em;
+	margin-right: 3em;
+}
+table.border {
+	margin-top: 1em;
+	margin-bottom: 3px;
+}
+table.border TD {
+	width: 15em;
+	padding: 5px;
+	border: 1px solid black; 
+	text-align: center;
+}
+#content {
+	padding: 20px;
+	margin-top: 0px;
+	margin-right: 60px;
+	margin-left: 60px;
+	margin-bottom: 20px;
+	border: 2px dashed #52529A;
+	background-color: #C9C9DA; /* B6B6CC #AEAED4 #BDBFD5; */
+}
+#SectionIndex {
+	border: 1px solid;
+	padding: 2em;
+	margin-left: 3em;
+	margin-right: 3em;
+	background-color: #E4E4ED;
+}
+.comment {
+	font-style: italic;
+	color: #666666;
+}
+.indent {
+	text-indent: -3em;
+	margin-left: 3em;
+}
+.indent2 {
+	margin-left: 3em;
+}
+-->
+</style>
+</head>
+
+<body>
+<h2>NukeWrapper 2 notes</h2>
+<div id="content"> 
+  <h3>Section Index:</h3>
+  <DIV id="SectionIndex">
+  <ol>
+    <li><a href="#PackageContains">This Package Contains</a></li>
+    <li><a href="#Description">Description</a></li>
+    <li><a href="#Usage">Usage</a> 
+      <dl>
+		<dt>3.1 <a href="#DirConfig">Directory Configuration</a></dt>
+	  </dl>
+    </li>
+    <li><a href="#Options">Options</a></li>
+    <li><a href="#Security">Security</a>
+	  <dl>
+	      <dt>5.1 <a href="#SetDocRoot">Ensure The Document Root Is Set</a></dt>
+      </dl>
+	</li>
+    <li><a href="#ProtectDir">Protecting Your Files From Direct Access</a> 
+      <dl>
+	    <dt>6.1 <a href="#Obscurity">Security by Obscurity</a></dt>
+        <dt>6.2 <a href="#htaccess">Apache .htaccess Files</a></dt>
+	  </dl>
+    </li>
+    <li><a href="#PNPermissions">PostNuke Permissions Schema</a> 
+      <dl>
+	    <dt>7.1 <a href="#Component">Component</a></dt>
+        <dt>7.2 <a href="#Instance">Instance</a></dt>
+	  </dl>
+    </li>
+    <li><a href="#PageParsing">Page Parsing for Fun and Political Satire</a></li>
+    <li><a href="#JumpMenu">Jump Menu Block</a></li>
+    <li><a href="#Notes">Technical Notes</a> 
+      <dl>
+	    <dt>10.1 <a href="#headerClassic">Using the TitleHack, NW Metatags, and IE7 in &#8220;Classic&#8221; themes</a></dt>
+        <dt>10.2 <a href="#headerXanthia">Using the TitleHack, NW Metatags, and IE7 in Xanthia themes</a></dt>
+        <dt>10.3 <a href="#Layout">Layout in Classic Themes</a></dt>
+        <dt>10.4 <a href="#FixedThemes">Examples of Fixed Classic Themes</a></dt>
+	  </dl>
+    </li>
+  </ol>
+  </DIV>
+  
+  <h3><a name="PackageContains"></a>1. This package contains:</h3>  
+  <ol>
+    <li>The <strong>NukeWrapper</strong> standalone script and module;</li>
+    <li>Optional <strong>htaccess files</strong> for ShortURLs (one for redirecting 
+      any HTML file in a PostNuke site root to NukeWrapper, the other for ShortURL 
+      enabled themes with the addition of the NW rewrite rules). Rename desired 
+      htaccess file to <strong>.htaccess</strong> and place in the PostNuke root. 
+      If an htaccess file already exists, the content may be combined, though 
+      the order may be important.</li>
+    <li> The <strong>Titlehack</strong> for Search Engine Optimisation, which 
+      gives PostNuke more descriptive page titles and can be customised on a per-module 
+      basis (no titlefiles are supplied though). <br>
+      <strong><em>Location:</em></strong><em> includes/pnTitle.php</em><br>
+      See <a href="http://lottasophie.sourceforge.net/modules.php?op=modload&name=Sections&file=index&req=viewarticle&artid=17&page=1">http://lottasophie.sourceforge.net</a>.</li>
+    <li>The <strong>IE7 Javascript library</strong> by Dean Edwards for bringing 
+      better web standards to Internet Explorer users, in particular CSS1, CSS2, 
+      some CSS3 compliance, and PNG transparency. If you don't plan to use any 
+      CSS which might give IE users trouble, such as positioning, hover effects 
+      etc, you may choose to disable it by either removing or renaming the script. 
+      <br>
+      If you merely want to use transparency with PNGs, you may prefer to use 
+      the inbuilt NukeWrapper parser, which applies the Microsoft AlphaImageLoader 
+      filter to images on the page (but <strong>not</strong> to linked stylesheets).<br>
+      See <a href="http://dean.edwards.name/IE7/">http://dean.edwards.name/IE7/</a><br>
+      <strong><em>Location:</em></strong><em> includes/ie7/ie7-standard-p.js</em></li>
+    <li><strong>3 Xanthia plugins</strong> for PostNuke 0.75 up for applying 
+      the above TitleHack, NukeWrapper metatags, and IE7 JavaScript library. To disable any of these fatures 
+      in Xanthia themes, such as IE7, simply don't put the tag in.<br>
+      See<strong> <a href="#headerXanthia">tech notes</a></strong> below for how 
+      to install in a Xanthia theme.<br>
+      <strong><em>Location:</em></strong><em> modules/Xanthia/plugins</em>
+    </li>
+  </ol>
+  <h3><a name="Description"></a>2. Description:</h3>
+  <p>Basically, NukeWrapper is an HTML wrapper, which means it will wrap any webpage 
+    you point it at into a PostNuke site, convenient for when you design pages 
+    in an HTML editor like Dreamweaver with tables, layers, images, Flash etc, 
+    and want to have them integrated into PostNuke, or for a community site where 
+    contributors are nontechnical but know enough to use Frontpage or even (Gahh!) 
+    Word to produce an online newsletter with images etc. This is where HTML wrappers 
+    come in. </p>
+  <p>NukeWrapper embeds HTML, PHP, text, other user-allowed script filetypes, 
+    and external webpages into PostNuke by &quot;wrapping&quot; PostNuke around 
+    them. Local files are incorporated so as to use the site's themes and stylesheets, 
+    without the double-scrollbars you get from some modules using iFrames. Document-relative 
+    links (images, hyperlinks, stylesheets, and Javscript links) in files not 
+    in the PostNuke root are changed to Root-relative links so as not to break 
+    them.</p>
+  <p>Text files are converted to HTML with all special characters escaped to prevent 
+    code execution, and hard spaces are put in to maintain indentation and formatting. 
+    This makes it convenient for having code listings of, say, HTML. <br>
+    External URLs are placed in an iFrame, but unlike any other available scripts, 
+    NukeWrapper will resize the iFrame to fit the contents of the page.</p>
+  <p>NukeWrapper also allows for the content to be parsed (see below) and will 
+    attempt to thwart frame-breaking Javascript code (only works if in the actual 
+    page, not a linked Javascript file). </p>
+  <p>You can set whether to use the theme tables or a blank background with the 
+    <strong>opt</strong> (option) flag in the URL.<br>
+    It also allows you to set a page layout for older ("Classic" PN 0.7x) themes 
+    with the <strong>idx</strong> (index) flag. For Xanthia or AutoThemes, use the inbuilt 
+    templating system by creating a template in the desired layout and activate it 
+    for NukeWrapper. AuthTheme allows for different templates for different URL parameters, 
+    eg for different wrapped files/URLs.</p><br>
+  <p>Screenshots: </p>
+  <p><a href="http://users.tpg.com.au/staer/images/NukeWrapper-file1.png">Wrapping 
+    an HTML page with columns and images with its own stylesheet</a></p>
+  <p><a href="http://users.tpg.com.au/staer/images/NukeWrapper-ExternalPage.jpg">External 
+    URL with Helius theme</a></p>
+  <p><a href="http://users.tpg.com.au/staer/images/NukeWrapper-URL4.jpg">External 
+    URL full width, no columns</a></p>
+  <p><a href="http://users.tpg.com.au/staer/images/NukeWrapper-Google-idx2.jpg">Google 
+    search result with left and right columns in Helius theme</a></p>
+  <h3><a name="Usage"></a>3. Usage:</h3>
+  <p>After configuring the allowed directories in the script (described below), 
+    place <strong>page.php</strong> in you PostNuke root, alongside the main <strong>index.php</strong> 
+    file, and point to it in links or type an address in your browser's URL field 
+    like so:</p> 
+    <p class="example"><strong>http://your.site.com/page.php?file=filename.html<br>
+      http://your.site.com/page.php?filename.php<br>
+      http://your.site.com/page.php?HTMLcodeExample.txt</strong> </p>
+  <p>If the '<strong>file=</strong>' prefix is excluded, it will be assumed that 
+    the first part of the Query string (after the '<strong>?</strong>') is the 
+    filename, unless it is one of the optional parameters.</p>
+  <p>A Beta of the module version is also provided; it works the same except for 
+    the URL, and that it uses a separate configuration file located in the module 
+    directory at <strong>modules/NukeWrapper/NukeWrapper.conf.php</strong>. It 
+    has to be Initialised and Activated in the Modules admin panel before use.</p>
+  <p>It is accessed with a regular module call:</p>
+  <p class="example"><strong>http://your.site.com/index.php?module=NukeWrapper&amp;file=filename.html</strong></p>
+  <p>The file path is by default relative to the Postnuke root (where index.php 
+    and NukeWrapper file is located) for HTML and txt pages, and a subdirectory 
+    called <em><strong>PHPpages</strong></em> for PHP pages, but as described 
+    below it may be from any location.</p>
+  <h5>For external web pages:</h5>
+    
+  <p class="example"><strong>http://your.site.com/page.php?url=www.somesite.com<br>
+    http://your.site.com/page.php?url=http://www.somesite.com <br>
+    http://your.site.com/page.php?url=/somedir/somefile.html</strong><br>
+    autoresizing frame for local file, must start with / <br><strong>
+    http://your.site.com/index.php?module=NukeWrapper&amp;url=www.somesite.com 
+    <br>
+    </strong><br>
+    url2 uses a plain frame with no resizing (default 600 pixels high):<strong><br>
+    http://your.site.com/page.php?url2=www.somesite.com <br>
+    </strong><br>
+    Turning off Auto-Resizing for fixed-height pages and specifying a height:<strong><br>
+    http://your.site.com/page.php?height=800&amp;url2=http://www.somesite.com</strong></p>
+  <p class="indent"><strong>url </strong>&nbsp;&nbsp;= The URL or webpage you 
+    wish to wrap; if you omit the http://, it will be added automatically.<br>
+    This method can parse external page content by opening the page in PHP, which 
+    is how pageheight is determined. </p>
+  <p class="indent"><strong>url2</strong> = Same as <strong>url</strong>, except 
+    <strong>url2</strong> is a shorthand way of telling it <strong>not</strong> 
+    to resize the frame, which will default to a height of <strong>600px</strong>.<br>
+    It uses a straightforward frame link in HTML, and so cannot parse the content. </p>
+  <p class="indent"><strong>height</strong> = When autoresizing is off, such as 
+    by using <strong>url2</strong>, this will then set the height.</p>
+  <p>When wrapping external URLs, clicked links will open in a new window, unless 
+    the page is on the same host. <br>
+  </p>
+  <p>If the supplied <strong>.htaccess</strong> file is installed in the Postnuke 
+    directory on an Apache server with mod_rewrite enabled and allowing per-directory 
+    overrides (use of htaccess files):</p>
+    <p class="example"><strong>http://your.site.com/filename.html</strong><br>
+      (this assumes all HTML files in your site root is to be wrapped). <br>
+      <strong>http://your.site.com/url=www.somesite.com</strong> </p>
+  <p>Because of how PostNuke works, it cannot take <br>
+    http://your.site.com/subdir/filename.html to mean page.php?file=/subdir/filename.html, 
+    as PN will get confused as to where the site root is.</p>
+  <p>The <strong>opt</strong> and <strong>idx</strong> variables are optional, 
+    they can be excluded and will use their defaults.<br>
+    <strong>opt</strong> = use themed borders, where X is 0 or 1 (<strong>0=off, 
+    1=on, default 1</strong>)<br>
+    <strong>idx</strong> = Column layout, determines which blocks are displayed. 
+    X is <strong>0, 1, 2, 3</strong> or <strong>4</strong>.<br>
+    Options 2,3 and 4 requires editing of your theme. See <strong>Technical Notes</strong> 
+    below.<br>
+    <strong>NOTE:</strong> This is a layout hack for <em>&quot;<strong>Classic</strong>&quot;</em> 
+    PostNuke themes only, <strong>not</strong> Xanthia themes. For Xanthia and 
+    Autothemes, use their respective Templating systems.</p>
+    <p class="example"><strong>0</strong> = PostNuke default; left blocks, no 
+      right blocks.<br>
+    <strong>1</strong> = Home page (with left, right and center blocks with Admin 
+    message)<br>
+    <strong>2</strong> = display left and right blocks, no center blocks or Admin 
+    message.<br>
+    <strong>3</strong> = No left blocks, display right blocks.<br>
+    <strong>4</strong> = No left or right blocks, only HTML page with Header and 
+    Footer.</p>
+  <h5>Example:</h5>
+    <p class="example">http://your.site.com/page.php?file=filename.html<strong>&amp;opt=0&amp;idx=4</strong></p>
+  <p>A default layout can be set in the script, for instance if you want wrapped 
+    pages full width (no side blocks), you'd set the variable <br>
+    $Layout=&quot;4&quot;;</p>
+  <h4><a name="DirConfig"></a>3.1 Directory Configuration</h4>
+  <p>By default, you can link to local HTML and txt files under the PostNuke root. 
+    For instance, if you've installed Postnuke in <br>
+    <strong>www.example.com/nuke/ </strong><br>
+    and if you specify the filepath <strong>file=AboutUs.html</strong>, NukeWrapper 
+    will look for <strong>/nuke/AboutUs.html</strong>, and<strong> file=HTML/AboutUs.html</strong> 
+    will point to <br>
+    <strong>www.example.com/nuke/HTML/AboutUs.html</strong><br>
+    Similarly, by default for security it will look for PHP pages in a subdirectory 
+    called <em><strong>PHPpages</strong></em> under the PostNuke root (which you 
+    must create to use). Ie, as per previous example, <strong>file=AboutUs.php</strong> 
+    would point to<br>
+    <strong>www.example.com/nuke/PHPpages/AboutUs.php</strong><br>
+    This is to keep the PHP pages separate so you don't allow someone to link 
+    to PostNuke system files.</p>
+  <p>However, you can specify any location you choose, even outside the Postnuke 
+    root, provided it's inside the server Document root, and the location is listed 
+    in one of two arrays supplied in the file for this purpose; one for HTML and 
+    txt files, <strong>$HTMLdirs</strong>, and one for PHP, <strong>$PHPdirs</strong>. 
+    They take a comma-delimited and quoted list in the Array(); construct.</p>
+  <h5>For example:</h5>
+    <p class="example">$HTMLdirs = Array('/nuke/HTML', '/albums', '/nuke/holiday/Australia'); 
+      <br>
+      $PHPdirs = Array('/nuke/PHPpages', '/albums/family', '/cult/sci-fi/drwho',<br>
+      <span style="margin-left: 9em;">'/stuff', '/erotica/japan');</span></p>
+  <p>The path here is relative to the Site root, not the Postnuke install directory, 
+    hence in the above example the PostNuke root is <strong>/nuke</strong>, and 
+    hence you can list parallel directories outside the Postnuke root. If you 
+    simply link to<strong> file=DrWho.php</strong> or <strong>drwho/DrWho.php</strong>, 
+    then NukeWrapper will search each directory in the list in turn as they appear, 
+    so if there are two files with the same name, the file in the directory appearing 
+    first in the list will be linked to. If not in any of the listed directories, 
+    it will look in the default location last, and if not there, will inform the 
+    user the file wasn't found and prompt for the correct path.</p>
+  <h3><a name="Options" id="Options"></a>4. Options:</h3>
+  <p>These options are set in the Script. The defaults may suffice, but you may 
+    need to change the allowed directories in <strong>HTMLdirs</strong> (for static 
+    HTML pages) or <strong>PHPdirs</strong> (for dynamic content such as PHP).</p>
+  <table width="100%" cellpadding="2" cellspacing="0" class="options">
+    <tr> 
+      <td colspan="2"><strong>$HTMLdirs</strong> = Array($nukeroot.'/HTML', $nukeroot, 
+        &quot;$nukeroot/PHPpages&quot;); &nbsp;</td>
+    </tr>
+    <tr> 
+      <td>&nbsp;</td>
+      <td>If all HTML pages are placed in the same folder other than the PostNuke 
+        root, you can specify it here<br>
+        so NukeWrapper will search each listed directory in turn for the requested 
+        file here, so no filepath need be supplied in the URL.. <br>
+        Else leave empty with <strong>Array();</strong> as the default is the 
+        Postnuke root.<br>
+        <strong>Example:</strong> Array('/nuke/HTML', '/albums', '/nuke/PHPpages', 
+        '/stuff', '/nuke/holiday/Australia'); </td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$AllowPHP</strong>=&quot;1&quot;;</nobr></td>
+      <td>To allow inclusion of internal PHP pages, set to &quot;1&quot;, else 
+        &quot;0&quot;. Will be disabled if no valid <br>
+        PHP directory set, either by making a directory called <strong>PHPpages</strong> 
+        under the PostNuke root (default), <br>
+        or listing in the <strong>$PHPdirs</strong> array.</td>
+    </tr>
+    <tr> 
+      <td colspan="2"><strong>$PHPdirs</strong> = Array(&quot;$nukeroot/PHPpages&quot;);</td>
+    </tr>
+    <tr> 
+      <td>&nbsp;</td>
+      <td>As mentioned above, this array lists allowed directories under the Server 
+        document root for PHP pages, <br>
+        relative to the Document Root, not the Postnuke root (unless they're the 
+        same), eg &quot;/nuke/PHPpages&quot; <br>
+        for www.example.com/nuke/PHPpages or &quot;/somedir&quot; for www.example.com/somedir/ 
+        <br>
+        Default is &quot;PHPpages&quot; under PostNuke root.<br>
+        If you leave the array empty with <strong>Array();</strong> or the requested 
+        file isn't in any of the listed directories, <br>
+        NukeWrapper will look in the default location. <br>
+        It's a good idea to place an empty index.html page in each directory to 
+        avoid indexing of content.<br>
+        <strong>Example:</strong> Array('/albums', '/cult/sci-fi/drwho'); </td>
+    </tr>
+    <tr> 
+      <td colspan="2"><strong>$NWkeywords</strong> = Array('admin'); </td>
+    </tr>
+    <tr> 
+      <td>&nbsp;</td>
+      <td>Keywords for use in the PostNuke security schema. They will be matched 
+        against the URI, so for instance<br> <strong>filename-admin.php</strong> 
+        will match '<em><strong>admin</strong></em>', or <strong>/HTML/path/filename-user.html</strong> 
+        could be matched against <br>
+        '<em><strong>HTML</strong></em>', '<strong><em>path</em></strong>', '<em><strong>user</strong></em>' 
+        or just '<em><strong>-</strong></em>'. Access rules can then be set in 
+        PostNuke Permissions.<br>
+        Used in the permissions Instance as <em>keyword</em>: <strong>&nbsp;&nbsp;&nbsp;filename.ext 
+        : keyword : extension</strong><br> <strong>Example</strong>: Array('admin', 
+        'user', 'member', 'personal');</td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$ExtractMeta</strong> = &quot;1&quot;;</nobr></td>
+      <td>Whether to extract certain metadata from the <strong>HEAD</strong> of 
+        local files, which can then be used for customised page titles and Search 
+        Engine Optimisation. <br>
+        Used with the supplied metatag plugin for Xanthia and header_footer module templates.<br>
+        Returns an array of metadata. Values are only set when found in the file. 
+        <br>
+        Available values (when set) are: <br> <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr> 
+            <td><strong>$meta['title']</strong></td>
+            <td>The page title between the <strong>&lt;title&gt;</strong> tags</td>
+          </tr>
+          <tr> 
+            <td><strong>$meta['keywords']</strong></td>
+            <td>Meta keywords for search engines</td>
+          </tr>
+          <tr> 
+            <td><strong>$meta['description']</strong></td>
+            <td>Short description of the page content.</td>
+          </tr>
+          <tr> 
+            <td><strong>$meta['Author']</strong></td>
+            <td>Author of the included page</td>
+          </tr>
+          <tr> 
+            <td><strong>$meta['Content-Type']</strong></td>
+            <td>As well as text/html, may contain the page character set to use.</td>
+          </tr>
+          <tr> 
+            <td><strong>$meta['Content-Language']</strong></td>
+            <td>The language for the site</td>
+          </tr>
+          <tr> 
+            <td><strong>$meta['Expires']</strong></td>
+            <td>The page Expiry date, useful for static content that doesn't change.</td>
+          </tr>
+          <tr> 
+            <td><strong>$meta['Cache-Control']</strong></td>
+            <td>Whether the page can be cached. May not be homoured by some browsers 
+              or proxy caches.</td>
+          </tr>
+          <tr> 
+            <td><strong>$meta['Robots']</strong></td>
+            <td>Whether and how Search Engine robots index a site. A robots.txt 
+              file may be better.</td>
+          </tr>
+        </table></td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$FixLinks</strong> = &quot;1&quot;;</nobr></td>
+      <td>1=on, 0=off. Corrects relative filepaths of local files not in the same 
+        directory as NukeWrapper. <br>
+        Switch off if not using document-relative links, if you change the paths 
+        in your HTML documents <br>
+        to use root-relative paths (from the Document Root), <br> <strong>eg</strong> 
+        src=&quot;/sci-fi/drwho/images/TomBaker.jpg&quot; rather than src=&quot;images/TomBaker.jpg&quot;</td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$WrapLinks</strong> = &quot;1&quot;;</nobr></td>
+      <td> If FixLinks is set, this option will further convert links to open 
+        in your PostNuke site through NukeWrapper.provided they're of a valid 
+        type in the <strong>$ValidExp</strong> lists below.</td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$FixTransparency = false;</strong></nobr></td>
+      <td><p>-------------- IE PNG transparency fix ----------------</p>
+        <p>This will add the AlphaImageLoader filter for Internet Explorer users 
+          to fix transparency in PNG images in this inferior browser. </p>
+        <p>Will only be applied to PNG images with the suffix specified in <strong>$PNGimages</strong>.<br>
+          Off by default since if you use the supplied <strong>IE7 Javascript 
+          library</strong> (enabled by provided IE7 Xanthia plugin), 
+          it will conflict. </p>
+        <p>true/false or 0/1.</p></td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$PNGsuffix = &quot;-trans&quot;;</strong></nobr></td>
+      <td><p>If using the IE transparency fix, only PNG images with this suffix 
+          will have the filter applied,<br>
+          eg <strong>logo-trans.png</strong></p>
+        </td>
+    </tr>
+    <tr> 
+      <td colspan="2"><nobr><strong>$SpacerPath = &quot;images/spacer.gif&quot;;</strong></nobr></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td><p>For use by the IE transparency fix. A path to a valid transparent 
+          dummy image.<br>
+          One is supplied with NukeWrapper, and placed in the main images folder.</p>
+        <p>-------------------------- End PNG Transparency Fix ---------------------------</p>
+        </td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$AllowExtLink</strong> = &quot;1&quot;;</nobr></td>
+      <td>&quot;1&quot; on, &quot;0&quot; off. Whether to allow external linking 
+        to the page (ie other than from your own site), <br>
+        whether via a hyperlink or entered in the URL field of a browser.<br>
+        If set to &quot;0&quot;, it will only allow local linking to pages, and 
+        they cannot be bookmarked or <br>
+        linked to from an external site.</td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$AllowURLs</strong> = &quot;1&quot;;</nobr></td>
+      <td>Allow embedding of URLs with url=www.somesite.com - 1=yes, 0=no</td>
+    </tr>
+    <tr> 
+      <td colspan="2"><strong>$URLs['allow']</strong> = Array(); &nbsp;&nbsp;// 
+        <strong>Array('url1', word1', 'url2');</strong></td>
+    </tr>
+    <tr> 
+      <td>&nbsp;</td>
+      <td>List of allowed hosts/URLs. <strong><em>ONLY</em></strong> allow URLs 
+        with these keywords. If empty - <strong>Array();</strong> - <em><strong>all</strong></em> 
+        URLs will be allowed. <br>
+        It will match partial URLs, eg 'yahoo' will match all Yahoo domains.<br> 
+        <strong>Example:</strong> Array('www.google.com', 'www.csszengarden.com', 
+        'slashdot', 'yahoo');</td>
+    </tr>
+    <tr> 
+      <td colspan="2"><strong>$URLs['deny']</strong> = Array(); </td>
+    </tr>
+    <tr> 
+      <td>&nbsp;</td>
+      <td><p>Disallow all URLs with these keywords.</p>
+        <p><strong>Example:</strong> Array('sex', 'hentai', 'cartoon-x', 'mangax', 
+          'xxx');</p></td>
+    </tr>
+    <tr> 
+      <td colspan="2"><strong>$$URLkeys</strong> = Array('postnuke' =&gt; 'www.postnuke.com');&nbsp;&nbsp; 
+        // <strong>array('key' =&gt; 'value');</strong></td>
+    </tr>
+    <tr> 
+      <td>&nbsp;</td>
+      <td><p>Optional array for URL shortcuts, so long URLs can be specified as 
+          <strong>page.php?url=example<br>
+          </strong>and be translated to <strong>page.php?url=http://www.example.com/somedir/</strong> 
+          by using the format in the example below.</p>
+        <p><strong>Example:</strong> array=('example' =&gt; 'http://www.someurl.com/somedir/', 
+          'postnuke' =&gt; 'www.postnuke.com'')<strong>;</strong></p></td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$UseTables</strong> = &quot;1&quot;;</nobr></td>
+      <td>Whether to use theme tables and borders around page by default. 1=yes, 
+        0=no </td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$Layout</strong> = &quot;0&quot;;</nobr></td>
+      <td><em>Only for <strong>non-Xanthia themes</strong> that have been fixed</em>. 
+        See technotes below.<br>
+        Default for idx option above. 0, 1, 2, 3 or 4. <br>
+        Options 2,3 and 4 requires editing of your theme. See Technical Notes 
+        below.<br> <strong>0</strong> = Default; left blocks, no right blocks.<br> 
+        <strong>1</strong> = Home page (with left, right and center blocks with 
+        Admin message)<br> <strong>2</strong> = display left and right blocks, 
+        no center blocks or Admin message.<br> <strong>3</strong> = No left blocks, 
+        display right blocks.<br> <strong>4</strong> = No left or right blocks, 
+        only HTML page with Header and Footer.</td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$ShowLink</strong> = &quot;1&quot;;</nobr></td>
+      <td>For external pages, whether to show &quot;Open in new window&quot; link 
+        in top of the frame. 1=yes, 0=no<br>
+        It is good form to acknowledge embedded sites with a link, besides any 
+        clicked links will open <br>
+        in a new window.</td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$OpenInNewWindow</strong> = &quot;1&quot;;</nobr></td>
+      <td>Whether to open external webpage links in new window, or open in the 
+        existing frame.<br>
+        URLs on the same server will always open in the same window regardless. 
+      </td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$AutoResize</strong> = &quot;1&quot;;</nobr></td>
+      <td>Resizes the iFrame when wrapping URLs. <strong>1=on, 0=off</strong><br>
+        If off, defaults to <strong>600px</strong> (set below), but can be set in the URL 
+        with <strong>height=xxx</strong><br>
+        where <strong>xxx</strong> is an integer pixel value. <br>
+        If you use <strong>url2=</strong> instead of <strong>url=</strong> then 
+        NukeWrapper will turn off AutoResize and use a non-resizing iFrame.</td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$FrameHeight</strong> = 600;</nobr></td>
+      <td>Integer value in pixels for the default height of the iframe used with external urls. Default 600.</td>
+    </tr>
+    <tr> 
+      <td colspan="2"><strong>$StartPage</strong> = &quot;&quot;;&nbsp;&nbsp;&nbsp; 
+        // eg &quot;www.website.com&quot;; or &quot;AboutUs.html&quot;;</td>
+    </tr>
+    <tr> 
+      <td>&nbsp;</td>
+      <td>Page to be loaded if no location/file supplied. For URLs, put <strong>http://</strong> 
+        first, or it will be assumed to be a local file. <br> <strong>Examples:</strong>&nbsp; 
+        &quot;who.html&quot;&nbsp;&nbsp; &quot;/nuke/AboutUs.html&quot;&nbsp;&nbsp; 
+        &quot;http://www.google.com/&quot;</td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$DocumentRoot</strong> = &quot;&quot;;</nobr></td>
+      <td>For linking to local files. Leave empty if you don't have any problems 
+        with local files.<br>
+        If NukeWrapper can't detect the correct Document Root, then you may be 
+        denied access to the file with the &quot;<strong><em>Who's A Naughty Boy</em></strong>&quot; 
+        message as it may be an attempt to hack the server. <br>
+        The correct Document Root may fix this.<br> <strong>Example:</strong> 
+        &quot;/home/s/jsmith/somedir&quot;;<br>
+        See the Debug setting below.</td>
+    </tr>
+    <tr> 
+      <td colspan="2"><strong>$ValidExp1</strong> = array('.htm', '.shtml', '.txt', 
+        '.pdf');</td>
+    </tr>
+    <tr> 
+      <td>&nbsp;</td>
+      <td>Array with allowed extensions and keywords for static non-script pages, 
+        <strong>eg</strong> .html, .txt.</td>
+    </tr>
+    <tr> 
+      <td colspan="2"><strong>$ValidExp2</strong> = array('.php', '.phtml', '.cgi', 
+        '.asp', '.iasp', '.jsp', '.cfm', '.pl', '.adp', '.orm');</td>
+    </tr>
+    <tr> 
+      <td>&nbsp;</td>
+      <td>Allowed dynamic page (script) extensions and keywords when <strong>AllowPHP</strong> 
+        is set above; <strong>eg</strong> .php, .jsp, .asp, cgi</td>
+    </tr>
+    <tr> 
+      <td><nobr><strong>$WrapDebug</strong> = &quot;0&quot;;</nobr></td>
+      <td>&quot;1&quot; to output Debugging info, &quot;0&quot; to turn off. Only 
+        available to users with Admin privileges.<br>
+        If you have trouble with site security and your pages being redirected 
+        to the index page with &quot;<strong>Who's A Naughty Boy Then?</strong>&quot;, 
+        try this function to discover your PostNuke install directory from the 
+        Server root, or if something else fails. It will output a number of variables, 
+        paths and directories as the script executes, and at the bottom of the 
+        page will output a large table of PostNuke and Server settings and variables. 
+      </td>
+    </tr>
+  </table>
+  <h3><a name="Security"></a>5. Security:</h3>
+  <p>NukeWrapper will not allow any linking to files appearing outside the Document 
+    Root or outside any of the listed or default directories. Therefore if your 
+    files are not in the locations listed in the array <strong>$HTMLdirs</strong> 
+    for static pages like HTML (defaulting to the PostNuke root), or <strong>$PHPdirs</strong> 
+    for dynamic content like PHP (defaulting to <strong>PHPpages</strong> directory), 
+    you cannot link to them. If trying to link to unauthorised locations, the 
+    user will be redirected to the Postnuke site's home page with the message 
+    <em><strong>Who's A Naughty Boy Then?</strong></em>.<br>
+    For instance, if the server has a system file at <strong>C:/Apache2/conf/httpd.txt</strong> 
+    (assuming the system file had a .txt extension), a hacker might try the old 
+    trick of supplying the path<strong> file=../../conf/httpd.txt</strong> to 
+    produce the server path<br>
+    <strong>C:/Apache2/htdocs/PHPpages/../../conf/httpd.txt</strong> (which match 
+    the default dynamic content folder path), which in turn translates to <br>
+    <strong>C:/Apache2/conf/httpd.txt</strong><br>
+    This will fail the hacker test, as the file is outside the absolute path of 
+    the document root and any of the listed directories, and the hacker will be 
+    redirected and called a <em><strong>Naughty Boy</strong></em>. Hey, it's nicer 
+    than what it used to say.</p>
+  <p>Consequently, if your site's Document Root is not correctly detected due 
+    to server settings, you may have trouble wrapping your local files. You can 
+    explicitly set your site's Document Root in the <strong>$DocumentRoot</strong> 
+    option above. </p>
+  <h4><a name="SetDocRoot"></a>5.1 Ensure The Document Root Is Set</h4>
+  <p>If the site is on your own server, eg Microsoft IIS, it may be that it is 
+    unset on your server setup, which some Windows home servers sometimes seem 
+    to be. In Windows XP, go to the <strong>Administrative Tools</strong> control 
+    panel, and then <strong>Internet Information Services</strong>. Go to the 
+    website entry and right-click on it in the right pane and choose <strong>Properties</strong> 
+    (or click the Properties button). Under the <strong>Home Page tab</strong>, 
+    set the <strong>Local Path</strong> to your site's root, eg <strong>C:\Inetpub\wwwroot\mysite</strong></p>
+  <p>On an Apache server, edit Apache's config file <strong>httpd.conf</strong> 
+    and ensure <strong>DocumentRoot</strong> is set correctly, eg <strong><br>
+    DocumentRoot &quot;C:/Apache2/htdocs&quot;</strong></p>
+  <p>NukeWrapper's <strong>Debug</strong> mode can be helpful in determining what 
+    the problem is, what your site's Document Root is detected as, and what it 
+    actually is. It is only available to users with Admin privileges.</p> 
+  <h3><a name="ProtectDir"></a>6. Protecting Your Files From Direct Access:</h3>
+  <p>To protect your HTML or PHP files from being accessed directly, firstly place 
+    all your files in one or more subdirectories so you can protect the folder(s).</p>
+  <h4><a name="Obscurity"></a>6.1 Security by Obscurity</h4>
+    
+  <p>You can have some Security by Obscurity by naming the subdirectory something 
+    non-obvious that a user can't easily guess, eg a random string like <strong>sysfg3</strong> 
+    and placing this path in NukeWrapper's <strong>$HTMLdirs</strong> array (or 
+    <strong>$PHPdirs</strong> array for dynamic files).</p>
+    
+  <p class="example">$HTMLdirs = Array($nukeroot.'/sysfg3');</p>
+  <p>Now when you link to the file using NukeWrapper, it will automatically look 
+    in this directory, so you don't need to use it in the URL.</p>
+  <p><strong>page.php?file=members.html</strong> will find the file <strong>/sysfg3/members.html</strong> 
+    without alerting the users to the location. If there's an index file in the 
+    directory above (eg PostNuke's main <strong>index.php</strong> file) or directory 
+    listing is disabled, users are unlikely to find it by chance.</p> 
+  <h4><a name="htaccess"></a>6.2 Apache .htaccess Files</h4>
+  <p>Best of all is to protect your folder using the server's access controls. 
+    On Apache for instance, you can set Access rules for a directory by only allowing 
+    access from the local domain, ie from NukeWrapper or other PostNuke modules. 
+    Accessing the file directly in the browser will get a <strong>Forbidden</strong> 
+    message. Optionally, you can set the diretory with password controls, so authorised 
+    users <em>can</em> access it directly.</p>
+    <p>Setting the directives in the server config file (httpd.conf) is preferable 
+  where you have access, but they can be placed in an .htaccess file in the diretory 
+  to be protected, provided the server allows per-directory overrides.</p> 
+  <p>So, open a plain text editor like Notepad or GEdit and enter the following, 
+    replacing <strong>www.example.com</strong> with your domain, or even a static 
+    IP address if it is known:</p>
+  <p class="example">order allow,deny<br>
+    allow from www.example.com<br>
+    # Disallow directory indexing<br>
+    options -indexes</p>
+	
+  <p>and save it as <strong>.htaccess</strong> in the desired directory.<br>
+    This allows access from the specified domain or IP address of the site, but 
+    denies all other access.</p>
+    
+  <p>The <strong>Options</strong> directive turns off directory indexing where 
+    no default page, like index.html, is found.</p>
+  <p>An alternative, though perhaps not as secure, is to have a directive that 
+    checks the <strong>Referer</strong> page header. </p>
+  <p class="example">SetEnvIf Referer &quot;^http://www.example.com/page.php&quot; 
+    let_me_in<br>
+    SetEnvIf Referer &quot;^http://www.example.com/index.php?module=NukeWrapper&quot; 
+    let_me_in <br>
+    Order Deny,Allow<br>
+    Deny from all<br>
+    Allow from env=let_me_in</p>
+    
+  <p>which restricts access to links on the site using NukeWrapper; entering the 
+    URL directly in the browser won't work, as it then hasn't got a Referer.</p>
+  <h5>Links:</h5>
+  <p><a href="http://httpd.apache.org/docs-2.0/howto/htaccess.html">http://httpd.apache.org/docs-2.0/howto/htaccess.html</a><br>
+    <a href="http://httpd.apache.org/docs-2.0/mod/mod_access.html#allow">http://httpd.apache.org/docs-2.0/mod/mod_access.html#allow</a><br> 
+    <a href="http://httpd.apache.org/docs-2.0/mod/mod_setenvif.html">http://httpd.apache.org/docs-2.0/mod/mod_setenvif.html</a> 
+  </p>
+  <p>Setting up password authorisation for a directory is explained in the Apache 
+    manual:<br>
+    <a href="http://httpd.apache.org/docs-2.0/howto/auth.html">http://httpd.apache.org/docs-2.0/howto/auth.html</a></p>
+  <h3><a name="PNPermissions"></a>7. PostNuke Permissions Schema:</h3>
+  <p>The NukeWrapper security schema for PostNuke, set in the PostNuke administration 
+    Permissions Panel, is as follows:</p>
+  <table class="example" width="75%" border="0" cellspacing="5" cellpadding="0" style="margin-left: auto; margin-right: auto;">
+    <tr>
+      <td><strong>Component:</strong></td>
+      <td><strong>Instance:</strong></td>
+    </tr>
+    <tr>
+        <td>NukeWrapper::(file|url)</td>
+        <td>filename.ext:keyword:extension</td>
+    </tr>
+  </table>
+  <p>NukeWrapper checks for Read access only, as there is nothing editable.<BR />
+  <strong>.*</strong> is the same as <strong>::</strong> and is shorthand code 
+    for <strong>All</strong>.<br>
+    Both the <strong>Component</strong> and <strong>Instance</strong> is divided 
+    into three sections, separated by Colons. The middle section of the Component 
+    is reserved for future use and not currently used.</p>
+  <p>Let's assume we have the following file structure:
+  <blockquote>
+    /HTML/AboutUs.html<br>
+    /HTML/example-admin.html<br>
+    /HTML/example-member.html<br>
+    /HTML/admin/restricted.html<br>
+    /HTML/members/funstuff.html</p>
+	</blockquote>
+  <h4><a name="Component"></a>7.1 Component:</h4>
+  <p>The Component refers to NukeWrapper access generally, with the option of setting 
+    access specifically to either local files or external URLs by specifying the 
+    3rd Component.</p>
+  <h5>Examples:</h5>
+  <table class="example border" border="0" cellpadding="0" cellspacing="4">
+    <tr> 
+      <td>NukeWrapper::</td>
+      <td>.*</td>
+    </tr>
+  </table>
+  <p>General access control to wrapped pages</p>
+  <table class="example border" border="0" cellspacing="4" cellpadding="0">
+    <tr>
+      <td>NukeWrapper::file</td>
+      <td>.*</td>
+    </tr>
+  </table>
+  <p>Controls access to local files</p>
+   <table class="example border" border="0" cellspacing="4" cellpadding="0">
+    <tr>
+      <td>NukeWrapper::url</td>
+      <td>.*</td>
+    </tr>
+  </table>
+  <p>Controls access to external URLs.</p>
+  <h4><a name="Instance"></a>7.2 Instance:</h4>
+    
+  <p>The Instance is for more finegrained control of the module component. In 
+    this case it's <br>
+    <strong>filename.ext : keyword : extension</strong><br>
+    The first Instance, <strong>filename.ext</strong>, is as it suggests, a specific 
+    filename you wish to control access to.<br>
+    <strong>Keyword</strong> is a case-sensitive word that appears anywhere in 
+    the path, eg <strong>admin</strong> or <strong>member</strong>.<br>
+    <strong>Extension</strong> is the file extension, eg if you want to control 
+    access to PHP files.</p>
+  <h5>Examples:</h5>
+  <table class="example border" border="0" cellspacing="4" cellpadding="0">
+    <tr> 
+      <td>NukeWrapper::file</td>
+      <td>restricted.html::</td>
+      <td>none</td>
+    </tr>
+  </table>
+  <p>Denies access to the file <strong>restricted.html</strong> for a specific 
+    group.</p>
+  <table class="example border" border="0" cellspacing="4" cellpadding="0">
+    <tr> 
+      <td>NukeWrapper::file</td>
+      <td>:member:</td>
+      <td>Read</td>
+    </tr>
+  </table>
+	
+  <p>Controls <strong>Read</strong> access to any local file with the keyword 
+    <strong>member</strong> in its path, eg<br>
+    <strong>/HTML/example-member.html</strong> and<br>
+    <strong>/HTML/members/funstuff.html</strong></p>
+    
+  <table class="example border" border="0" cellspacing="4" cellpadding="0">
+    <tr> 
+      <td>NukeWrapper::file</td>
+      <td>:-:</td>
+      <td>Read</td>
+    </tr>
+  </table>
+	
+  <p>Control <strong>Read</strong> access to both<br>
+    <strong>/HTML/example-admin.html</strong> and <br>
+    <strong>/HTML/example-member.html</strong> as they both have hyphens.</p>
+  <p>Putting brackets around a group of words separated by the | (pipe) character 
+    will check for <strong>either</strong> instance.</p>
+    
+  <table class="example border" border="0" cellspacing="4" cellpadding="0">
+    <tr> 
+      <td>NukeWrapper::file</td>
+      <td>:(member|admin):</td>
+      <td>Read</td>
+    </tr>
+  </table>
+    
+  <p>Controls <strong>Read</strong> access to<br>
+    <strong>/HTML/example-admin.html<br>
+    /HTML/example-member.html<br>
+    /HTML/admin/restricted.html<br>
+    /HTML/members/funstuff.html</strong></p>
+   
+  <table class="example border" border="0" cellspacing="4" cellpadding="0">
+    <tr> 
+      <td>NukeWrapper::file</td>
+      <td> (restricted.html|example-admin.html)::</td>
+      <td>none</td>
+    </tr>
+  </table>	
+  <p>denies access to the files <strong>restricted.html</strong> and <strong>example-admin.html</strong> 
+    for a specific group.</p>
+    
+  <table class="example border" border="0" cellspacing="4" cellpadding="0">
+    <tr> 
+      <td>NukeWrapper::file</td>
+      <td>::php</td>
+      <td>Read</td>
+    </tr>
+  </table>
+	
+  <p>controls <strong>Read</strong> access to local <strong>PHP</strong> files.</p>
+  <p>The order of Permission rules in the list is important, as once permission 
+    has been granted to a group, following rules cannot take it away. So for instance 
+    you might have</p>
+    
+  <table class="example border" border="0" cellspacing="4" cellpadding="0">
+    <tr>
+      <td>Users</td>
+      <td>NukeWrapper::file</td>
+      <td>:(member|admin):</td>
+      <td>none</td>
+    </tr>
+    <tr>
+      <td>Users</td>
+      <td>.*</td>
+      <td>.*</td>
+      <td>Comment</td>
+    </tr>
+    <tr>
+      <td>Unregistered</td>
+      <td>NukeWrapper::</td>
+      <td>.*</td>
+      <td>none</td>
+    </tr>
+    <tr>
+      <td>Unregistered</td>
+      <td>.*</td>
+      <td>.*</td>
+      <td>Read</td>
+    </tr>
+  </table>
+  <p>and so on.</p>
+
+  <h3><a name="PageParsing"></a>8. Page Parsing for Fun and Political Satire:</h3>
+  <!--<p>As if all this is not enough, I've also included a nifty feature that's just 
+    a bit of fun, good for satire, hell it may even have a practical application. 
+</p>    It is disabled by default. Uncomment (remove slashes in front of) the arrays 
+    as noted to use.-->
+  <p>NukeWrapper can parse external web pages and replace contents as you see 
+    fit; for instance if you hate Microsoft (who outside MS doesn't?), you can 
+    replace all instances of &quot;<strong>Microsoft</strong>&quot; with &quot;<strong>Micro$uck</strong>&quot; 
+    and </p>
+  <p>&quot;<strong>Bill Gates</strong>&quot; with &quot;<strong>The Antichrist</strong>&quot;, 
+    or you can replace HTML like image links. </p>
+  <p>There are two ways to do this:</p>
+  <p>Firstly using a set of <strong>In</strong> and <strong>Out arrays</strong> 
+    for simple case-sensitive string replacing using the <strong>$wrapIn</strong> 
+    and <strong>$wrapOut</strong> arrays, indexed by a key referencing the URL 
+    to be parsed. They take a comma-delimited and quoted list, one search string 
+    for each replacement string. </p>
+  <table class="options" width="100%" cellpadding="2" cellspacing="0">
+    <tr>
+      <td><strong>$wrapUrl2</strong>:</td>
+      <td>Array matching user-defined keynames (<strong>key</strong>) used in 
+        In/Out arrays to URL path to be parsed. Path is without filename (eg index.html) 
+        but with slash on the end (see example below for syntax).</td>
+    </tr>
+    <tr>
+      <td><strong>$wrapIn['</strong>key<strong>']</strong>:</td>
+      <td> Pattern/words to match. <strong>Key</strong> is defined in <strong>$wrapUrl2</strong> 
+        and restricts matching to this URL.</td>
+    </tr>
+    <tr>
+      <td><strong>$wrapOut['</strong>key<strong>']</strong>:</td>
+      <td>Replacement string. Key must match <strong>$wrapIn</strong> key. As 
+        above, only URLs matching the key is affected.</td>
+    </tr>
+    <tr>
+      <td><strong>$wrapIn['</strong>all<strong>']</strong><br>
+        <strong>$wrapOut['</strong>all<strong>']</strong>:</td>
+      <td>'<strong>all</strong>' is a special key which matches all URLs, so all 
+        pages are parsed. It is overriden by unique keys.</td>
+    </tr>
+  </table>
+  <h5>Example:</h5>
+  <div class="example"> 
+    <p class="indent"><strong>$wrapUrl2</strong> = Array('example' =&gt; 'http://www.someurl.com/somedir/', 
+      <br>
+      'whitehouse' =&gt; 'http://www.whitehouse.gov/president/');</p>
+    <p class="indent"><strong>$wrapIn['</strong>example<strong>']</strong> = 
+      Array('pattern', 'this'); </p>
+    <p class="indent"><strong>$wrapOut['</strong>example<strong>']</strong> = 
+      Array('replacement', 'that'); </p>
+    <p class="indent"><strong>$wrapIn['all']</strong> = Array('Microsoft', 'Bill 
+      Gates', 'Windows');</p>
+    <p class="indent"><strong>$wrapOut['all']</strong> = Array('Micro$uck', 'The 
+      Antichrist', 'Windoze');</p>
+  </div>
+  <p>&nbsp;</p>
+  <p>Secondly, there's a second set of Arrays that allows for more advanced <strong>Regular 
+    Expression</strong> (RegEx) replace rules, called <strong>$wrapIn2[]</strong> 
+    and <strong>$wrapOut2[]</strong>. The format is the same, except the In array 
+    take Regular Expressions with pattern delimiters before and after. <br>
+    See <a href="http://www.php.net/manual/en/pcre.pattern.syntax.php">http://www.php.net/manual/en/pcre.pattern.syntax.php</a> 
+    for syntax.<br>
+    Both sets of arrays can be used simultaneously.<br>
+  </p>
+  <p>&nbsp; </p>
+  <p><strong>Example</strong> for <a href="http://www.whitehouse.gov/president/%20">http://www.whitehouse.gov/president/</a>
+    using both types of arrays. <br>
+    Copy and paste into the NukeWrapper script to see the results with the URL 
+    <br>
+    <strong>page.php?url=http://www.whitehouse.gov/president/&amp;idx=4</strong></p> 
+	<div class="example">
+    <p class="indent"><strong>$wrapUrl2</strong> = array('whitehouse' =&gt; 'http://www.whitehouse.gov/president/');</p>
+    <p class="indent"><strong>$wrapIn['</strong>whitehouse<strong>']</strong> 
+      = Array('in Focus',    'State', 'Union', 'Nation', 'address', 'serious',    'Violence', 
+      'Oval',       'rosperous',    'ambitious',  'ecisive', 'More', 'more', 'ompassionate', 
+      'forward',  'etter', 'Iraqi',   'Iraq',   'Middle', 'East', 'done',      'a personal',    
+      'Americans', 'American', 'America',    'United',  'businesses', 'of state', 'Condoleezza Rice', 
+      'hopeful',  'Strength', 'estimony', 'Terrorist', 'Terror', 'Independence', 'evolv', 'dignitaries', 
+      'staff', 'uture', 'Military', 'Office', 'White', 'House', 'the Commander-in-Chief', <br>
+      'images/president_bio.jpg', <br>
+      'images/presidential_cabinet.jpg', <br>
+      'images/essay.gif', <br>
+      'images/marineone.gif', <br>
+      'images/previous_presidents.jpg', <br>
+      'images/ask.gif', <br>
+      'images/oval_office.jpg');</p>
+    <p class="indent"><strong>$wrapOut['</strong>whitehouse<strong>']</strong> 
+      = Array('Out of Whack', 'Fate', 'Onion', 'Notion', 'undress', 'ridiculous', 'Vasectomy', 
+      'Egg-Shaped', 'reposterous', 'amphibious', 'erisive', 'Less', 'less', 'ompetent',    
+      'backwards', 'itter', 'Canadian', 'Ironing', 'Piddle', 'West', 'unravelled', 'an impersonal', 
+      'Martians', 'Venusian', 'Disneyland', 'Divided', 'children',  'of weed',   'Doolittle',      
+      'hopeless',  'Weak',    'esticles', 'Turtle',    'Error',  'Incompetence', 'devolv',  'dickheads',  
+      'stiff', 'uton', 'Millinary', 'Orifice', 'Purple', 'Meanie', 'Commander Keen', <br>
+      'http://www.abc.net.au/children/bananas/img/nav_test/nav_navy_stories.gif', 
+      <br>
+      'http://www.abc.net.au/children/bananas/img/nav_test/nav_navy_goodies.gif', 
+      <br>
+      'http://www.abc.net.au/children/bananas/img/nav_test/nav_navy_makedo.gif', 
+      <br>
+      'http://www.geocities.com/TimesSquare/Castle/1561/keenani.gif', <br>
+      'http://www.abc.net.au/children/bananas/img/nav_test/nav_navy_gallery_ro.gif', 
+      <br>
+      'http://www.abc.net.au/children/bananas/img/nav_test/nav_navy_guestbook.gif', 
+      <br>
+      'http://www.abc.net.au/children/bananas/img/characters/smlnav_cow.gif');</p>
+    <p class="comment"><br>
+      /* </p>
+    <p class="comment">Regular Expression arrays, which allows complex pattern-matching 
+      replacement rules, like images with a certain naming pattern that are changed 
+      regularly, or has conditional patterns. <br>
+      */</p> 
+    <p class="indent"> <strong>$wrapIn2['</strong>whitehouse<strong>'] </strong>= 
+      Array('/(George )?(W\. )?Bush/', '/(?&lt;!(\/|_))President/i', <br>
+      '|/news/releases/200\d/\d+/images/[\d\w_-]+\.jpg|', <br>
+      '|/images/porticop[\d\w-]+\.jpg|', <br>
+      '|/president/images/400-\w\d{5}-\d{2}\w\.jpg|', <br>
+      '|president_page_header\.gif(.*)&lt;/tr&gt;|Us'); 
+    <p class="indent"><strong>$wrapOut2['</strong>whitehouse<strong>']</strong> 
+      = Array('&lt;b&gt;The Great Imbecile&lt;/b&gt;', '&lt;b&gt;Grand Poobah&lt;/b&gt;', 
+      <br>
+      'http://www.abc.net.au/children/bananas/img/home/nav_characters_home.gif', 
+      <br>
+      'http://www.abc.net.au/children/bananas/img/home/nav_games_home.gif', <br>
+      'http://politicalhumor.about.com/library/graphics/bush_gollum.jpg', <br>
+      'president_page_header.gif$1&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;5&quot;&gt;&lt;object 
+      classid=&quot;clsid:D27CDB6E-AE6D-11cf-96B8-444553540000&quot; codebase=&quot;http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0&quot; 
+      width=&quot;630&quot; height=&quot;90&quot;&gt;&lt;param name=&quot;movie&quot; 
+      value=&quot;http://m2.doubleclick.net/922051/728x90_02.swf&quot;&gt;&lt;param 
+      name=&quot;quality&quot; value=&quot;high&quot;&gt;&lt;embed src=&quot;http://m2.doubleclick.net/922051/728x90_02.swf&quot; 
+      quality=&quot;high&quot; pluginspage=&quot;http://www.macromedia.com/go/getflashplayer&quot; 
+      type=&quot;application/x-shockwave-flash&quot; width=&quot;630&quot; height=&quot;90&quot;&gt;&lt;/embed&gt;&lt;/object&gt;&lt;/td&gt;&lt;/tr&gt;'); 
+    <p class="comment">// This last one inserts a whole chunk of HTML, a Flash banner, 
+    under the Oval Office banner.</p>
+	</div>
+  <h3><a name="JumpMenu"></a>9. Jump Menu Block</h3>
+  <p>You can create a Jump menu side block using NukeWrapper by creating an HTML 
+    block in PostNuke. Go to PostNuke's <strong>Administration &gt; Blocks</strong> 
+    panel and click <strong>New Block</strong> on the top of the table. Enter 
+    a title for the block, choose <strong>core/HTML</strong> as the Block type, 
+    and then a position for the block. Once you Commit Changes, and you will be 
+    able to enter the <strong>content</strong> of the block. <br>
+    Customise the following HTML menu with an appropriate <strong>action</strong> 
+    URL to the page.php script, and change the <strong>Option</strong> values 
+    to suit. URLs must start with &quot;<strong>http</strong>://&quot;. Then paste 
+    it into the above block <strong>content</strong> field:</p>
+<blockquote> 
+  <pre>
+	&lt;script type='text/javascript'&gt;
+	function ChangeName() {
+		var elm = document.NWjumpmenu.fileurl; 
+		var OptionValue = elm.options[elm.selectedIndex].value; 
+		if (OptionValue.toLowerCase().indexOf('http') != -1) {
+			 elm.name=&quot;url&quot;;
+		} else { elm.name=&quot;file&quot;; }
+	}
+	&lt;/script&gt;
+	&lt;form name=&quot;NWjumpmenu&quot; <strong>action=&quot;http://localhost/nuke/page.php&quot;</strong>&gt;
+	&lt;select name=&quot;file&quot; id=&quot;fileurl&quot; onchange=&quot;ChangeName();&quot;&gt;
+	  &lt;option value=&quot;&quot;&gt;Go to...&lt;/option&gt;
+	  &lt;option value=&quot;http://www.google.com/&quot;&gt;Google&lt;/option&gt;
+	  &lt;option value=&quot;who.html&quot;&gt;Who We Are&lt;/option&gt;
+	  &lt;option value=&quot;whomain.html&quot;&gt;Main&lt;/option&gt;
+	  &lt;option value=&quot;WhatWeDo.html&quot;&gt;What We Do&lt;/option&gt;
+	  &lt;option value=&quot;RandomHeight2.html&quot;&gt;Random height&lt;/option&gt;
+	  &lt;option value=&quot;http://www.macrumors.com/&quot;&gt;Mac Rumors&lt;/option&gt;
+	&lt;/select&gt;&lt;br&gt;
+	&lt;select name=&quot;idx&quot;&gt;
+	  &lt;option value=&quot;0&quot;&gt;0&lt;/option&gt;
+	  &lt;option value=&quot;1&quot;&gt;1&lt;/option&gt;
+	  &lt;option value=&quot;2&quot;&gt;2&lt;/option&gt;
+	  &lt;option value=&quot;3&quot;&gt;3&lt;/option&gt;
+	  &lt;option value=&quot;4&quot;&gt;4&lt;/option&gt;
+	&lt;/select&gt; Layout&lt;br&gt;
+	&lt;center&gt;&lt;input type=&quot;submit&quot; value=&quot;Go!&quot;&gt;&lt;/center&gt;
+	&lt;/form&gt;</pre>
+	</blockquote>
+  <p>The Javascript function <strong>ChangeName</strong> detects if the selected 
+    option value has &quot;<strong>http</strong>&quot; in it, and if so changes 
+    the Select name to &quot;<strong>url</strong>&quot;.</p>
+  <h3><a name="Notes"></a>10. Technical Notes:</h3>
+  <p>The link fixing function, which is on by default, uses 3 Regular Expression 
+    rules to fix all the relative links in local documents. This includes hyperlinks, 
+    image links (all 'src', 'href' and 'background' links), stylesheet image links 
+    (background, background-image), and links to external stylesheets and Javascripts. 
+    Any links in the external stylesheets are unaffected, as they are relative 
+    to the stylesheet location. The limitation is links dynamically created by 
+    Javascript, as there is no way to check for them. Paths in external Javascript 
+    should be fine. If you don't use relative links at all in your documents and 
+    don't need to convert links to open in PostNuke through NukeWrapper, turn 
+    off this function by setting <strong>$FixLinks="0";</strong> so the document 
+    won't be unnecessarily parsed.</p>
+  <p>Resizing a frame to fit the contents would seem to be a trivial task, but 
+    is in fact a major pain in the, um, HTML and Javasript due to HTML having 
+    no provision for it, and the Javascript DOM security model which normally 
+    blocks Javascript from reading the properties of external pages. So instead 
+    the page is loaded via the server and is embedded in the main page just like 
+    local pages are, and placed in the iFrame with Javascript. Not a perfect solution, 
+    but the only practical way of resizing frames with external pages to fit. 
+  </p>
+  <p>How well the frame is resized depends on the browser; Internet Explorer always 
+    seem to gets it right, resizing to the size of the scrollbars as it should. 
+    Mozilla/Netscape and Opera rely in W3C web standards, and so it varies according 
+    to the web page. Some pages are resized slightly short, and so get scrollbars. 
+    Mozilla will sometimes display scrollbars on the frame even when correctly 
+    sized; this is a Mozilla bug. </p>
+  <p>Some sites require a valid User-Agent string (www.microsoft.com, for instance), 
+    so if the script cannot get a valid user-agent from the browser, it will identify 
+    itself as &quot;Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)&quot;. 
+    Other sites have trouble in Mozilla, seeming to get stuck loading, but working 
+    in IE and Opera (ie www.microsoft.com/billgates/bio.asp). Clicking the Back 
+    button in Mozilla clears it, but the page is then not resized.</p>
+  <p>There is a bug in the Opera browser prior to version 7.50, where it cannot 
+    use onLoad events on iFrames, hence it can't resize. This has been fixed in 
+    <a href="http://www.opera.com/download/">Opera 7.5</a>. </p>
+  <p>The script uses a body onload event to load the external pages due to another 
+    bug in Opera (it refuses to load the page otherwise, IE and Moz have no such 
+    trouble), so if you need to use a Body onLoad event in your themes, and want 
+    to use NukeWrapper to display external pages, add<br>
+    <strong>writeiframe();</strong> before your other function calls:</p>
+  <p class="example">&lt;BODY onLoad=&quot;writeiframe(); someOtherFunction();&quot;&gt;</p>
+  
+  <h4><a name="headerClassic"></a>10.1 Using the TitleHack, NW Metatags, and IE7 in &#8220;Classic&#8221; 
+    themes</h4>
+  <p>You can make your site more Search Engine friendly by applying the supplied 
+    Titlehack (for more meaningful titles in PN modules), using metadata from 
+    wrapped pages (keywords, page description etc), and apply the IE7 Internet 
+    Explorer web standards patch, simply by placing the supplied files in their 
+    appropriate folders the way they appear in the package:</p>
+  <blockquote>
+    <pre>images/spacer.gif
+includes/pnTitle.php
+includes/ie7/ie7-standard-p.js</pre>
+</blockquote>
+  <p> Then rename the appropriate header file (a version for <strong>PN0.72x</strong> 
+    and <strong>PN0.75</strong> is supplied) to <strong>header.php</strong> and 
+    place in your PostNuke root, remembering to back up your original header file.</p>
+  <p>The Titlehack checks the current module's directory for a file called <strong>pntitle.php</strong> 
+    to produce a module-specific title. If none is found, a different hack in 
+    the supplied header files adds the name of the current module (eg News) to 
+    the title. This package doesn't supply any pntitle files, whereas some are 
+    provided in the default download from the developer's site, such as for ContentExpress, 
+    FAQ, Downloads, Reviews and others, others can be found around the place made 
+    by various people. </p>
+  <p><strong>See</strong> <a href="http://lottasophie.sourceforge.net">http://lottasophie.sourceforge.net</a> 
+    for sample titlefiles.<br>
+    NukeWrapper creates its own metadata, including title, from the wrapped page 
+    and hence doesn't use it. </p>
+  <p>IE7 is a Javascript library by Dean Edwards which attempts to patch Internet 
+    Explorer's poor standards compliance, such as proper CSS1, CSS2 and some CSS3 
+    support, fixing the IE box model (how things like height, width, padding, 
+    margin and border on objects is understood) and transparency in PNG (pronounced 
+    '<em>ping</em>') images. </p>
+  <p><strong>See</strong> <a href="http://dean.edwards.name/IE7/">http://dean.edwards.name/IE7/</a></p>
+  <p><strong>Examples:</strong><br>
+    View in IE, then click the Remove button to see what IE users normally 
+    see.<br>
+   <a href="http://dean.edwards.name/IE7/compatibility/Pure%20CSS%20Menus.html">Pure 
+    CSS Menus</a><br>
+    <a href="http://dean.edwards.name/IE7/compatibility/complexspiral/demo.html">Complex 
+    Spiral demo (fixed background attachment example)</a> </p>
+  <p><br>
+    To disable IE7, simply remove or rename the script <strong>ie7-standard-p.js</strong>. 
+    To disable the Titlehack, simply don't use any pntitle.php files in your module 
+    folders, or rename or delete the main pnTitle.php file above.</p> 
+  <h4><a name="headerXanthia"></a>10.2 Using the TitleHack, NW Metatags, and IE7 
+    in Xanthia themes</h4>
+  <p>To fix Xanthia themes to use the TitleHack, show metadata from the wrapped 
+    page, and apply the IE7 Internet Explorer patch:</p>
+  <p>First install the three supplied Xanthia plugins <strong>function.title</strong>, 
+    <strong>function.meta</strong> and <strong>function.ie7</strong> in <strong>modules/Xanthia/plugins</strong>, 
+    <br>
+    the TitleHack <strong>pnTitle.php</strong> in <strong>includes</strong>, IE7 
+    <strong>ie7-standard-p.js</strong> in <strong>includes/ie7</strong>, and a 
+    spacer image used by the Transparency filter in <strong>images/spacer.gif</strong>. 
+    The package already has this folder structure, so if it was unpackaged in 
+    the PostNuke root, things should be in their proper place:</p>
+	<blockquote>
+    <pre>images/spacer.gif
+includes/pnTitle.php
+includes/ie7/ie7-standard-p.js
+modules/Xanthia/plugins/
+    function.ie7.php
+    function.meta.php
+    function.title.php</pre>
+	</blockquote>
+  <p>Then change your Xanthia theme templates to use metatags like these: </p>
+  <p class="example"> &lt;title&gt;<strong>&lt;!--[title]--&gt;</strong>&lt;/title&gt;<br>
+      &lt;meta name=&quot;Description&quot; content=&quot;<strong>&lt;!--[meta 
+      name=&quot;description&quot;]--&gt;</strong>&quot;&gt;<br>
+      &lt;meta name=&quot;Keywords&quot; content=&quot;<strong>&lt;!--[meta name=&quot;keywords&quot;]--&gt;</strong>&quot;&gt;<br>
+      &lt;meta name=&quot;Author&quot; content=&quot;<strong>&lt;!--[meta name=&quot;author&quot;]--&gt;</strong>&quot;&gt;<br>
+      &lt;meta name=&quot;Copyright&quot; content=&quot;Copyright (c) 2004 by 
+      <strong>&lt;!--[meta name=&quot;author&quot;]--&gt;</strong>&quot;&gt;<br>
+      &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;<strong>&lt;!--[meta 
+      name=&quot;content-type&quot;]--&gt;</strong>&quot;&gt;<br>
+      &lt;meta http-equiv=&quot;Content-Language&quot; content=&quot;<strong>&lt;!--[meta 
+      name=&quot;content-language&quot;]--&gt;</strong>&quot;&gt;<br>
+      &lt;meta http-equiv=&quot;Cache-Control&quot; content=&quot;<strong>&lt;!--[meta 
+      name=&quot;cache-control&quot;]--&gt;</strong>&quot;&gt;<br>
+      &lt;meta http-equiv=&quot;expires&quot; content=&quot;<strong>&lt;!--[meta 
+      name=&quot;expires&quot;]--&gt;</strong>&quot;&gt;<br>
+      &lt;meta name=&quot;Robots&quot; content=&quot;<strong>&lt;!--[meta name=&quot;robots&quot;]--&gt;</strong>&quot;&gt;<br>
+      &lt;meta name=&quot;Revisit-After&quot; content=&quot;1 days&quot;&gt;<br>
+      &lt;meta name=&quot;Distribution&quot; content=&quot;Global&quot;&gt;<br>
+      &lt;meta name=&quot;Generator&quot; content=&quot;PostNuke - http://postnuke.com&quot;&gt;<br>
+      &lt;meta name=&quot;Rating&quot; content=&quot;General&quot;&gt;<br>
+      &lt;link rel=&quot;icon&quot; href=&quot;&lt;!--[$imagepath]--&gt;/icon.png&quot; 
+      type=&quot;image/png&quot;&gt;<br>
+      &lt;link rel=&quot;shortcut icon&quot; href=&quot;&lt;!--[$imagepath]--&gt;/favicon.ico&quot;&gt;<br>
+      &lt;link rel=&quot;StyleSheet&quot; href=&quot;&lt;!--[$themepath]--&gt;/style/styleNN.css&quot; 
+      type=&quot;text/css&quot;&gt;<br>
+      <strong>&lt;!--[ie7]--&gt;</strong></p>
+  <p>All the available Metatags are listed above in the <strong>Options</strong> 
+    section. If you don't wish to use any of these, simply don't apply the tag, 
+    eg leaving out &lt;!--[ie7]--&gt;.</p>
+  <p>There may be additional tags for links, styles, and scripts below this in 
+    the theme, be sure to leave those in.</p>
+  <p>The <strong>IE7</strong> plugin supports the option <strong>suffix</strong>, 
+    which sets a suffix for PNG files which are to have the transparency filter 
+    applied to them. The default if none is supplied is &quot;<strong>-trans</strong>&quot;, 
+    or by setting the variable <strong>$PNGsuffix</strong> in NukeWrapper. Because 
+    it uses a proprietary MicroSoft filter called <strong>AlphaImageLoader</strong> 
+    to enable the transparency in PNG files, which has its limitations, using 
+    a suffix only with those PNG files that has transparency means the other PNG 
+    files are unchanged. </p>
+  <h5>Example:</h5> 
+    <p class="example">&lt;!--[ie7 <strong>suffix='-trans'</strong>]--&gt;<br>
+      applies transparency filter to PNG images with the suffix '-trans', as in 
+      <strong>image-trans.png</strong></p>
+  <h4><a name="Layout"></a>10.3 Layout in Classic Themes</h4>
+   
+  <p>This is for the PostNuke 0.72x "Classic" (ie old) themes. For Xanthia themes 
+    or Autothemes, use the inbuilt templating system. 
+  <p>To use the extra layout options <strong>(idx 2-4)</strong> above, you must 
+    edit the themes you use. Requires some understanding of HTML and PHP.</p>
+  <p><strong>For conventional PostNuke themes:</strong><br>
+    At the top of the &quot;themefooter&quot; function in the theme, <br>
+    the Right blocks are displayed if $index==1 (note double '='). </p>
+    <p class="example">Change the line<br>
+      if ($index==1) {<br>
+      to<br>
+      if ($index==1 || $index==2 || $index==3) {</p>
+  <p>This should surround the <strong>TD</strong> table cell code.<br>
+    Now you can use <em>idx=2</em> in the URL, and the HTML page will be rendered 
+    with left<br>
+    and right blocks without centre blocks or Admin message. </p>
+  <p>To use the <em>idx=3</em> or <em>4</em> option to allow for no left column, 
+    the table cell for the <br>
+    left column (where <strong>blocks('left');</strong> appears, just <strong><em>before</em></strong> 
+    the themefooter function)<br>
+    must be wrapped in an <strong>IF</strong> statement. This requires a bit more 
+    understanding of <br>
+    the table layout, but basically the leftmost table cell should be surrounded 
+    with </p>
+    <p class="example">if ($index != 3 &amp;&amp; $index != 4) {<br>
+      <em>... {left column HTML here} ...</em><br>
+      }</p>
+  <p>so it displays <em><strong>UNLESS</strong></em> $index is 3 or 4.</p>
+  <h5>Example:</h5>
+    <p class="example">if ($index != 3 &amp;&amp; $index != 4) { ?&gt; <br>
+      &lt;TD id=&quot;LeftCol&quot; width=&quot;150&quot; bgcolor=&quot;#D9DCC2&quot; 
+      align=&quot;center&quot; valign=&quot;top&quot;&gt;<br>
+      <span class="comment">&lt;!-- Begin left block --&gt; </span><br>
+      &lt;?PHP blocks('left'); ?&gt;<br>
+      <span class="comment">&lt;!-- End left block --&gt;</span><br>
+      &lt;/TD&gt;<br>
+      &lt;?PHP } </p>
+  <p>and the Right column code would look something like this:</p>
+    <p class="example">if ($index==1 || $index==2 || $index==3) { ?&gt;<br>
+      &lt;TD id=&quot;RightCol&quot; align=&quot;center&quot; valign=&quot;top&quot; 
+      width=&quot;150&quot;&gt;<br>
+      <span class="comment">&lt;!-- Begin right block --&gt;</span><br>
+      &lt;?PHP blocks('right'); ?&gt;<br>
+      <span class="comment">&lt;!-- End right block --&gt;</span><br>
+      &lt;/TD&gt;<br>
+      &lt;?PHP } ?&gt;</p>
+  <p><strong>For AutoTheme-Lite 0.6 themes:</strong></p>
+  <p>Edit the <strong>theme.php</strong> file in the theme directory (in AT 0.7, 
+    it's <strong>modules/AutoTheme/autotheme.php</strong>), and find the line 
+    that reads</p>
+  <p class="example">include($ThemePath.&quot;/theme.cfg&quot;);</p>
+  <p>and add below it (AT 0.7:<strong> </strong>substitute <strong>$block_display</strong> 
+    with <strong>$blockdisplay</strong>):</p>
+  <p class="example">if ($index==1 || $index==2 || $index==3) $block_display[&quot;right&quot;]=true;<br>
+    if ($index != 3 &amp;&amp; $index != 4) $block_display[&quot;left&quot;]=true;<br>
+    if ($index==4) { $block_display[&quot;right&quot;]=false; $block_display[&quot;left&quot;]=false; }</p>  
+  <p>This alters the column settings in the theme config file (<strong>theme.cfg</strong>) 
+    based on the <strong>idx</strong> variable set in the URL.</p>
+  <p>Now, editing the main HTML template <strong>theme.html</strong>, find the 
+    left and right table cells, and wrap them in <strong>IF</strong> statements 
+    checking for <strong>$block_display[&quot;left&quot;]</strong> and <strong>$block_display[&quot;right&quot;]</strong> 
+    respectively (<strong>AT-0.7: $blockdisplay[&quot;left&quot;]</strong> and 
+    <strong>$blockdisplay[&quot;right&quot;]</strong>):</p>
+  <h5>Left column:</h5>
+  <p class="example">&lt;?PHP <strong>if ($block_display[&quot;left&quot;]) {</strong> 
+    ?&gt; <br>
+    &lt;TD id=&quot;LeftCol&quot; width=&quot;180&quot; valign=&quot;top&quot; 
+    bgcolor=&quot;#EEEEEE&quot;&gt; <br>
+    &lt;!-- [left-blocks] --&gt;<br>
+    &lt;/TD&gt;<br>
+    &lt;?PHP <strong>}</strong> ?&gt;</p>
+  <h5>Right column:</h5>
+  <p class="example">&lt;?PHP <strong>if ($block_display[&quot;right&quot;]) {</strong> 
+    ?&gt;<br>
+    &lt;TD id=&quot;RightCol&quot; width=&quot;180&quot; valign=&quot;top&quot; 
+    bgcolor=&quot;#EEEEEE&quot;&gt; <br>
+    &lt;!-- [right-blocks] --&gt;<br>
+    &lt;/TD&gt;<br>
+    &lt;?PHP <strong>} // End right blocks</strong> ?&gt;</p>
+  <h4><a name="FixedThemes"></a>10.4 Examples of themes that have been fixed to 
+    support the layout options:</h4>
+  <blockquote> 
+    <p><a href="http://users.tpg.com.au/staer/Downloads/PostNukeBlue100.zip">PostNukeBlue100</a></p>
+    <p><a href="http://users.tpg.com.au/staer/Downloads/SeaBreeze-V.zip">Seabreeze</a></p>
+    <p><a href="http://users.tpg.com.au/staer/Downloads/PostNuke-V.zip">PostNuke</a></p>
+    <p><a href="http://users.tpg.com.au/staer/Downloads/Bitrate2.zip">Bitrate2</a></p>
+    <p><a href="http://users.tpg.com.au/staer/Downloads/Helius.zip">Helius</a></p>
+    <p><a href="http://users.tpg.com.au/staer/Downloads/Icey-V.zip">Icey</a></p>
+    <p><a href="http://users.tpg.com.au/staer/Downloads/i-geom.zip">i-geom</a> (AutoTheme)</p>
+  </blockquote>
+    
+  <p>They also support the layout options on their own without the use of NukeWrapper. 
+    Pass the <strong>idx</strong> variable in the URL the same as with NukeWrapper.</p>
+  <p>To further convert a theme to support the layout options on their own, independent 
+    of NukeWrapper like the above themes, as well as including the ability to 
+    make presets for certain modules, add the following at the top of the <strong>theme.php</strong> 
+    file, <strong><em>before</em></strong> the beginning of any functions (same 
+    for AutoTheme Lite 0.6, in AT 0.7 you must edit the module itself in modules/AutoTheme/autotheme.php 
+    at the same place):</p>
+    <p class="example">global $index;<br>
+      $CurrentMod = strtolower(pnModGetName('currentMod'));<br>
+      <span class="comment">// To default certain modules to certain layouts, 
+      uncomment the line bolow and set $index at the end.</span><br>
+      // if ($CurrentMod == &quot;pnphpbb2&quot; or $CurrentMod == &quot;xforum&quot; 
+      or $CurrentMod == &quot;gallery&quot;)&nbsp; $index = 4; <br>
+      <br>
+      if (phpversion() &lt; &quot;4.1.0&quot;) &nbsp;$_REQUEST = array_merge($HTTP_GET_VARS, 
+      $HTTP_POST_VARS); <br>
+      if (isset($_REQUEST['idx'])) &nbsp;$index=$_REQUEST['idx'];</p>
+  <p>&nbsp;</p>
+</div>
+</body>
+</html>

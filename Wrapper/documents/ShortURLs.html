@@ -1,0 +1,396 @@
+<html>
+<head>
+<title>ShortURLs ReadMe</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+<!--
+BODY {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #232367;
+	background-color: #D4D4AE; /* #D5D3BD; */
+}
+TABLE.options TD{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	line-height: 1.3em;
+	text-align: left;
+	vertical-align: top;
+	padding-bottom: .5em;
+} 
+TABLE.list {
+	border: 2px solid #A198F1;
+}
+TABLE.list TD {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	background-color: #E4E4ED;
+	margin-right: 0px;
+	margin-left: 0px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	padding: 0.5em 1em;
+	border-top: 2px solid #A198F1;
+}
+TABLE.list TD.top {
+	border: none;
+}
+P, A, UL, LI {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #232367; /* 5B5BA8 330099*/
+	line-height: 1.3em;
+	margin-bottom: 5px;
+	margin-top: 0px;
+}
+A:hover, A:active {
+	background-color: #E4E4ED;
+	text-decoration: none;
+}
+H2 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 24px;
+	color: #52529A;  /* 330099 282875; 5B5BA8; */
+	padding: 0px;
+	margin-bottom: -2px;
+	margin-left: 80px;
+	line-height: 24px;
+	margin-top: 30px;
+}
+H3 {
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	color: #454581;
+	margin-top: 1.5em;
+	margin-right: 0px;
+	margin-bottom: 6px;
+	margin-left: 0px;
+	padding: 2px 2px 2px 10px;
+	background-color: #E4E4ED;
+}
+H4 {
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	color: #454581;
+	margin-top: 1em;
+	margin-bottom: 3px;
+	margin-left: 10px;
+	border-bottom: 1px solid;
+/*	text-decoration: underline; */
+}
+h5 {
+	font-size: 13px;
+	font-weight: bold;
+	text-indent: 0.5em;
+	margin-top: 1em;
+	margin-bottom: 0.3em;
+}
+blockquote {
+	margin-top: 3px;
+	margin-bottom: 1em;
+}
+#content {
+	padding: 20px;
+	margin-top: 0px;
+	margin-right: 60px;
+	margin-left: 60px;
+	margin-bottom: 20px;
+	border: 2px dashed #52529A;
+	background-color: #C9C9DA; /* B6B6CC #AEAED4 #BDBFD5; */
+}
+.example, PRE {
+	margin-top: 3px;
+	margin-bottom: 6px;
+	margin-right: 0px;
+	margin-left: 0px;
+	padding: 6px;
+	padding-left: 15px;
+	background-color: #E4E4ED;
+}
+PRE {
+	margin-left: 2em;
+	margin-right: 2em;
+}
+.comment {
+	font-style: italic;
+	color: #666666;
+}
+.indent {
+	text-indent: -3em;
+	margin-left: 3em;
+}
+.indent2 {
+	margin-left: 2em;
+}
+UL, OL {
+	margin-top: 3px;
+	margin-bottom: 6px;
+}
+LI {
+	margin: 0px;
+	margin-bottom: 6px;
+}
+.highlight {
+	background-color: #E4E4ED;
+	padding: 4px 6px;
+	margin: 5px 0px;
+}
+.courier-bold {
+	font-family: "Courier New", Courier, mono;
+	font-weight: 600;
+}
+.courier {
+	font-family: "Courier New", Courier, mono;
+}
+.divider {
+	margin-top: 2em;
+	margin-bottom: 2em;
+	text-align: center;
+}
+-->
+</style>
+</head>
+
+<body bgcolor="#BFEAB5" text="#330099" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<h2>ShortURLs ReadMe</h2>
+<DIV id="content"> 
+  <p>This theme includes a Short URL rewriting function for making your site more 
+    search-engine and human-friendly. This feature is off by default however as 
+    not all servers will support it. </p>
+  <p>To make your Postnuke site search-engine friendly, the URLs have to be simplified 
+    and shortened with no long query strings appended. The included function scans 
+    the output of Postnuke and renders a much simpler URL that looks like a regular 
+    static HTML page to the search engines, and are also much easier for us humans 
+    to digest, convenient for posting in forums. </p>
+  <p>So instead of having </p>
+<p class="example">modules.php?op=modload&amp;name=News&amp;file=article&amp;sid=6&amp;mode=thread&amp;order=0&amp;thold=0</p>
+<p>you may have </p>
+<p class="example">Article6.phtml</p>
+<p>or instead of </p>
+<p class="example">modules.php?op=modload&amp;name=Search&amp;file=index&amp;action=search&amp;overview=1&amp;active_stories=1&amp;stories_author=msandersen</p>
+<p>You have </p>
+<p class="example">Search-msandersen-1-1-.phtml</p>
+<p>The server, however, must be able to understand these short URLs and translate 
+  them into their proper long form. </p>
+<p>To enable short URLs, first of all you must be hosted on an Apache server with 
+  the URL rewrite module (<span class="courier">mod_rewrite</span>) enabled (possibly 
+  an IIS server with a commercial rewrite plugin). Many Linux servers do by default, 
+  such as Red Hat Linux. You may have to ask you host provider for details, and 
+  if they will enable it if it isn't.</p>
+  <p><strong>Note:</strong> As mentioned above, it should be possible to use it 
+    on a Microsoft IIS server with modules like <a href="http://www.qwerksoft.com/products/iisrewrite/">QwerkSoft's 
+    <em>IIS Rewrite</em></a><br>
+    (<a href="http://www.qwerksoft.com/products/iisrewrite/">www.qwerksoft.com/products/iisrewrite/</a>), 
+    a commercial stripped-down version of Apache's <span class="courier">mod_rewrite</span>, 
+    or with a little modification, <a href="http://www.isapirewrite.com/"><em>ISAPI_Rewrite</em></a> 
+    (<a href="http://www.isapirewrite.com/">www.isapirewrite.com/</a>), a shareware 
+    URL rewriter. I have no access to these, however, so cannot verify it.</p>
+  <h3>Enabling URL Rewriting</h3>
+  <h4>If you're hosted:</h4>
+  <p>To test what server you are hosted on, you may also upload this <strong><a href="http://users.tpg.com.au/staer/Downloads/phpinfo.zip">phpinfo.php</a></strong> 
+    file to your site and access it. It will spew out a long detailed list of 
+    your PHP setup, including what server you are hosted on. </p>
+  <p>Go to '<strong>Find</strong>' in you browser, usually under '<strong>Edit</strong>', 
+    and enter '<strong>SERVER_SOFTWARE</strong>'. It must be an Apache server.<br>
+  It can't tell you if mod_rewrite is enabled, although if it's a UNIX/Linux server, 
+  you can tell if it has been compiled with the module. See below on how to test 
+  if it's enabled and working. </p>
+  <p>If you're hosted, you only need worry about the <span class="courier-bold">.htaccess</span> 
+    file being placed in the site root as far as URL rewriting is concerned, and 
+    ensuring the <span class="courier-bold">functions.php</span> file sits alongside 
+    the theme.php file. </p>
+  <p>You may want to have your site set to a different theme as a general precaution 
+    when testing new themes. See next section.</p>
+  <p>&nbsp;</p>
+<h4>If you have your own Apache server with MOD_REWRITE:</h4>
+<p>Edit the main configuration file, <span class="courier-bold">httpd.conf</span>, 
+  in a text editor (not word processor), and search for <span class="courier-bold">rewrite_module</span>. 
+</p>
+<p>If you use <strong>Apache 1.3</strong>, make sure these two lines are uncommented 
+  (no hash # in front)</p>
+<pre>LoadModule rewrite_module modules/mod_rewrite.so</pre>
+<p>and a little further down,</p>
+<pre>AddModule mod_rewrite.c</pre>
+<p><strong>Apache2</strong> only has the first line. </p>
+<p>The path must point to the server's modules directory, and the file <span class="courier-bold">mod_rewrite.so</span> 
+  must be in there. Once you restart the server, mod_rewrite should be enabled. 
+</p>
+<p>It is recommended for performance that once you have confirmed the rewrite 
+  rules work in the <span class="courier-bold">.htaccess</span> file in the next 
+  section, you move them into <span class="courier-bold">httpd.conf</span>, as 
+  by necessity processing of <span class="courier">.htaccess</span> files comes 
+  a long way down the line, after all URLs have been converted to absolute file 
+  paths on the server. So to process the rewrite rules, the paths have to be retranslated 
+  into URLs, a relatively slow process.</p>
+<h5> Adding the rewrite rules to your main config file:</h5>
+<p>Copy the <span class="courier-bold">.htaccess</span> file to the Apache configuration 
+  directory and rename it something like <span class="courier-bold">ShortURL.conf</span>,<br>
+  for instance<span class="courier"> </span><span class="courier-bold">/etc/apache/conf/ShortURL.conf</span> 
+  or whatever your Apache config directory is.</p>
+<p>In an appropriate place in <span class="courier-bold">httpd.conf</span> (not 
+  nested within another <span class="courier">Directory</span> directive), add:</p>
+<pre>&lt;Directory &quot;C:/Apache/htdocs/nuke&quot;&gt;
+   Options Indexes FollowSymLinks Includes
+   AllowOverride All
+   order allow,deny
+   allow from all
+   RewriteEngine On
+   RewriteRule ^$ index.php 
+   Include conf/ShortURLs.conf 
+&lt;/Directory&gt;</pre>
+<p>substituting the path to your Postnuke site, eg </p>
+<pre>&lt;Directory &quot;/var/www/vhosts/mysite/htdocs&quot;&gt;</pre>
+  <p>The sample RewriteRule above simply rewrites <span class="courier">www.sitename.com/</span> 
+    to <span class="courier">www.sitename.com/index.php. It is optional, but if 
+    you desire another default page for the PostNuke site root, you can set it 
+    here. For instance, </span></p>
+  <pre>RewriteRule ^$ nuke/index.php </pre>
+  <p>would invisibly convert <strong>www.sitename.com/</strong> to <strong>www.sitename.com/nuke/index.php</strong>.</p>
+  <p>Please note if you have set the <span class="courier-bold">RewriteEngine 
+    On</span> directive in the main <span class="courier-bold">httpd.conf</span> 
+    file, you should comment it out or remove it in the new <span class="courier-bold">ShortURL.conf</span> 
+    file, as well as ensuring the <span class="courier-bold">RewriteOptions</span> 
+    directive isn't set:</p>
+<pre># RewriteEngine On 
+# RewriteOptions 'inherit'</pre>
+<p>If you're using Virtual hosts, you can set the directive </p>
+<pre>RewriteOptions 'inherit'</pre>
+<p> at the top of the virtual host section to inherit rules put in the main part 
+  of <span class="courier-bold">httpd.conf</span>. Putting this directive in the 
+  main section will cause a server error, as there's nowhere to inherit from.</p>
+<p></p>
+  <h3>Enabling Short URLs</h3>
+  <ol>
+    <li>Firstly check the rewrite engine is working by <strong>uploading the <span class="courier">.htaccess</span> 
+      file</strong> containing the rewrite rules to your Postnuke site root next 
+      to the main index.php file, and try entering some simple URLs in your browser 
+      at your site root, like <strong>www.mysite.com/FAQ.phtml</strong> (whatever 
+      your site's URL) or <strong>News.phtml</strong>. If it directs you to the 
+      FAQ or main News section respectively, it's enabled and functioning. If 
+      it doesn't, then you'll get a 404 Not Found error. Contact your host and 
+      ask if they have an Apache server with the mod_rewrite module installed, 
+      if they allow<span class="courier"> .htaccess</span> files, and if it can 
+      be enabled for you. Otherwise, you can go ahead and enable it in your theme. 
+    </li>
+    <li> Edit the <span class="courier-bold">theme.php</span> file in a text or 
+      HTML editor and near the top of the theme (above the themeheader function) 
+      ensure the variable <span class="courier-bold">$ShortURLs</span> is set 
+      to <span class="courier-bold">true</span>:<br>
+      <div class="highlight"><strong>$ShortURLs = true;</strong> // enable/disable 
+        short URL functionality. Value: true/false</div>
+      Anything after // is a comment, and is inconsequential. It is ignored by 
+      PHP.<br>
+      To turn ShortURLs off again, simply set the value to <span class="highlight"><strong>false</strong></span></li>
+    <li>Once the resaved theme is copied/uploaded to your site, refresh your browser, 
+      and the short URLs should be in effect. <br>
+      Or if you prefer, though not necessary but a good practice when trying out 
+      new (moreso old) themes; while using another theme, you can test the new 
+      theme by entering<span class="courier-bold"> www.yoursite.com/index.php?theme=ThemeName</span> 
+      in the URL bar, where <span class="courier-bold">ThemeName</span> is the 
+      new theme, paying attention to correct case of the name. Unix servers are 
+      very particular, and using a lowercase letter where uppercase is required 
+      will get you an error. <br>
+      Hover over some links and see if they've been converted to ShortURLs. That 
+      means the <span class="courier-bold">functions.php</span> rewrite function 
+      is working (the <span class="courier">functions.php</span> should be alongside 
+      the <span class="courier">theme.php</span> file). Try clicking on a few 
+      links to see if you are redirected to the correct page.<br>
+    </li>
+  </ol>
+  <p>If the links are converted, but clicking them gets a 404 error, referring 
+    to the ShortURL and not the full URL, then the URL rewriting module isn't 
+    enabled for your site. The server must be set to allow per-directory overrides 
+    (allowing users to set <span class="courier">.htaccess</span> files), and 
+    the file must be readable by the server. As mentioned above, contact your 
+    host and ask if they have an Apache server with the mod_rewrite module installed, 
+    if so can it can be enabled for you, and if they allow<span class="courier"> 
+    .htaccess</span> files. </p>
+  <p>It should be noted that for 'new-style' modules, whereas links in sideblocks 
+    should work, their output to the center column can't be captured for processing 
+    at this stage due to the way it's implemented.</p>
+  <h3>Short URLs</h3>
+  <p>A list of the ShortURLs produced:</p>
+  <p>(X being a number, square brackets represent a value)</p>
+<table border="0" align="center" cellspacing="0" bgcolor="#A198F1" class="list">
+  <tbody>
+    <tr> 
+      <td class="top"> [modulename].phtml</td>
+      <td class="top">old-style modules, eg News.phtml</td>
+    </tr>
+    <tr> 
+      <td> [module]-main.phtml</td>
+      <td>new-style modules like Postcalendar-main.phtml</td>
+    </tr>
+    <tr> 
+      <td>ArticleXX.phtml</td>
+      <td>where XX is the story ID</td>
+    </tr>
+    <tr> 
+      <td>ArticleXX-[mode]-orderX-thresholdX.phtml</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr> 
+      <td>TopicXX[all].phtml</td>
+      <td>where XX is the topid ID, 'all' for all topics listing. </td>
+    </tr>
+    <tr> 
+      <td>CategoryXX.phtml </td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr> 
+      <td>Sections-articleXX.phtml </td>
+      <td>&nbsp; </td>
+    </tr>
+    <tr> 
+      <td>FAQ-CategoryX-[Category]-ParentX-myfaq-[yes].phtml</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr> 
+      <td> Search-[ArticleAuthor]-[overview]-[ActiveStories]-[TopicID].phtml<br> 
+      </td>
+      <td>&nbsp; </td>
+    </tr>
+    <tr> 
+      <td> SendArticleXX.html <br> </td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr> 
+      <td> PrintArticleXX.html</td>
+      <td>&nbsp; </td>
+    </tr>
+    <tr> 
+      <td>PostCalendar-[day]-[month]-[year].phtml</td>
+      <td>For the postCalendar module, where the date is the day you want to enter 
+        an event for.</td>
+    </tr>
+    <tr>
+      <td>PostCalendar-AddEvent-[day]-[month]-[year].phtml</td>
+      <td>PostCalendar events</td>
+    </tr>
+    <tr> 
+      <td>PNphpBB2-[type]-(t [topidID] or f [forumID] or c [categoryID]).phtml 
+      </td>
+        <td>For PNphpBB2 v1.1 and up (not &lt;=v1.0) </td>
+    </tr>
+  </tbody>
+</table>
+  <h3>Acknowledgements</h3>
+<p align="center">A copy of this document can be found <a href="http://users.tpg.com.au/staer/ShortURLs.html">here</a>. 
+  </p>
+<p><strong>Based on the work of Karateka</strong> </p>
+  <p class="courier"><a href="http://news.postnuke.com/modules.php?op=modload&name=News&file=article&sid=1804&mode=thread(%22der=0&thold=0">http://news.postnuke.com/modules.php?op=modload&amp;name=News&amp;file=article&amp;sid=1804&amp;mode=thread&amp;order=0&amp;thold=0</a></p>
+<p>&nbsp;</p>
+<p><strong>and ColdRolledSteel</strong></p>
+<p class="courier"><a href="http://www.mtrad.com/SimpleURL.php">http://www.mtrad.com/SimpleURL.php</a></p>
+<p>&nbsp;</p>
+<p>See also:</p>
+<p><a href="http://forums.postnuke.com/index.php?name=PNphpBB2&file=viewtopic&t=10769&start=0">http://forums.postnuke.com/index.php?name=PNphpBB2&amp;file=viewtopic&amp;t=10769&amp;start=0</a></p>
+<p>for instructions on converting regular PostNuke 0.7x themes.</p>
+<p>&nbsp;</p>
+  <p><em><strong>Martin St&aelig;r Andersen</strong></em><br>
+    Last updated 2004/04/28</p>
+  <p>&nbsp;</p>
+</DIV>
+</body>
+</html>
