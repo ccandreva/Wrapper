@@ -1,3 +1,23 @@
+
+
+Wrapper 1.0 devel snapshot
+
+This snapshot is an update of NukeWrapper for Zikula. The changes are:
+1) Rename module from NukeWrapper to Wrapper
+2) Rename config file to Wrapper.conf.php, and have it looked for in the
+   Zikula /config/ directory
+3) An a type=file function for wrapping files without modifying them. This
+   is intended to allow Zikula permissions to protect  any file that is
+   available for download. 
+4) Add a FileDirs array to control what directories files may be downloaded
+   from.
+
+To truely protect files, they must be blocked for direct access via the
+system .htaccess file
+
+Everything else should be the same.
+
+
 This package contains: 
 1. The NukeWrapper standalone script and module; 
 2. Optional htaccess files for ShortURLs (one for redirecting any HTML file in a PostNuke 
