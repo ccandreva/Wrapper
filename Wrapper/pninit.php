@@ -28,14 +28,14 @@
 // ----------------------------------------------------------------------
 
 /****************************************************************************
- * initialise the NukeWrapper module
+ * initialise the Wrapper module
  * This function is only ever called once during the lifetime of a particular
  * module instance
  */
-function NukeWrapper_init() {
+function Wrapper_init() {
 return true; // temporarily disabled
     // Get old configuration in configuration file
-    if (is_file("NukeWrapper.conf.php")) include("NukeWrapper.conf.php"); 
+    if (is_file("Wrapper.conf.php")) include("Wrapper.conf.php"); 
     // If array list from standalone wrap.php file, convert to regular expression syntax. 
     if (is_array($ValidExp1)) {
 	$ValidExp1 = str_replace(".", "\.", implode("|", $ValidExp1)); 
@@ -56,23 +56,23 @@ return true; // temporarily disabled
 
 ////////// General global settings //////////
 /* Can make config data module vars */
-    $NukeWrappertable  = &$pntable['NukeWrapper_settings'];
-    $NukeWrappercolumn = &$pntable['NukeWrapper_settings_column'];
+    $Wrappertable  = &$pntable['Wrapper_settings'];
+    $Wrappercolumn = &$pntable['Wrapper_settings_column'];
 
-    $sql = "CREATE TABLE $NukeWrappertable (
-            $NukeWrappercolumn[AllowPHP] tinyint(1) NOT NULL default '".(isset($AllowPHP)?$AllowPHP:"1")."', 
-            $NukeWrappercolumn[AllowExtLink] tinyint(1) NOT NULL default '".(isset($AllowExtLink)?$AllowExtLink:"1")."', 
-            $NukeWrappercolumn[AllowURLs] tinyint(1) NOT NULL default '".(isset($AllowURLs)?$AllowURLs:"1")."', 
-            $NukeWrappercolumn[FixLinks] tinyint(1) NOT NULL default '".(isset($FixLinks)?$FixLinks:"1")."', 
-            $NukeWrappercolumn[WrapLinks] tinyint(1) NOT NULL default '".(isset($WrapLinks)?$WrapLinks:"1")."',  
-            $NukeWrappercolumn[UseTables] tinyint(1) NOT NULL default '".(isset($UseTables)?$UseTables:"1")."', 
-            $NukeWrappercolumn[Layout] tinyint(1) NOT NULL default '".(isset($Layout)?$Layout:"0")."',   
-            $NukeWrappercolumn[ShowLink] tinyint(1) NOT NULL default '".(isset($ShowLink)?(int)$ShowLink:"1")."',  
-            $NukeWrappercolumn[AutoResize] tinyint(1) NOT NULL default '".(isset($AutoResize)?$AutoResize:"1")."',  
-            $NukeWrappercolumn[StartPage] varchar(100) NOT NULL default '".(isset($StartPage)?pnVarPrepForStore($StartPage):"")."',  
-            $NukeWrappercolumn[ValidExp1] varchar(100) NOT NULL default '".(isset($ValidExp1)?pnVarPrepForStore($ValidExp1):pnVarPrepForStore("\.htm|\.shtml|\.txt"))."',
-            $NukeWrappercolumn[ValidExp2] varchar(100) NOT NULL default '".(isset($ValidExp2)?pnVarPrepForStore($ValidExp2):pnVarPrepForStore("\.php|\.phtml|\.cgi|\.asp|\.iasp|\.jsp|\.cfm|\.pl|\.adp"))."',
-            $NukeWrappercolumn[Debug] tinyint(1) NOT NULL default '".(isset($WrapDebug)?$WrapDebug:"0")."')";    
+    $sql = "CREATE TABLE $Wrappertable (
+            $Wrappercolumn[AllowPHP] tinyint(1) NOT NULL default '".(isset($AllowPHP)?$AllowPHP:"1")."', 
+            $Wrappercolumn[AllowExtLink] tinyint(1) NOT NULL default '".(isset($AllowExtLink)?$AllowExtLink:"1")."', 
+            $Wrappercolumn[AllowURLs] tinyint(1) NOT NULL default '".(isset($AllowURLs)?$AllowURLs:"1")."', 
+            $Wrappercolumn[FixLinks] tinyint(1) NOT NULL default '".(isset($FixLinks)?$FixLinks:"1")."', 
+            $Wrappercolumn[WrapLinks] tinyint(1) NOT NULL default '".(isset($WrapLinks)?$WrapLinks:"1")."',  
+            $Wrappercolumn[UseTables] tinyint(1) NOT NULL default '".(isset($UseTables)?$UseTables:"1")."', 
+            $Wrappercolumn[Layout] tinyint(1) NOT NULL default '".(isset($Layout)?$Layout:"0")."',   
+            $Wrappercolumn[ShowLink] tinyint(1) NOT NULL default '".(isset($ShowLink)?(int)$ShowLink:"1")."',  
+            $Wrappercolumn[AutoResize] tinyint(1) NOT NULL default '".(isset($AutoResize)?$AutoResize:"1")."',  
+            $Wrappercolumn[StartPage] varchar(100) NOT NULL default '".(isset($StartPage)?pnVarPrepForStore($StartPage):"")."',  
+            $Wrappercolumn[ValidExp1] varchar(100) NOT NULL default '".(isset($ValidExp1)?pnVarPrepForStore($ValidExp1):pnVarPrepForStore("\.htm|\.shtml|\.txt"))."',
+            $Wrappercolumn[ValidExp2] varchar(100) NOT NULL default '".(isset($ValidExp2)?pnVarPrepForStore($ValidExp2):pnVarPrepForStore("\.php|\.phtml|\.cgi|\.asp|\.iasp|\.jsp|\.cfm|\.pl|\.adp"))."',
+            $Wrappercolumn[Debug] tinyint(1) NOT NULL default '".(isset($WrapDebug)?$WrapDebug:"0")."')";    
             
     $dbconn->Execute($sql);
 /* Need to have INSERT too */
@@ -83,12 +83,12 @@ return true; // temporarily disabled
         return false;
     }
 ////////// HTMLdirs allowed static page directories //////////
-    $NukeWrappertable = $pntable['NukeWrapper_htmldirs'];
-    $NukeWrappercolumn = &$pntable['NukeWrapper_htmldirs_column'];
+    $Wrappertable = $pntable['Wrapper_htmldirs'];
+    $Wrappercolumn = &$pntable['Wrapper_htmldirs_column'];
 
-    $sql = "CREATE TABLE $NukeWrappertable (
-            $NukeWrappercolumn[id] int unsigned NOT NULL auto_increment,    
-            $NukeWrappercolumn[directory] varchar(255) NOT NULL default '',   
+    $sql = "CREATE TABLE $Wrappertable (
+            $Wrappercolumn[id] int unsigned NOT NULL auto_increment,    
+            $Wrappercolumn[directory] varchar(255) NOT NULL default '',   
             PRIMARY KEY(id))";
     $dbconn->Execute($sql);
 
@@ -99,7 +99,7 @@ return true; // temporarily disabled
     if (is_array($HTMLdirs) && !empty($HTMLdirs)) { // Insert $HTMLdirs array into database
     	$sql="";
     	foreach($HTMLdirs as $dir) {
-    		$sql .= "INSERT INTO $NukeWrappertable 
+    		$sql .= "INSERT INTO $Wrappertable 
     		        VALUES ( NULL, '".pnVarPrepForStore($dir)."'); ";
         }
     	$dbconn->Execute($sql);
@@ -109,12 +109,12 @@ return true; // temporarily disabled
     	}
     }
 ////////// PHPdirs allowed dynamic script directories //////////
-    $NukeWrappertable = $pntable['NukeWrapper_phpdirs'];
-    $NukeWrappercolumn = &$pntable['NukeWrapper_phpdirs_column'];
+    $Wrappertable = $pntable['Wrapper_phpdirs'];
+    $Wrappercolumn = &$pntable['Wrapper_phpdirs_column'];
 
-    $sql = "CREATE TABLE $NukeWrappertable (
-            $NukeWrappercolumn[id] int unsigned NOT NULL auto_increment,    
-            $NukeWrappercolumn[directory] varchar(255) NOT NULL default '',   
+    $sql = "CREATE TABLE $Wrappertable (
+            $Wrappercolumn[id] int unsigned NOT NULL auto_increment,    
+            $Wrappercolumn[directory] varchar(255) NOT NULL default '',   
             PRIMARY KEY(id))";
     $dbconn->Execute($sql);
 
@@ -125,7 +125,7 @@ return true; // temporarily disabled
     if (is_array($PHPdirs) && !empty($PHPdirs)) { // Insert $PHPdirs array into database
     	$sql="";
     	foreach($PHPdirs as $dir) {
-    		$sql .= "INSERT INTO $NukeWrappertable 
+    		$sql .= "INSERT INTO $Wrappertable 
     		        VALUES ( NULL, '".pnVarPrepForStore($dir)."'); ";
         }
     	$dbconn->Execute($sql);
@@ -135,7 +135,7 @@ return true; // temporarily disabled
     	}
     } 
     else { 
-    	$sql = "INSERT INTO $NukeWrappertable 
+    	$sql = "INSERT INTO $Wrappertable 
     		        VALUES ( NULL, '/PHPpages')";
   	$dbconn->Execute($sql);
     	if ($dbconn->ErrorNo() != 0) {
@@ -144,12 +144,12 @@ return true; // temporarily disabled
     	}
     }
 ////////// Allow list //////////
-    $NukeWrappertable = $pntable['NukeWrapper_allow']; // URL allow rules
-    $NukeWrappercolumn = &$pntable['NukeWrapper_allow_column'];
+    $Wrappertable = $pntable['Wrapper_allow']; // URL allow rules
+    $Wrappercolumn = &$pntable['Wrapper_allow_column'];
 
-    $sql = "CREATE TABLE $NukeWrappertable (
-            $NukeWrappercolumn[id] int unsigned NOT NULL auto_increment,    
-            $NukeWrappercolumn[allow] varchar(40) NOT NULL default '',   
+    $sql = "CREATE TABLE $Wrappertable (
+            $Wrappercolumn[id] int unsigned NOT NULL auto_increment,    
+            $Wrappercolumn[allow] varchar(40) NOT NULL default '',   
             PRIMARY KEY(id))";
     $dbconn->Execute($sql);
 
@@ -160,7 +160,7 @@ return true; // temporarily disabled
     if (is_array($URLs['allow']) && !empty($URLs['allow'])) { // Insert $URLs['allow'] array into database
     	$sql="";
     	foreach($URLs['allow'] as $allow) {
-    		$sql .= "INSERT INTO $NukeWrappertable 
+    		$sql .= "INSERT INTO $Wrappertable 
     		        VALUES ( NULL, '".pnVarPrepForStore($allow)."'); ";
         }
     	$dbconn->Execute($sql);
@@ -170,12 +170,12 @@ return true; // temporarily disabled
     	}
     } 
 ////////// Deny list //////////
-    $NukeWrappertable = $pntable['NukeWrapper_deny']; // URL deny rules
-    $NukeWrappercolumn = &$pntable['NukeWrapper_deny_column'];
+    $Wrappertable = $pntable['Wrapper_deny']; // URL deny rules
+    $Wrappercolumn = &$pntable['Wrapper_deny_column'];
 
-    $sql = "CREATE TABLE $NukeWrappertable (
-            $NukeWrappercolumn[id] int unsigned NOT NULL auto_increment,    
-            $NukeWrappercolumn[deny] varchar(40) NOT NULL default '',   
+    $sql = "CREATE TABLE $Wrappertable (
+            $Wrappercolumn[id] int unsigned NOT NULL auto_increment,    
+            $Wrappercolumn[deny] varchar(40) NOT NULL default '',   
             PRIMARY KEY(id))";
     $dbconn->Execute($sql);
 
@@ -186,7 +186,7 @@ return true; // temporarily disabled
     if (is_array($URLs['deny']) && !empty($URLs['deny'])) { // Insert $URLs['deny'] array into database
     	$sql="";
     	foreach($URLs['allow'] as $deny) {
-    		$sql .= "INSERT INTO $NukeWrappertable 
+    		$sql .= "INSERT INTO $Wrappertable 
     		        VALUES ( NULL, '".pnVarPrepForStore($deny)."'); ";
         }
     	$dbconn->Execute($sql);
@@ -196,14 +196,14 @@ return true; // temporarily disabled
     	}
     } 
 ////////// URL keywords/shortcuts: array('key' => 'url'); //////////
-    $NukeWrappertable = $pntable['NukeWrapper_wrapurl']; 
-    $NukeWrappercolumn = &$pntable['NukeWrapper_wrapurl_column'];
+    $Wrappertable = $pntable['Wrapper_wrapurl']; 
+    $Wrappercolumn = &$pntable['Wrapper_wrapurl_column'];
 
-    $sql = "CREATE TABLE $NukeWrappertable (   
-            $NukeWrappercolumn[key] varchar(30) NOT NULL default '' unique,    
-            $NukeWrappercolumn[url] varchar(100) NOT NULL default '', 
+    $sql = "CREATE TABLE $Wrappertable (   
+            $Wrappercolumn[key] varchar(30) NOT NULL default '' unique,    
+            $Wrappercolumn[url] varchar(100) NOT NULL default '', 
             PRIMARY KEY(key))";
-       //     $NukeWrappercolumn[id] int unsigned NOT NULL auto_increment, 
+       //     $Wrappercolumn[id] int unsigned NOT NULL auto_increment, 
     $dbconn->Execute($sql);
 
     if ($dbconn->ErrorNo() != 0) {
@@ -213,7 +213,7 @@ return true; // temporarily disabled
     if (is_array($wrapUrl) && !empty($wrapUrl)) { // Insert $$wrapUrl array into database
     	$sql="";
     	foreach($wrapUrl as $key => $url) {
-    		$sql .= "INSERT INTO $NukeWrappertable 
+    		$sql .= "INSERT INTO $Wrappertable 
     		        VALUES (  '".pnVarPrepForStore($key)."', '".pnVarPrepForStore($url)."'); ";
         } // NULL,
     	$dbconn->Execute($sql);
@@ -223,15 +223,15 @@ return true; // temporarily disabled
     	}
     } 
 ////////// WrapIn/WrapOut Replace rules //////////
-    $NukeWrappertable = $pntable['NukeWrapper_replace']; // 
-    $NukeWrappercolumn = &$pntable['NukeWrapper_replace_column'];
+    $Wrappertable = $pntable['Wrapper_replace']; // 
+    $Wrappercolumn = &$pntable['Wrapper_replace_column'];
 
-    $sql = "CREATE TABLE $NukeWrappertable (   
-            $NukeWrappercolumn[key] varchar(30) NOT NULL default '' unique,    
-            $NukeWrappercolumn[in] varchar(255) NOT NULL default '',    
-            $NukeWrappercolumn[out] varchar(255) NOT NULL default '', 
+    $sql = "CREATE TABLE $Wrappertable (   
+            $Wrappercolumn[key] varchar(30) NOT NULL default '' unique,    
+            $Wrappercolumn[in] varchar(255) NOT NULL default '',    
+            $Wrappercolumn[out] varchar(255) NOT NULL default '', 
             PRIMARY KEY(key))"; // key
-        //    $NukeWrappercolumn[id] int unsigned NOT NULL auto_increment, 
+        //    $Wrappercolumn[id] int unsigned NOT NULL auto_increment, 
     $dbconn->Execute($sql);
 
     if ($dbconn->ErrorNo() != 0) {
@@ -242,7 +242,7 @@ return true; // temporarily disabled
     	$sql="";
     	foreach($wrapIn as $key => $value) {
     		foreach($value as $value2) {
-    			$sql .= "INSERT INTO $NukeWrappertable (key, in, out)
+    			$sql .= "INSERT INTO $Wrappertable (key, in, out)
     		       		VALUES (
      					'".pnVarPrepForStore($key)."',
      					'".pnVarPrepForStore($value2)."',
@@ -257,7 +257,7 @@ return true; // temporarily disabled
     	}
     } 
     else { 
-    	$sql = "INSERT INTO $NukeWrappertable (key, in, out)
+    	$sql = "INSERT INTO $Wrappertable (key, in, out)
     	        VALUES (NULL, 'all', '', '')"; // id, 
   	$dbconn->Execute($sql);
     	if ($dbconn->ErrorNo() != 0) {
@@ -266,15 +266,15 @@ return true; // temporarily disabled
     	}
     }
 ////////// WrapIn2/WrapOut2 Regular Expression replace rules //////////
-    $NukeWrappertable = $pntable['NukeWrapper_RegEx_replace']; // 
-    $NukeWrappercolumn = &$pntable['NukeWrapper_RegEx_replace_column'];
+    $Wrappertable = $pntable['Wrapper_RegEx_replace']; // 
+    $Wrappercolumn = &$pntable['Wrapper_RegEx_replace_column'];
 
-    $sql = "CREATE TABLE $NukeWrappertable ( 
-            $NukeWrappercolumn[key] varchar(20) NOT NULL default '' unique,    
-            $NukeWrappercolumn[in] varchar(255) NOT NULL default '',    
-            $NukeWrappercolumn[out] varchar(255) NOT NULL default '', 
+    $sql = "CREATE TABLE $Wrappertable ( 
+            $Wrappercolumn[key] varchar(20) NOT NULL default '' unique,    
+            $Wrappercolumn[in] varchar(255) NOT NULL default '',    
+            $Wrappercolumn[out] varchar(255) NOT NULL default '', 
             PRIMARY KEY(key))"; 
-        //    $NukeWrappercolumn[id] int unsigned NOT NULL auto_increment,   // key id
+        //    $Wrappercolumn[id] int unsigned NOT NULL auto_increment,   // key id
     $dbconn->Execute($sql);
 
     if ($dbconn->ErrorNo() != 0) {
@@ -285,7 +285,7 @@ return true; // temporarily disabled
     	$sql="";
     	foreach($wrapIn2 as $key => $value) {
     		foreach($value as $value2) {
-    			$sql .= "INSERT INTO $NukeWrappertable (key, in, out)
+    			$sql .= "INSERT INTO $Wrappertable (key, in, out)
     		       		VALUES (  
      					'".pnVarPrepForStore($key)."',
      					'".pnVarPrepForStore($value2)."',
@@ -300,7 +300,7 @@ return true; // temporarily disabled
     	}
     } 
     else { 
-    	$sql = "INSERT INTO $NukeWrappertable (key, in, out)
+    	$sql = "INSERT INTO $Wrappertable (key, in, out)
     	        VALUES ('all', '', '')"; // id, NULL, 
   	$dbconn->Execute($sql);
     	if ($dbconn->ErrorNo() != 0) {
@@ -314,17 +314,17 @@ return true; // temporarily disabled
     // than just left blank, this helps the user-side code and means that
     // there doesn't need to be a check to see if the variable is set in
     // the rest of the code as it always will be
-    pnModSetVar('NukeWrapper', 'StartPage', '');
+    pnModSetVar('Wrapper', 'StartPage', '');
 
     // Initialisation successful
     return true;
 }
 
 /****************************************************
- * upgrade the NukeWrapper module from an old version
+ * upgrade the Wrapper module from an old version
  * This function can be called multiple times
  */
-function NukeWrapper_upgrade($oldversion) {
+function Wrapper_upgrade($oldversion) {
 return true; // temporarily disabled
 echo "Old version: $oldversion  ";
     // Upgrade dependent on old version number
@@ -348,16 +348,16 @@ echo "Old version: $oldversion  ";
             // modules
             // This code could be moved outside of the switch statement if
             // multiple upgrades need it
- //           $NukeWrappertable = $pntable['NukeWrapper'];
- //           $NukeWrappercolumn = &$pntable['NukeWrapper_column'];
+ //           $Wrappertable = $pntable['Wrapper'];
+ //           $Wrappercolumn = &$pntable['Wrapper_column'];
 
             // Add a column to the table - the formatting here is not
             // mandatory, but it does make the SQL statement relatively easy
             // to read.  Also, separating out the SQL statement from the
             // Execute() command allows for simpler debug operation if it is
             // ever needed
- //           $sql = "ALTER TABLE $NukeWrappertable
- //                   ADD $NukeWrappercolumn[number] int(5) NOT NULL default 0";
+ //           $sql = "ALTER TABLE $Wrappertable
+ //                   ADD $Wrappercolumn[number] int(5) NOT NULL default 0";
  //           $dbconn->Execute($sql);
 
             // Check for an error with the database code, and if so set an
@@ -371,7 +371,7 @@ echo "Old version: $oldversion  ";
             // recurse the upgrade to handle any other upgrades that need
             // to be done.  This allows us to upgrade from any version to
             // the current version with ease
-//            return NukeWrapper_upgrade(1.0);
+//            return Wrapper_upgrade(1.0);
 //        case 1.0:
             // Code to upgrade from version 1.0 goes here
 //            break;
@@ -385,11 +385,11 @@ echo "Old version: $oldversion  ";
 }
 
 /****************************************************************************
- * Delete the NukeWrapper module
+ * Delete the Wrapper module
  * This function is only ever called once during the lifetime of a particular
  * module instance
  */
-function NukeWrapper_delete() { 
+function Wrapper_delete() { 
 return true; // temporarily disabled
     // Get datbase setup - note that both pnDBGetConn() and pnDBGetTables()
     // return arrays but we handle them differently.  For pnDBGetConn()
@@ -399,41 +399,41 @@ return true; // temporarily disabled
     list($dbconn) = pnDBGetConn();
     $pntable = pnDBGetTables();
 
-    $dbconn->Execute("DROP TABLE $pntable[NukeWrapper_settings]");
+    $dbconn->Execute("DROP TABLE $pntable[Wrapper_settings]");
     if ($dbconn->ErrorNo() != 0) {
         return false;
     }
-   $dbconn->Execute("DROP TABLE $pntable[NukeWrapper_htmldirs]");
+   $dbconn->Execute("DROP TABLE $pntable[Wrapper_htmldirs]");
     if ($dbconn->ErrorNo() != 0) {
         return false;
     }
-   $dbconn->Execute("DROP TABLE $pntable[NukeWrapper_phpdirs]");
+   $dbconn->Execute("DROP TABLE $pntable[Wrapper_phpdirs]");
     if ($dbconn->ErrorNo() != 0) {
         return false;
     }
-   $dbconn->Execute("DROP TABLE $pntable[NukeWrapper_allow]");
+   $dbconn->Execute("DROP TABLE $pntable[Wrapper_allow]");
     if ($dbconn->ErrorNo() != 0) {
         return false;
     }
-   $dbconn->Execute("DROP TABLE $pntable[NukeWrapper_deny]");
+   $dbconn->Execute("DROP TABLE $pntable[Wrapper_deny]");
     if ($dbconn->ErrorNo() != 0) {
         return false;
     }
-   $dbconn->Execute("DROP TABLE $pntable[NukeWrapper_wrapurl]");
+   $dbconn->Execute("DROP TABLE $pntable[Wrapper_wrapurl]");
     if ($dbconn->ErrorNo() != 0) {
         return false;
     }
-   $dbconn->Execute("DROP TABLE $pntable[NukeWrapper_replace]");
+   $dbconn->Execute("DROP TABLE $pntable[Wrapper_replace]");
     if ($dbconn->ErrorNo() != 0) {
         return false;
     }
-   $dbconn->Execute("DROP TABLE $pntable[NukeWrapper_RegEx_replace]");
+   $dbconn->Execute("DROP TABLE $pntable[Wrapper_RegEx_replace]");
     if ($dbconn->ErrorNo() != 0) {
         return false;
     }
 
     // Delete any module variables
-    pnModDelVar('NukeWrapper', 'StartPage');
+    pnModDelVar('Wrapper', 'StartPage');
 
 
     // Deletion successful
