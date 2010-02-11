@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>NukeWrapper release notes</title>
+<title>Wrapper release notes</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <!-- <link href="style.css" rel="stylesheet" type="text/css"> -->
 <style type="text/css">
@@ -143,7 +143,7 @@ table.border TD {
 </head>
 
 <body>
-<h2>NukeWrapper 2 notes</h2>
+<h2>Wrapper 2 notes</h2>
 <div id="content"> 
   <h3>Section Index:</h3>
   <DIV id="SectionIndex">
@@ -188,9 +188,9 @@ table.border TD {
   
   <h3><a name="PackageContains"></a>1. This package contains:</h3>  
   <ol>
-    <li>The <strong>NukeWrapper</strong> standalone script and module;</li>
+    <li>The <strong>Wrapper</strong> standalone script and module;</li>
     <li>Optional <strong>htaccess files</strong> for ShortURLs (one for redirecting 
-      any HTML file in a PostNuke site root to NukeWrapper, the other for ShortURL 
+      any HTML file in a PostNuke site root to Wrapper, the other for ShortURL 
       enabled themes with the addition of the NW rewrite rules). Rename desired 
       htaccess file to <strong>.htaccess</strong> and place in the PostNuke root. 
       If an htaccess file already exists, the content may be combined, though 
@@ -207,12 +207,12 @@ table.border TD {
       etc, you may choose to disable it by either removing or renaming the script. 
       <br>
       If you merely want to use transparency with PNGs, you may prefer to use 
-      the inbuilt NukeWrapper parser, which applies the Microsoft AlphaImageLoader 
+      the inbuilt Wrapper parser, which applies the Microsoft AlphaImageLoader 
       filter to images on the page (but <strong>not</strong> to linked stylesheets).<br>
       See <a href="http://dean.edwards.name/IE7/">http://dean.edwards.name/IE7/</a><br>
       <strong><em>Location:</em></strong><em> includes/ie7/ie7-standard-p.js</em></li>
     <li><strong>3 Xanthia plugins</strong> for PostNuke 0.75 up for applying 
-      the above TitleHack, NukeWrapper metatags, and IE7 JavaScript library. To disable any of these fatures 
+      the above TitleHack, Wrapper metatags, and IE7 JavaScript library. To disable any of these fatures 
       in Xanthia themes, such as IE7, simply don't put the tag in.<br>
       See<strong> <a href="#headerXanthia">tech notes</a></strong> below for how 
       to install in a Xanthia theme.<br>
@@ -220,14 +220,14 @@ table.border TD {
     </li>
   </ol>
   <h3><a name="Description"></a>2. Description:</h3>
-  <p>Basically, NukeWrapper is an HTML wrapper, which means it will wrap any webpage 
+  <p>Basically, Wrapper is an HTML wrapper, which means it will wrap any webpage 
     you point it at into a PostNuke site, convenient for when you design pages 
     in an HTML editor like Dreamweaver with tables, layers, images, Flash etc, 
     and want to have them integrated into PostNuke, or for a community site where 
     contributors are nontechnical but know enough to use Frontpage or even (Gahh!) 
     Word to produce an online newsletter with images etc. This is where HTML wrappers 
     come in. </p>
-  <p>NukeWrapper embeds HTML, PHP, text, other user-allowed script filetypes, 
+  <p>Wrapper embeds HTML, PHP, text, other user-allowed script filetypes, 
     and external webpages into PostNuke by &quot;wrapping&quot; PostNuke around 
     them. Local files are incorporated so as to use the site's themes and stylesheets, 
     without the double-scrollbars you get from some modules using iFrames. Document-relative 
@@ -238,8 +238,8 @@ table.border TD {
     code execution, and hard spaces are put in to maintain indentation and formatting. 
     This makes it convenient for having code listings of, say, HTML. <br>
     External URLs are placed in an iFrame, but unlike any other available scripts, 
-    NukeWrapper will resize the iFrame to fit the contents of the page.</p>
-  <p>NukeWrapper also allows for the content to be parsed (see below) and will 
+    Wrapper will resize the iFrame to fit the contents of the page.</p>
+  <p>Wrapper also allows for the content to be parsed (see below) and will 
     attempt to thwart frame-breaking Javascript code (only works if in the actual 
     page, not a linked Javascript file). </p>
   <p>You can set whether to use the theme tables or a blank background with the 
@@ -247,16 +247,16 @@ table.border TD {
     It also allows you to set a page layout for older ("Classic" PN 0.7x) themes 
     with the <strong>idx</strong> (index) flag. For Xanthia or AutoThemes, use the inbuilt 
     templating system by creating a template in the desired layout and activate it 
-    for NukeWrapper. AuthTheme allows for different templates for different URL parameters, 
+    for Wrapper. AuthTheme allows for different templates for different URL parameters, 
     eg for different wrapped files/URLs.</p><br>
   <p>Screenshots: </p>
-  <p><a href="http://users.tpg.com.au/staer/images/NukeWrapper-file1.png">Wrapping 
+  <p><a href="http://users.tpg.com.au/staer/images/Wrapper-file1.png">Wrapping 
     an HTML page with columns and images with its own stylesheet</a></p>
-  <p><a href="http://users.tpg.com.au/staer/images/NukeWrapper-ExternalPage.jpg">External 
+  <p><a href="http://users.tpg.com.au/staer/images/Wrapper-ExternalPage.jpg">External 
     URL with Helius theme</a></p>
-  <p><a href="http://users.tpg.com.au/staer/images/NukeWrapper-URL4.jpg">External 
+  <p><a href="http://users.tpg.com.au/staer/images/Wrapper-URL4.jpg">External 
     URL full width, no columns</a></p>
-  <p><a href="http://users.tpg.com.au/staer/images/NukeWrapper-Google-idx2.jpg">Google 
+  <p><a href="http://users.tpg.com.au/staer/images/Wrapper-Google-idx2.jpg">Google 
     search result with left and right columns in Helius theme</a></p>
   <h3><a name="Usage"></a>3. Usage:</h3>
   <p>After configuring the allowed directories in the script (described below), 
@@ -271,12 +271,12 @@ table.border TD {
     filename, unless it is one of the optional parameters.</p>
   <p>A Beta of the module version is also provided; it works the same except for 
     the URL, and that it uses a separate configuration file located in the module 
-    directory at <strong>modules/NukeWrapper/NukeWrapper.conf.php</strong>. It 
+    directory at <strong>modules/Wrapper/Wrapper.conf.php</strong>. It 
     has to be Initialised and Activated in the Modules admin panel before use.</p>
   <p>It is accessed with a regular module call:</p>
-  <p class="example"><strong>http://your.site.com/index.php?module=NukeWrapper&amp;file=filename.html</strong></p>
+  <p class="example"><strong>http://your.site.com/index.php?module=Wrapper&amp;file=filename.html</strong></p>
   <p>The file path is by default relative to the Postnuke root (where index.php 
-    and NukeWrapper file is located) for HTML and txt pages, and a subdirectory 
+    and Wrapper file is located) for HTML and txt pages, and a subdirectory 
     called <em><strong>PHPpages</strong></em> for PHP pages, but as described 
     below it may be from any location.</p>
   <h5>For external web pages:</h5>
@@ -285,7 +285,7 @@ table.border TD {
     http://your.site.com/page.php?url=http://www.somesite.com <br>
     http://your.site.com/page.php?url=/somedir/somefile.html</strong><br>
     autoresizing frame for local file, must start with / <br><strong>
-    http://your.site.com/index.php?module=NukeWrapper&amp;url=www.somesite.com 
+    http://your.site.com/index.php?module=Wrapper&amp;url=www.somesite.com 
     <br>
     </strong><br>
     url2 uses a plain frame with no resizing (default 600 pixels high):<strong><br>
@@ -344,7 +344,7 @@ table.border TD {
   <p>By default, you can link to local HTML and txt files under the PostNuke root. 
     For instance, if you've installed Postnuke in <br>
     <strong>www.example.com/nuke/ </strong><br>
-    and if you specify the filepath <strong>file=AboutUs.html</strong>, NukeWrapper 
+    and if you specify the filepath <strong>file=AboutUs.html</strong>, Wrapper 
     will look for <strong>/nuke/AboutUs.html</strong>, and<strong> file=HTML/AboutUs.html</strong> 
     will point to <br>
     <strong>www.example.com/nuke/HTML/AboutUs.html</strong><br>
@@ -369,7 +369,7 @@ table.border TD {
     hence in the above example the PostNuke root is <strong>/nuke</strong>, and 
     hence you can list parallel directories outside the Postnuke root. If you 
     simply link to<strong> file=DrWho.php</strong> or <strong>drwho/DrWho.php</strong>, 
-    then NukeWrapper will search each directory in the list in turn as they appear, 
+    then Wrapper will search each directory in the list in turn as they appear, 
     so if there are two files with the same name, the file in the directory appearing 
     first in the list will be linked to. If not in any of the listed directories, 
     it will look in the default location last, and if not there, will inform the 
@@ -387,7 +387,7 @@ table.border TD {
       <td>&nbsp;</td>
       <td>If all HTML pages are placed in the same folder other than the PostNuke 
         root, you can specify it here<br>
-        so NukeWrapper will search each listed directory in turn for the requested 
+        so Wrapper will search each listed directory in turn for the requested 
         file here, so no filepath need be supplied in the URL.. <br>
         Else leave empty with <strong>Array();</strong> as the default is the 
         Postnuke root.<br>
@@ -416,7 +416,7 @@ table.border TD {
         Default is &quot;PHPpages&quot; under PostNuke root.<br>
         If you leave the array empty with <strong>Array();</strong> or the requested 
         file isn't in any of the listed directories, <br>
-        NukeWrapper will look in the default location. <br>
+        Wrapper will look in the default location. <br>
         It's a good idea to place an empty index.html page in each directory to 
         avoid indexing of content.<br>
         <strong>Example:</strong> Array('/albums', '/cult/sci-fi/drwho'); </td>
@@ -489,7 +489,7 @@ table.border TD {
     <tr> 
       <td><nobr><strong>$FixLinks</strong> = &quot;1&quot;;</nobr></td>
       <td>1=on, 0=off. Corrects relative filepaths of local files not in the same 
-        directory as NukeWrapper. <br>
+        directory as Wrapper. <br>
         Switch off if not using document-relative links, if you change the paths 
         in your HTML documents <br>
         to use root-relative paths (from the Document Root), <br> <strong>eg</strong> 
@@ -498,7 +498,7 @@ table.border TD {
     <tr> 
       <td><nobr><strong>$WrapLinks</strong> = &quot;1&quot;;</nobr></td>
       <td> If FixLinks is set, this option will further convert links to open 
-        in your PostNuke site through NukeWrapper.provided they're of a valid 
+        in your PostNuke site through Wrapper.provided they're of a valid 
         type in the <strong>$ValidExp</strong> lists below.</td>
     </tr>
     <tr> 
@@ -526,7 +526,7 @@ table.border TD {
       <td>&nbsp;</td>
       <td><p>For use by the IE transparency fix. A path to a valid transparent 
           dummy image.<br>
-          One is supplied with NukeWrapper, and placed in the main images folder.</p>
+          One is supplied with Wrapper, and placed in the main images folder.</p>
         <p>-------------------------- End PNG Transparency Fix ---------------------------</p>
         </td>
     </tr>
@@ -618,7 +618,7 @@ table.border TD {
         with <strong>height=xxx</strong><br>
         where <strong>xxx</strong> is an integer pixel value. <br>
         If you use <strong>url2=</strong> instead of <strong>url=</strong> then 
-        NukeWrapper will turn off AutoResize and use a non-resizing iFrame.</td>
+        Wrapper will turn off AutoResize and use a non-resizing iFrame.</td>
     </tr>
     <tr> 
       <td><nobr><strong>$FrameHeight</strong> = 600;</nobr></td>
@@ -639,7 +639,7 @@ table.border TD {
       <td><nobr><strong>$DocumentRoot</strong> = &quot;&quot;;</nobr></td>
       <td>For linking to local files. Leave empty if you don't have any problems 
         with local files.<br>
-        If NukeWrapper can't detect the correct Document Root, then you may be 
+        If Wrapper can't detect the correct Document Root, then you may be 
         denied access to the file with the &quot;<strong><em>Who's A Naughty Boy</em></strong>&quot; 
         message as it may be an attempt to hack the server. <br>
         The correct Document Root may fix this.<br> <strong>Example:</strong> 
@@ -678,7 +678,7 @@ table.border TD {
     </tr>
   </table>
   <h3><a name="Security"></a>5. Security:</h3>
-  <p>NukeWrapper will not allow any linking to files appearing outside the Document 
+  <p>Wrapper will not allow any linking to files appearing outside the Document 
     Root or outside any of the listed or default directories. Therefore if your 
     files are not in the locations listed in the array <strong>$HTMLdirs</strong> 
     for static pages like HTML (defaulting to the PostNuke root), or <strong>$PHPdirs</strong> 
@@ -712,7 +712,7 @@ table.border TD {
   <p>On an Apache server, edit Apache's config file <strong>httpd.conf</strong> 
     and ensure <strong>DocumentRoot</strong> is set correctly, eg <strong><br>
     DocumentRoot &quot;C:/Apache2/htdocs&quot;</strong></p>
-  <p>NukeWrapper's <strong>Debug</strong> mode can be helpful in determining what 
+  <p>Wrapper's <strong>Debug</strong> mode can be helpful in determining what 
     the problem is, what your site's Document Root is detected as, and what it 
     actually is. It is only available to users with Admin privileges.</p> 
   <h3><a name="ProtectDir"></a>6. Protecting Your Files From Direct Access:</h3>
@@ -722,11 +722,11 @@ table.border TD {
     
   <p>You can have some Security by Obscurity by naming the subdirectory something 
     non-obvious that a user can't easily guess, eg a random string like <strong>sysfg3</strong> 
-    and placing this path in NukeWrapper's <strong>$HTMLdirs</strong> array (or 
+    and placing this path in Wrapper's <strong>$HTMLdirs</strong> array (or 
     <strong>$PHPdirs</strong> array for dynamic files).</p>
     
   <p class="example">$HTMLdirs = Array($nukeroot.'/sysfg3');</p>
-  <p>Now when you link to the file using NukeWrapper, it will automatically look 
+  <p>Now when you link to the file using Wrapper, it will automatically look 
     in this directory, so you don't need to use it in the URL.</p>
   <p><strong>page.php?file=members.html</strong> will find the file <strong>/sysfg3/members.html</strong> 
     without alerting the users to the location. If there's an index file in the 
@@ -735,7 +735,7 @@ table.border TD {
   <h4><a name="htaccess"></a>6.2 Apache .htaccess Files</h4>
   <p>Best of all is to protect your folder using the server's access controls. 
     On Apache for instance, you can set Access rules for a directory by only allowing 
-    access from the local domain, ie from NukeWrapper or other PostNuke modules. 
+    access from the local domain, ie from Wrapper or other PostNuke modules. 
     Accessing the file directly in the browser will get a <strong>Forbidden</strong> 
     message. Optionally, you can set the diretory with password controls, so authorised 
     users <em>can</em> access it directly.</p>
@@ -760,13 +760,13 @@ table.border TD {
     checks the <strong>Referer</strong> page header. </p>
   <p class="example">SetEnvIf Referer &quot;^http://www.example.com/page.php&quot; 
     let_me_in<br>
-    SetEnvIf Referer &quot;^http://www.example.com/index.php?module=NukeWrapper&quot; 
+    SetEnvIf Referer &quot;^http://www.example.com/index.php?module=Wrapper&quot; 
     let_me_in <br>
     Order Deny,Allow<br>
     Deny from all<br>
     Allow from env=let_me_in</p>
     
-  <p>which restricts access to links on the site using NukeWrapper; entering the 
+  <p>which restricts access to links on the site using Wrapper; entering the 
     URL directly in the browser won't work, as it then hasn't got a Referer.</p>
   <h5>Links:</h5>
   <p><a href="http://httpd.apache.org/docs-2.0/howto/htaccess.html">http://httpd.apache.org/docs-2.0/howto/htaccess.html</a><br>
@@ -777,7 +777,7 @@ table.border TD {
     manual:<br>
     <a href="http://httpd.apache.org/docs-2.0/howto/auth.html">http://httpd.apache.org/docs-2.0/howto/auth.html</a></p>
   <h3><a name="PNPermissions"></a>7. PostNuke Permissions Schema:</h3>
-  <p>The NukeWrapper security schema for PostNuke, set in the PostNuke administration 
+  <p>The Wrapper security schema for PostNuke, set in the PostNuke administration 
     Permissions Panel, is as follows:</p>
   <table class="example" width="75%" border="0" cellspacing="5" cellpadding="0" style="margin-left: auto; margin-right: auto;">
     <tr>
@@ -785,11 +785,11 @@ table.border TD {
       <td><strong>Instance:</strong></td>
     </tr>
     <tr>
-        <td>NukeWrapper::(file|url)</td>
+        <td>Wrapper::(file|url)</td>
         <td>filename.ext:keyword:extension</td>
     </tr>
   </table>
-  <p>NukeWrapper checks for Read access only, as there is nothing editable.<BR />
+  <p>Wrapper checks for Read access only, as there is nothing editable.<BR />
   <strong>.*</strong> is the same as <strong>::</strong> and is shorthand code 
     for <strong>All</strong>.<br>
     Both the <strong>Component</strong> and <strong>Instance</strong> is divided 
@@ -804,27 +804,27 @@ table.border TD {
     /HTML/members/funstuff.html</p>
 	</blockquote>
   <h4><a name="Component"></a>7.1 Component:</h4>
-  <p>The Component refers to NukeWrapper access generally, with the option of setting 
+  <p>The Component refers to Wrapper access generally, with the option of setting 
     access specifically to either local files or external URLs by specifying the 
     3rd Component.</p>
   <h5>Examples:</h5>
   <table class="example border" border="0" cellpadding="0" cellspacing="4">
     <tr> 
-      <td>NukeWrapper::</td>
+      <td>Wrapper::</td>
       <td>.*</td>
     </tr>
   </table>
   <p>General access control to wrapped pages</p>
   <table class="example border" border="0" cellspacing="4" cellpadding="0">
     <tr>
-      <td>NukeWrapper::file</td>
+      <td>Wrapper::file</td>
       <td>.*</td>
     </tr>
   </table>
   <p>Controls access to local files</p>
    <table class="example border" border="0" cellspacing="4" cellpadding="0">
     <tr>
-      <td>NukeWrapper::url</td>
+      <td>Wrapper::url</td>
       <td>.*</td>
     </tr>
   </table>
@@ -843,7 +843,7 @@ table.border TD {
   <h5>Examples:</h5>
   <table class="example border" border="0" cellspacing="4" cellpadding="0">
     <tr> 
-      <td>NukeWrapper::file</td>
+      <td>Wrapper::file</td>
       <td>restricted.html::</td>
       <td>none</td>
     </tr>
@@ -852,7 +852,7 @@ table.border TD {
     group.</p>
   <table class="example border" border="0" cellspacing="4" cellpadding="0">
     <tr> 
-      <td>NukeWrapper::file</td>
+      <td>Wrapper::file</td>
       <td>:member:</td>
       <td>Read</td>
     </tr>
@@ -865,7 +865,7 @@ table.border TD {
     
   <table class="example border" border="0" cellspacing="4" cellpadding="0">
     <tr> 
-      <td>NukeWrapper::file</td>
+      <td>Wrapper::file</td>
       <td>:-:</td>
       <td>Read</td>
     </tr>
@@ -879,7 +879,7 @@ table.border TD {
     
   <table class="example border" border="0" cellspacing="4" cellpadding="0">
     <tr> 
-      <td>NukeWrapper::file</td>
+      <td>Wrapper::file</td>
       <td>:(member|admin):</td>
       <td>Read</td>
     </tr>
@@ -893,7 +893,7 @@ table.border TD {
    
   <table class="example border" border="0" cellspacing="4" cellpadding="0">
     <tr> 
-      <td>NukeWrapper::file</td>
+      <td>Wrapper::file</td>
       <td> (restricted.html|example-admin.html)::</td>
       <td>none</td>
     </tr>
@@ -903,7 +903,7 @@ table.border TD {
     
   <table class="example border" border="0" cellspacing="4" cellpadding="0">
     <tr> 
-      <td>NukeWrapper::file</td>
+      <td>Wrapper::file</td>
       <td>::php</td>
       <td>Read</td>
     </tr>
@@ -917,7 +917,7 @@ table.border TD {
   <table class="example border" border="0" cellspacing="4" cellpadding="0">
     <tr>
       <td>Users</td>
-      <td>NukeWrapper::file</td>
+      <td>Wrapper::file</td>
       <td>:(member|admin):</td>
       <td>none</td>
     </tr>
@@ -929,7 +929,7 @@ table.border TD {
     </tr>
     <tr>
       <td>Unregistered</td>
-      <td>NukeWrapper::</td>
+      <td>Wrapper::</td>
       <td>.*</td>
       <td>none</td>
     </tr>
@@ -947,7 +947,7 @@ table.border TD {
     a bit of fun, good for satire, hell it may even have a practical application. 
 </p>    It is disabled by default. Uncomment (remove slashes in front of) the arrays 
     as noted to use.-->
-  <p>NukeWrapper can parse external web pages and replace contents as you see 
+  <p>Wrapper can parse external web pages and replace contents as you see 
     fit; for instance if you hate Microsoft (who outside MS doesn't?), you can 
     replace all instances of &quot;<strong>Microsoft</strong>&quot; with &quot;<strong>Micro$uck</strong>&quot; 
     and </p>
@@ -1009,7 +1009,7 @@ table.border TD {
   <p>&nbsp; </p>
   <p><strong>Example</strong> for <a href="http://www.whitehouse.gov/president/%20">http://www.whitehouse.gov/president/</a>
     using both types of arrays. <br>
-    Copy and paste into the NukeWrapper script to see the results with the URL 
+    Copy and paste into the Wrapper script to see the results with the URL 
     <br>
     <strong>page.php?url=http://www.whitehouse.gov/president/&amp;idx=4</strong></p> 
 	<div class="example">
@@ -1077,7 +1077,7 @@ table.border TD {
     under the Oval Office banner.</p>
 	</div>
   <h3><a name="JumpMenu"></a>9. Jump Menu Block</h3>
-  <p>You can create a Jump menu side block using NukeWrapper by creating an HTML 
+  <p>You can create a Jump menu side block using Wrapper by creating an HTML 
     block in PostNuke. Go to PostNuke's <strong>Administration &gt; Blocks</strong> 
     panel and click <strong>New Block</strong> on the top of the table. Enter 
     a title for the block, choose <strong>core/HTML</strong> as the Block type, 
@@ -1130,7 +1130,7 @@ table.border TD {
     to the stylesheet location. The limitation is links dynamically created by 
     Javascript, as there is no way to check for them. Paths in external Javascript 
     should be fine. If you don't use relative links at all in your documents and 
-    don't need to convert links to open in PostNuke through NukeWrapper, turn 
+    don't need to convert links to open in PostNuke through Wrapper, turn 
     off this function by setting <strong>$FixLinks="0";</strong> so the document 
     won't be unnecessarily parsed.</p>
   <p>Resizing a frame to fit the contents would seem to be a trivial task, but 
@@ -1159,7 +1159,7 @@ table.border TD {
   <p>The script uses a body onload event to load the external pages due to another 
     bug in Opera (it refuses to load the page otherwise, IE and Moz have no such 
     trouble), so if you need to use a Body onLoad event in your themes, and want 
-    to use NukeWrapper to display external pages, add<br>
+    to use Wrapper to display external pages, add<br>
     <strong>writeiframe();</strong> before your other function calls:</p>
   <p class="example">&lt;BODY onLoad=&quot;writeiframe(); someOtherFunction();&quot;&gt;</p>
   
@@ -1187,7 +1187,7 @@ includes/ie7/ie7-standard-p.js</pre>
     by various people. </p>
   <p><strong>See</strong> <a href="http://lottasophie.sourceforge.net">http://lottasophie.sourceforge.net</a> 
     for sample titlefiles.<br>
-    NukeWrapper creates its own metadata, including title, from the wrapped page 
+    Wrapper creates its own metadata, including title, from the wrapped page 
     and hence doesn't use it. </p>
   <p>IE7 is a Javascript library by Dean Edwards which attempts to patch Internet 
     Explorer's poor standards compliance, such as proper CSS1, CSS2 and some CSS3 
@@ -1262,7 +1262,7 @@ modules/Xanthia/plugins/
   <p>The <strong>IE7</strong> plugin supports the option <strong>suffix</strong>, 
     which sets a suffix for PNG files which are to have the transparency filter 
     applied to them. The default if none is supplied is &quot;<strong>-trans</strong>&quot;, 
-    or by setting the variable <strong>$PNGsuffix</strong> in NukeWrapper. Because 
+    or by setting the variable <strong>$PNGsuffix</strong> in Wrapper. Because 
     it uses a proprietary MicroSoft filter called <strong>AlphaImageLoader</strong> 
     to enable the transparency in PNG files, which has its limitations, using 
     a suffix only with those PNG files that has transparency means the other PNG 
@@ -1363,10 +1363,10 @@ modules/Xanthia/plugins/
     <p><a href="http://users.tpg.com.au/staer/Downloads/i-geom.zip">i-geom</a> (AutoTheme)</p>
   </blockquote>
     
-  <p>They also support the layout options on their own without the use of NukeWrapper. 
-    Pass the <strong>idx</strong> variable in the URL the same as with NukeWrapper.</p>
+  <p>They also support the layout options on their own without the use of Wrapper. 
+    Pass the <strong>idx</strong> variable in the URL the same as with Wrapper.</p>
   <p>To further convert a theme to support the layout options on their own, independent 
-    of NukeWrapper like the above themes, as well as including the ability to 
+    of Wrapper like the above themes, as well as including the ability to 
     make presets for certain modules, add the following at the top of the <strong>theme.php</strong> 
     file, <strong><em>before</em></strong> the beginning of any functions (same 
     for AutoTheme Lite 0.6, in AT 0.7 you must edit the module itself in modules/AutoTheme/autotheme.php 
