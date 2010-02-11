@@ -1,6 +1,6 @@
 
 
-Wrapper 1.0 devel snapshot
+Wrapper 0.0 devel snapshot
 
 This snapshot is an update of NukeWrapper for Zikula. The changes are:
 1) Rename module from NukeWrapper to Wrapper
