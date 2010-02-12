@@ -32,70 +32,70 @@ function Wrapper_user_main($args) {
       return Wrapper_errorpage('403', 'Forbidden', _NWNOAUTHORITY);
     }
 
-global $ModName, $DocRoot, $SiteRoot, $FullPath, $RelDir, $WebRoot, $WebDir, $nukeurl, $nukeroot, $PostnukeDir, 
+    global $ModName, $DocRoot, $SiteRoot, $FullPath, $RelDir, $WebRoot, $WebDir, $nukeurl, $nukeroot, $PostnukeDir, 
 	$PHPdir, $PHPdirs, $HTMLdir, $HTMLdirs, $URLkeys, $HTMLroot, $FullPath, $AllowPHP, $AllowURLs, 
 	$extension, $URLwrap, $URLs, $query, $filewrap, $filewrapname, $FileBase, $PNGsuffix;
 
-$NWrap=true;
+    $NWrap=true;
 
-// Load config file from Zikulz config directory.
-$NWconfigload = include("config/Wrapper.conf.php");  // Configuration variables
-if($NWconfigload==false) echo '<div style="color: red" align="center">'._NWConfigLoadFailed.'</div><br />';
+    // Load config file from Zikulz config directory.
+    $NWconfigload = include("config/Wrapper.conf.php");  // Configuration variables
+    if($NWconfigload==false) echo '<div style="color: red" align="center">'._NWConfigLoadFailed.'</div><br />';
 
     if (is_array($URLkeys2))
         $URLkeys = array_merge($URLkeys, $URLkeys2);
 
-if ($WrapDebug && !pnSecAuthAction(0, 'Wrapper::', '::', ACCESS_ADMIN)) {
+    if ($WrapDebug && !pnSecAuthAction(0, 'Wrapper::', '::', ACCESS_ADMIN)) {
 	$WrapDebug = false; // Only show debug info for Admins
-}
-// Start page if no file or URL given
-//$starturl = pnModGetVar($GLOBALS['ModName'], 'StartPage');
-//if (!empty($starturl)) $StartPage=$starturl;
-
-$Request = array_merge($args, $_POST, $_GET);
-
-//$filewrap = $Request['file']; 
-$filewrap = pnVarCleanFromInput('file');
-$urlwrap = pnVarCleanFromInput('url');
-$url2wrap = pnVarCleanFromInput('url2');
-$opt = pnVarCleanFromInput('opt');
-if (empty($opt)) $opt=$UseTables;
-$index = pnVarCleanFromInput('idx');
-if (empty($index)) $index = $Layout;
-$FrameHeight=pnVarCleanFromInput('height');
-if (! (isset($FrameHeight) && is_numeric($FrameHeight) )) $FrameHeight='600';
-
-$URLwrap=""; $msg=""; $checked="0"; $ValidDir="1";
-
-// $query=$_SERVER['QUERY_STRING'];
-$nukeurl = pnGetBaseURI(); // dirname($_SERVER['PHP_SELF']); // dirname returns \ if empty! // URI of index file, eg /nuke
-$pnconfig['nukeurl']=$nukeurl;
-$SiteRoot = $WebRoot.$nukeroot."/"; // $nukeurl Can also use $SERVER_NAME
-// $SiteRoot=pnGetBaseURL(); // PN URL root using the Postnuke API
-// $DocRoot=$_SERVER['DOCUMENT_ROOT']; // Server file path to site root 
-if (!empty($DocumentRoot)) $DocRoot = $DocumentRoot;
-global $PostnukeDir;
-$PostnukeDir = $DocRoot.$nukeroot."/";
-
-// If not allowing external connections, redirect to index page
-if ($WrapDebug) echo " Remote Address: ".Wrapper_user_getip()." <br> Server Address: &nbsp;".$_SERVER['SERVER_ADDR']."<br>\n";
-if (!empty($urlwrap) and $AllowExtLink==false and !empty($_SERVER['SERVER_ADDR']) and Wrapper_user_getip() !== $_SERVER['SERVER_ADDR']) // As Referer is easily spoofed and unreliable, use IP even though a server may host many domains on the one IP
-    { session_write_close(); header("Location: ".$SiteRoot."index.php?External_links_not_allowed"); exit(); }
-
-if(empty($filewrap) and empty($urlwrap) and empty($url2wrap) and !empty($StartPage))  {
-    if (substr($StartPage,0,7)=="http://" || substr($StartPage,0,8)=="https://") { 
-    	$urlwrap = $StartPage;
-    } else { 
-    	$filewrap = $StartPage;
     }
-} 
-// Make sure $filewrap has a leading slash
-if (substr($filewrap, 0, 1) != "/") $filewrap = '/' . $filewrap;
-$filewrapname = $filewrap;
 
-$ValidExpr = "(".implode("|", $ValidExp1).($AllowPHP ? "|".implode("|", $ValidExp2) : "" ).")"; 
-$ValidExpr = str_replace(".", "\.", $ValidExpr); 
-$ValidFile = preg_match("/$ValidExpr/i", $filewrap);
+    // Start page if no file or URL given
+    //$starturl = pnModGetVar($GLOBALS['ModName'], 'StartPage');
+    //if (!empty($starturl)) $StartPage=$starturl;
+
+    $filewrap = FormUtil::getPassedValue('file');
+    $urlwrap = FormUtil::getPassedValue('url');
+    $url2wrap = FormUtil::getPassedValue('url2');
+    $opt = FormUtil::getPassedValue('opt', $UseTables);
+    $index = FormUtil::getPassedValue('idx', $Layout);
+    $FrameHeight=FormUtil::getPassedValue('height');
+    if (! (isset($FrameHeight) && is_numeric($FrameHeight) )) $FrameHeight='600';
+
+    $URLwrap=""; $msg=""; $checked="0"; $ValidDir="1";
+
+    /* Find base URL of the site */
+    $nukeurl = pnGetBaseURI(); // dirname($_SERVER['PHP_SELF']); // dirname returns \ if empty! // URI of index file, eg /nuke
+    $pnconfig['nukeurl']=$nukeurl;
+    $SiteRoot = $WebRoot.$nukeroot."/"; // $nukeurl Can also use $SERVER_NAME
+
+    if (!empty($DocumentRoot)) $DocRoot = $DocumentRoot;
+    global $PostnukeDir;
+    $PostnukeDir = $DocRoot.$nukeroot."/";
+
+    if ($WrapDebug) echo " Remote Address: ".Wrapper_user_getip()." <br> Server Address: &nbsp;".$_SERVER['SERVER_ADDR']."<br>\n";
+
+    // If not allowing external connections, display error page.
+    // As Referer is easily spoofed and unreliable, use IP even though a server may host many domains on the one IP
+    if (!empty($urlwrap) and $AllowExtLink==false and !empty($_SERVER['SERVER_ADDR']) and Wrapper_user_getip() !== $_SERVER['SERVER_ADDR']) 
+    {
+        return Wrapper_errorpage('403', 'Forbidden', _FopenDisallowed1);
+    }
+
+    if(empty($filewrap) and empty($urlwrap) and empty($url2wrap) and !empty($StartPage))  {
+        if (substr($StartPage,0,7)=="http://" || substr($StartPage,0,8)=="https://") { 
+    	    $urlwrap = $StartPage;
+        } else { 
+    	    $filewrap = $StartPage;
+        }
+    }
+
+    // Make sure $filewrap has a leading slash
+    if (substr($filewrap, 0, 1) != "/") $filewrap = '/' . $filewrap;
+    $filewrapname = $filewrap;
+
+    $ValidExpr = "(".implode("|", $ValidExp1).($AllowPHP ? "|".implode("|", $ValidExp2) : "" ).")"; 
+    $ValidExpr = str_replace(".", "\.", $ValidExpr); 
+    $ValidFile = preg_match("/$ValidExpr/i", $filewrap);
 
 
 ////////// Local File Parsing. Determine path and validate  //////////
@@ -561,7 +561,7 @@ function wrap_opentable($opt) {
 /********** Wrap Closetable **********/ 
 function wrap_closetable($opt, $WrapDebug=false, $CallHooks=false) {
 global $HTTP_POST_VARS, $HTTP_GET_VARS, $HTTP_COOKIE_VARS, $HTTP_SESSION_VARS, 
-	$PostnukeDir, $filewrapname, $FileBase, $Request;
+	$PostnukeDir, $filewrapname, $FileBase;
   if ($opt=="1") { CloseTable(); }
   echo "</DIV><!-- End wrapped page -->\n"; 
 //  else { echo "</DIV>\n"; }
@@ -650,7 +650,7 @@ return $remoteIP;
 
 /********** Wrapper_admin_checkurl **********/
 function Wrapper_admin_checkurl($url, $WrapDebug=false) {
-global $Request, $URLs, $URLkeys, $AllowURLs;
+global $URLs, $URLkeys, $AllowURLs;
   $backbutton = "<FORM>\n<INPUT TYPE=\"Button\" VALUE=\""._Back."\" onClick=\"history.go(-1)\">\n</FORM>\n"; 
   if (!$AllowURLs) { 
     // session_write_close();
