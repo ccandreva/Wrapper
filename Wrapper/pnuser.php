@@ -39,6 +39,8 @@ $ModName = basename( dirname( __FILE__ ) );
 $DocumentRoot = "";  // Set this if your ISP has no Document Root set. Else for your own server ensure the Document Root/Home directory is set.
 Wrapper_paths();
 
+require_once('Common.php');
+
 /**
  * the main user function
  * This function is the default function, and is called whenever the module is
@@ -47,10 +49,7 @@ Wrapper_paths();
 function Wrapper_user_main($args) {
     // Security check - lowest level is generally either 'overview' or 'read'
     if (!pnSecAuthAction(0, 'Wrapper::', '::', ACCESS_READ)) {
-       // return pnVarPrepHTMLDisplay(_MODULENOAUTH);
-       wrap_opentable(1); 
-       echo "<div style=\"padding: 30px 6px; color: red; font-weight: bold\" align=\"center\">"._NWNOAUTHORITY."</div>"; 
-       wrap_closetable(1, 0); exit;
+      return Wrapper_errorpage('403', 'Forbidden', _NWNOAUTHORITY);
     }
 
 global $ModName, $DocRoot, $SiteRoot, $FullPath, $RelDir, $WebRoot, $WebDir, $nukeurl, $nukeroot, $PostnukeDir, 
@@ -200,32 +199,42 @@ if ($WrapDebug) { 	echo "<div style='margin-bottom: 0.5em;'> $dir<br /> Is ".$Do
 	$WebDir = dirname($filewrap);
 	$FileDir=$DocRoot.$PHPdir;
   } // end php
+
+  /*
   $fileOK=false; if ($WrapDebug)  echo "<BR /><strong>Security check:</strong><br /> Component: Wrapper : : file<br /> Instance: ".basename($filewrap)." : keyword : $extension<br />";
-  $msg = "<div style=\"padding: 30px 6px;\" align=\"center\"><span style=\"color: red; font-weight: bold\">"._NWNoAuthorityForFile."</span>\n"
-  	."<FORM>\n<INPUT class=\"pn-button\" TYPE=\"Button\" VALUE=\""._Back."\" onClick=\"history.go(-1)\">\n</FORM>\n"; 
   if (is_array($NWkeywords) && !empty($NWkeywords)) {
       foreach($NWkeywords as $key) {
           if (stristr($filewrap, $key)!==false) { 
 		if ($WrapDebug)  echo "Matched <em>$key</em> &nbsp;\n"; 
 		if (!pnSecAuthAction(0, 'Wrapper::file', basename($filewrap).":$key:$extension", ACCESS_READ)) { 
 			if ($WrapDebug)  echo "<span style=\"color: red;\">failed</span><br />";
-    			wrap_opentable(1); echo "<div style=\"padding: 30px 6px;\" align=\"center\">$msg</div>"; wrap_closetable(1, 0); exit;
+                        return Wrapper_errorpage('403', 'Forbidden', _NWNoAuthorityForFile);
     		} 
-          $fileOK=true; if ($WrapDebug)  echo "<span style=\"color: green;\">passed</span><br />";
+          $fileOK=true;
+          if ($WrapDebug)  echo "<span style=\"color: green;\">passed</span><br />";
           } 
       }
   } 
+
+  // If we haven't passed yet, check extension permissions.
   if ($fileOK==false) { 
-    if (!pnSecAuthAction(0, 'Wrapper::file', basename($filewrap)."::$extension", ACCESS_READ)) {
-   	wrap_opentable(1); echo "<div style=\"padding: 30px 6px;\" align=\"center\">$msg</div>"; wrap_closetable(1, 0); exit;
-    }
-    if ($WrapDebug)  echo "<span style=\"color: green;\">passed</span><br />";
-  } // end file check
+    $fileOK = pnSecAuthAction(0, 'Wrapper::file', basename($filewrap)."::$extension", ACCESS_READ);
+  }
+  */
+  /* Check Zikula permissions for access to this file */
+  $fileOK = Wrapper_checkperm($filewrap, $NWkeywords);
+  // If we still haven't passed, return an error.
+  if ($fileOK==false) { 
+    return Wrapper_errorpage('403', 'Forbidden', _NWNoAuthorityForFile);  
+  }
+  if ($WrapDebug)  echo "<span style=\"color: green;\">passed</span><br />";
+  // end file check
+
   $FullPath=str_replace("\\", "/", realpath($DocRoot.$filewrap)); 
   $FullPathDir=dirname($FullPath);
   $FileBase=basename($filewrap);
   if (empty($FileBase)) {$FullPath.="/"; }
-//  $ValidURL = (strpos(strtolower($FullPath), strtolower($DocRoot))!==false) && $direxists; // case-insensitive match
+
   $ValidURL = (strpos($FullPath, $DocRoot)!==false) && $direxists; 
 if ($WrapDebug) echo "<br /> WebDir: $WebDir<br /> FileDir: $FileDir &nbsp;&nbsp;".($direxists ? " <span style=\"color: green\">Directory OK.</span>" : " <span style=\"color: red\">Directory <strong>NOT</strong> valid!</span>")."<br />\n"
 	." Filebase: $FileBase<br />" 
@@ -238,8 +247,8 @@ if ($WrapDebug) echo "<br /> WebDir: $WebDir<br /> FileDir: $FileDir &nbsp;&nbsp
 		&& !isset($HTTP_COOKIE_VARS['WrapDebug']) 
 		&& !isset($HTTP_SESSION_VARS['WrapDebug']))  
 	{ $index=4; include("header.php"); debugtable();  include("footer.php"); exit; }// Output debugtable amd then exit
-  	session_write_close();
-       header("Location: ".$SiteRoot."index.php?Who's_a_naughty_boy_then?"); exit(); // Hackers_Are_EVIL!!!_Only_pages_on_this_PostNuke_site_are_accessible.
+  	return Wrapper_errorpage('404', "Not Found: $FileBase");
+
   }  // If webroot root and valid directory is not in the full filepath, an attempt has been made to hack the site by using ../ in the filepath
   if ($extension=='pdf') { 
   	$URLwrap=$filewrap; $AutoResize=false; // If a PDF file, wrap in an iFrame.
@@ -257,8 +266,7 @@ elseif (!empty($Request['url']) && $AutoResize) {
   // If target site not local, read target page for processing, and embed in local page
   if ($ExternalUrl) {
   	if (ini_get('allow_url_fopen')==false) {
-	    	$msg = _FopenDisallowed1."<br />\n<strong><a href=\"index.php?module=Wrapper&url2=$URLwrap\"><span style=\"color: red;\">url2=$URLwrap</span></a></strong>";
-		wrap_opentable(1); echo "<div style=\"padding: 30px 6px;\" align=\"center\">$msg</div>"; wrap_closetable(1, $WrapDebug); exit;
+          return Wrapper_errorpage('500', 'Internal Server Error', _FopenDisallowed1);
 	}
   	if (!empty($_SERVER['HTTP_USER_AGENT'])) { // Valid User-Agent required for some sites
 		ini_set('user_agent','$_SERVER["HTTP_USER_AGENT"]');
@@ -282,9 +290,7 @@ elseif (!empty($Request['url']) && $AutoResize) {
   	} else {
     	    /* There was a problem opening the file. */
     	    $msg = _FileCantOpen1.$URLwrap._FileCantOpen2.$URLwrap._FileCantOpen3; 
-	    //  $msg="The requested page <strong><a href=\"$URLwrap\"><span style=\"color: red;\">$URLwrap</span></a></strong> could not be opened;<br />try clicking Reload, correct URL below, or try later.";
-	    $checked=$opt; $opt="1";
-	    wrap_opentable($opt); wrap_output($msg, $URLwrap, $checked, $index, "url"); wrap_closetable($opt, $WrapDebug); exit;
+            return Wrapper_errorpage('500', 'Internal Server Error', $msg);
 	}
   }
   
