@@ -99,43 +99,20 @@ $PostnukeDir = $DocRoot.$nukeroot."/";
 
 // If not allowing external connections, redirect to index page
 if ($WrapDebug) echo " Remote Address: ".Wrapper_user_getip()." <br> Server Address: &nbsp;".$_SERVER['SERVER_ADDR']."<br>\n";
-if (!empty($Request['url']) and $AllowExtLink==false and !empty($_SERVER['SERVER_ADDR']) and Wrapper_user_getip() !== $_SERVER['SERVER_ADDR']) // As Referer is easily spoofed and unreliable, use IP even though a server may host many domains on the one IP
+if (!empty($urlwrap) and $AllowExtLink==false and !empty($_SERVER['SERVER_ADDR']) and Wrapper_user_getip() !== $_SERVER['SERVER_ADDR']) // As Referer is easily spoofed and unreliable, use IP even though a server may host many domains on the one IP
     { session_write_close(); header("Location: ".$SiteRoot."index.php?External_links_not_allowed"); exit(); }
 
-if (isset($Request['opt'])) $opt=$Request['opt'];
-else $opt=$UseTables;
-if (isset($Request['idx'])) $index=$Request['idx'];
-else $index=$Layout;
-if (isset($Request['height']) && is_numeric($Request['height'])) $FrameHeight = (int)$Request['height'];
-// else $FrameHeight=600;
-
-if ($WrapDebug) echo " Query: $query<br />";
-if(empty($filewrap) and empty($Request['url']) and empty($Request['url2']) and !empty($StartPage))  {
+if(empty($filewrap) and empty($urlwrap) and empty($url2wrap) and !empty($StartPage))  {
     if (substr($StartPage,0,7)=="http://" || substr($StartPage,0,8)=="https://") { 
-    	$Request['url'] = $_GET['url'] = $_REQUEST['url'] = $StartPage;
+    	$urlwrap = $StartPage;
     } else { 
-    	$filewrap = $_REQUEST['file'] = $StartPage;
+    	$filewrap = $StartPage;
     }
-    if ($WrapDebug) echo " Start Page: $StartPage<br />"; 
 } 
+// Make sure $filewrap has a leading slash
+if (substr($filewrap, 0, 1) != "/") $filewrap = '/' . $filewrap;
+$filewrapname = $filewrap;
 
-if (strstr($query, "?") && empty($Request['url']) && empty($Request['url2'])) { // File has query string
-  if ($WrapDebug) echo " File: $filewrap<br />";
-  $filewrap = strtok($filewrap,"?"); // file.php?var=value => $filewrap=file.php
-  $query=strtok("?"); //  $query=substr(strstr($query, "?"),1); // $query="var=value"
-  $vars=explode("=", $query);
-  $_GET[$vars[0]] = $_POST[$vars[0]] = $HTTP_GET_VARS[$vars[0]] = $HTTP_POST_VARS[$vars[0]] = $vars[1];
-  global $HTTP_GET_VARS, $HTTP_POST_VARS; 
-  foreach($Request as $key=>$value) {
-    if ($key!="file" && $key!="opt" && $key!="idx")
-      $query .= "&$key=$value";
-  }
-  $Request[$vars[0]] = $vars[1];
-  if ($WrapDebug) echo " Sub-Query: $query<br />";
-}
-$filewrapname = (substr($filewrap, 0, 1)=="/" ? "" : "/").$filewrap; // strpos($filewrap, "/")===false ? $filewrap : substr($filewrap, strrpos($filewrap, "/")+1);
-// $ValidExpr="(".$ValidExp1.($AllowPHP ? "|".$ValidExp2 : "" ).")";
-// $ValidExpr="(\.htm|\.shtml|\.txt".($AllowPHP ? "|\.php|\.phtml|\.cgi|\.asp|\.iasp|\.jsp|\.cfm|\.pl|\.adp|\.orm" : "").")";
 $ValidExpr = "(".implode("|", $ValidExp1).($AllowPHP ? "|".implode("|", $ValidExp2) : "" ).")"; 
 $ValidExpr = str_replace(".", "\.", $ValidExpr); 
 $ValidFile = preg_match("/$ValidExpr/i", $filewrap);
@@ -146,25 +123,11 @@ if (!empty($filewrap) && $ValidFile) { // Filename set & with valid extension
   $PathParts = pathinfo($filewrap); $extension = strtolower($PathParts["extension"]); 
   $PHProot="Not set"; $HTMLroot="Not set";
   if ($extension!='php') { // strstr($extension,'htm') or $extension=='txt'
-	$HTMLdir = $nukeroot; // Default to PN site root
-	$direxists = is_dir($DocRoot.$HTMLdir) ? true : false;
-	$filewrap = (substr($filewrap, 0, 1)=="/" ? "" : "/").$filewrap;
- if ($WrapDebug) echo " File: $filewrap<br />\n";
-	if (is_array($HTMLdirs) && !empty($HTMLdirs)){
-		foreach($HTMLdirs as $dir) {
-			if (substr($dir, -1)=="/")  $dir=substr($dir, 0, strlen($dir)-1); 
-			$dir=(substr($dir, 0, 1)=="/" ? "" : "/").$dir; // .(substr($dir, -1)=="/" ? "" : "/");
- if ($WrapDebug) { 	echo "<div style='margin-bottom: 0.5em;'> $dir<br /> Is ".$DocRoot.$dir." dir? ".(is_dir($DocRoot.$dir) ? "Yes" : "No")."<br />"
-			." Is ".$DocRoot.$dir.$filewrap." file? ".(is_file($DocRoot.$dir.$filewrap) ? "Yes" : "No")."<br />"
-			." Is ".$DocRoot.$filewrap." file & in dir? ".(is_file($DocRoot.$filewrap) && strstr($filewrap, $dir) ? "Yes" : "No")."<br /></div>\n";
-}
-			if (is_dir($DocRoot.$dir) && (is_file($DocRoot.$dir.$filewrap) || (is_file($DocRoot.$filewrap) && strstr($filewrap, $dir)))) {
-				$HTMLdir = $dir; $direxists = true; // dirname($dir.$filewrap);
- if ($WrapDebug) 	echo " HTMLdir: $HTMLdir &nbsp;Dir exists? ".($direxists ? "Yes" : "No")."<br />\n";
-				break;
-			}
-		}
-	}
+	//$HTMLdir = $nukeroot; // Default to PN site root
+	$HTMLdir = Wrapper_getdir ($HTMLdirs, $filewrap, $DocRoot);
+	$direxists = is_dir($DocRoot.$HTMLdir) ; // ? true : false;
+
+	// Add HTMLdir to filewrap if it's not there already
 	$filewrap = (strpos($filewrap, $HTMLdir)===false ? $HTMLdir : "").$filewrap;
  	if ($WrapDebug) echo " File: $filewrap<br />\n";
 	$HTMLroot=$WebRoot.$HTMLdir;  // If HTML page, use HTMLdir as root
@@ -172,26 +135,13 @@ if (!empty($filewrap) && $ValidFile) { // Filename set & with valid extension
 	$WebDir = dirname($filewrap);
 	$FileDir=$DocRoot.$HTMLdir;
   } // end html, txt
-  elseif ($AllowPHP and ($extension=="php" or $extension=="php3")) {
-	$PHPdir=$nukeroot."/PHPpages"; 
-	$direxists = is_dir($DocRoot.$PHPdir) ? true : false;
-	$filewrap = (substr($filewrap, 0, 1)=="/" ? "" : "/").$filewrap;
- if ($WrapDebug) echo " File: $filewrap<br />\n";
-	if (is_array($PHPdirs) && !empty($PHPdirs)){
-		foreach($PHPdirs as $dir) {
-			if (substr($dir, -1)=="/")  $dir=substr($dir, 0, strlen($dir)-1); 
-			$dir=(substr($dir, 0, 1)=="/" ? "" : "/").$dir;
-if ($WrapDebug) { 	echo "<div style='margin-bottom: 0.5em;'> $dir<br /> Is ".$DocRoot.$dir." dir? ".(is_dir($DocRoot.$dir) ? "Yes" : "No")."<br />"
-			." Is ".$DocRoot.$dir.$filewrap." file? ".(is_file($DocRoot.$dir.$filewrap) ? "Yes" : "No")."<br />"
-			." Is ".$DocRoot.$filewrap." file & in dir? ".(is_file($DocRoot.$filewrap) && strstr($filewrap, $dir) ? "Yes" : "No")."<br /></div>\n";
-}
-			if (is_dir($DocRoot.$dir) && (is_file($DocRoot.$dir.$filewrap) || (is_file($DocRoot.$filewrap) && strstr($filewrap, $dir)))) {
-				$PHPdir = $dir; $direxists = true;
- if ($WrapDebug) 	echo " PHPdir: $PHPdir &nbsp;Dir exists? ".($direxists ? "Yes" : "No")."<br />\n";
-				break;
-			}
-		}
-	}
+
+  //elseif ($AllowPHP and ($extension=="php" or $extension=="php3")) {
+  elseif ($AllowPHP) {
+	$PHPdir=Wrapper_getdir ($PHPdirs, $filewrap, $DocRoot);; 
+	$direxists = is_dir($DocRoot.$PHPdir); // ? true : false;
+	if ($WrapDebug) echo " File: $filewrap<br />\n";
+
  	if ($direxists==false){
 		$AllowPHP="0"; $ValidDir="0"; $msg=_NoValidPHPDir;
   	} // Needs to have a valid directory to use PHP pages
@@ -250,7 +200,7 @@ if ($WrapDebug) echo "<br /> WebDir: $WebDir<br /> FileDir: $FileDir &nbsp;&nbsp
 		&& !isset($HTTP_COOKIE_VARS['WrapDebug']) 
 		&& !isset($HTTP_SESSION_VARS['WrapDebug']))  
 	{ $index=4; include("header.php"); debugtable();  include("footer.php"); exit; }// Output debugtable amd then exit
-  	return Wrapper_errorpage('404', "Not Found: $FileBase");
+	return Wrapper_errorpage('404', "Not Found: $FileBase");
 
   }  // If webroot root and valid directory is not in the full filepath, an attempt has been made to hack the site by using ../ in the filepath
   if ($extension=='pdf') { 
@@ -259,8 +209,8 @@ if ($WrapDebug) echo "<br /> WebDir: $WebDir<br /> FileDir: $FileDir &nbsp;&nbsp
 } 
 
 ////////// Target is a URL //////////
-elseif (!empty($Request['url']) && $AutoResize) {
-  $URLwrap = Wrapper_admin_checkurl($Request['url'], $WrapDebug);
+elseif (!empty($urlwrap) && $AutoResize) {
+  $URLwrap = Wrapper_admin_checkurl($urlwrap, $WrapDebug);
   $URLarray = parse_url($URLwrap);
   $wrapHost = $_SERVER['HTTP_HOST'];
   $ExternalUrl = ($URLarray['host'] != $wrapHost);
@@ -269,7 +219,7 @@ elseif (!empty($Request['url']) && $AutoResize) {
   // If target site not local, read target page for processing, and embed in local page
   if ($ExternalUrl) {
   	if (ini_get('allow_url_fopen')==false) {
-          return Wrapper_errorpage('500', 'Internal Server Error', _FopenDisallowed1);
+            return Wrapper_errorpage('500', 'Internal Server Error', _FopenDisallowed1);
 	}
   	if (!empty($_SERVER['HTTP_USER_AGENT'])) { // Valid User-Agent required for some sites
 		ini_set('user_agent','$_SERVER["HTTP_USER_AGENT"]');
@@ -297,100 +247,12 @@ elseif (!empty($Request['url']) && $AutoResize) {
 	}
   }
   
-  // Javascript in HEAD to resize iFrame. $additional_header must be array for output in Header.php
-  global $additional_header;
-  if (!is_array($additional_header))
-      $additional_header = array();
-  $additional_header[] = "<script language='JavaScript'>
-function iFrameHeight() { 
-	var ua = navigator.userAgent.toLowerCase();
-	if(document.getElementById && (ua.indexOf('msie')==-1)) { // Mozilla, Opera & DOM
-		var objFrame = document.getElementById('ContentFrame');
-		var objDoc = (objFrame.contentDocument) ? objFrame.contentDocument // DOM, Moz 1.0+, Opera
-			: (objFrame.contentWindow) ? objFrame.contentWindow.document //IE5.5+
-			: (window.frames && window.frames['ContentFrame']) ? window.frames['ContentFrame'].document //IE5, Konqueror, Safari
-			: (objFrame.document) ? objFrame.document 
-			: null;
-	// 	Konqueror/Safari doesn't like ComputedStyle
-	//	var ComputedHeight = document.defaultView ? document.defaultView.getComputedStyle(objFrame.contentDocument.documentElement, '').getPropertyValue('height') : 0;
-		if (ua.indexOf('gecko')) objFrame.style.height = '500px'; // Mozilla fix
- 		var h = objDoc.body.scrollHeight; // find height of internal page
-		if (h==0) return; // Opera fix
-	//	if (parseInt(ComputedHeight) > h) { h = parseInt(ComputedHeight); }
-		if (h<500) {  h = 500; } 
- 		objFrame.style.height = h + 16 + 'px'; // change height of iFrame, +16 for scrollbars
-		
-".($WrapDebug ? "		// Display height & width in document
-		var w = objDoc.body.scrollWidth; // find width of internal page
-		document.getElementById('Height').firstChild.nodeValue = objDoc.body.scrollHeight + 'px'; 
-		document.getElementById('Width').firstChild.nodeValue = w + 'px'; // obj.contentDocument.
-	//	document.getElementById('CompHeight').firstChild.nodeValue = ComputedHeight;
-" : "")."
-	} else if(document.all) { 
-		// document.all.ContentFrame.style.width = document.frames('ContentFrame').document.body.scrollWidth + 'px';
- 		var h = document.frames('ContentFrame').document.body.scrollHeight;
-		if (h<500) { h = 500; }
- 		document.all.ContentFrame.style.height = h + 18 + 'px'; // +16 to compensate for scrollbars, plus 2px extra
-".($WrapDebug ? "		// Display height & width in document
-		var w = document.frames('ContentFrame').document.body.scrollWidth;
-		document.getElementById('Height').innerText = h + 16 + 'px'; 
-		document.getElementById('Width').innerText = w + 'px';
-" : "")."	}
-}
-
-// This is for browsing within a frame where the contained page calls the script through the BODY tag:
-// <body onload=\"if (parent.adjustIFrameSize)
-//                parent.adjustIFrameSize(window);\">
-function adjustIFrameSize (iframeWindow) { 
-	if (iframeWindow.document.height) { 
-		var iframeElement = parent.document.getElementById (iframeWindow.name); 
-		iframeElement.style.height = iframeWindow.document.height + '16px'; 
-".($WrapDebug ? "		// Display height & width in document
-		document.getElementById('Height').firstChild.nodeValue = iframeWindow.document.height + 'px'; 
-		document.getElementById('Width').firstChild.nodeValue = iframeWindow.document.width + 'px'; "
-		: "")
-."	} else if (document.all) { 
-		var iframeElement = parent.document.all[iframeWindow.name]; 
-		if (iframeWindow.document.compatMode && iframeWindow.document.compatMode != 'BackCompat') { 
-			h = iframeWindow.document.documentElement.scrollHeight + 5;
-			w = iframeWindow.document.documentElement.scrollWidth + 5;
-		} else { 
-			h = iframeWindow.document.body.scrollHeight + 5; 
-			w = iframeWindow.document.body.scrollWidth + 5;
-		}
-		iframeElement.style.height = h + 'px'; 
-".($WrapDebug ? "		// Display height & width in document
-		document.getElementById('Height').innerText = h + 'px'; 
-		document.getElementById('Width').innerText = w + 'px';" 
-		: "")
-." 
-	} 
-}
-".($ExternalUrl ?  
-"var wrapnum=0;
-function writeiframe() { 
-	if (wrapnum!=0) return;
-	else wrapnum=1;
-	var iFrameDoc, content;
-	var ScriptFrame =  document.getElementById('ContentFrame'); // parent.frames.ContentFrame; 
-	iFrameDoc = (window.frames && window.frames['ContentFrame']) ? window.frames['ContentFrame'].document //IE5, Konqueror, Safari
-		: ScriptFrame.contentDocument ? ScriptFrame.contentDocument // Dom, Moz 1.0+, Opera
-		: ScriptFrame.contentWindow ? ScriptFrame.contentWindow.document // IE5.5+
-		: document.all('ContentFrame').contentWindow.document; // IE 4
-	content = document.getElementById ? document.getElementById('buffer').innerHTML // firstChild.nodeValue
-		: document.all('buffer').innerHTML; // IE 4
-	var pattern1 = /&amp;l2;/g;
-	var pattern2 = /&amp;g2;/g;
-	var pattern3 = /&amp;q2;/g;
-	content = content.replace(pattern1, '<');
-	content = content.replace(pattern2, '>');
-	content = content.replace(pattern3, '\"');
-	iFrameDoc.open();
-	iFrameDoc.write(content);
-	iFrameDoc.close();
-} 
-onload = function() {  writeiframe();  }" : "onload = iFrameHeight()")."
-</script>\n";
+  // Javascript in HEAD to resize iFrame.
+  if ($ExternalUrl) {
+    PageUtil::AddVar('javascript', "modules/$ModName/pnjavascript/writeiframe.js");
+  } else {
+    PageUtil::AddVar('javascript', "modules/$ModName/pnjavascript/iFrameHeight.js");
+  }
 
   // Target site not local, process page and embed in local page
   if ($ExternalUrl) {
@@ -437,10 +299,10 @@ $BaseURL = "<base href=\"$domain\"$target>\n";
   }
   } // end if external host
 } // end URL
-elseif(!empty($Request['url2']) or $AutoResize==false) { 
-  if ($AutoResize==false && !empty($Request['url'])) 
-      $Request['url2']=$Request['url']; 
-  $URLwrap = Wrapper_admin_checkurl($Request['url2'], $WrapDebug);
+elseif(!empty($url2wrap) or $AutoResize==false) { 
+  if ($AutoResize==false && !empty($urlwrap)) 
+      $url2wrap=$urlwrap; 
+  $URLwrap = Wrapper_admin_checkurl($url2wrap, $WrapDebug);
 }
 
 
@@ -457,11 +319,11 @@ if (!empty($URLwrap)) {
 <?PHP } ?>
 <noscript><div align="center"><strong><?PHP echo _EnableJS ?></strong></div></noscript>
   <iframe id="ContentFrame" name="ContentFrame" scrolling="auto" frameborder="no" 
-        <?PHP echo ((!empty($Request['url2']) or !$AutoResize or !$ExternalUrl) ? "src=\"$URLwrap\" " : 'src="" ') ?> 
+        <?PHP echo ((!empty($url2wrap) or !$AutoResize or !$ExternalUrl) ? "src=\"$URLwrap\" " : 'src="" ') ?> 
 	onLoad="window.setTimeout('iFrameHeight(this)',50);" 
 	style="width: 100%; height: <?PHP echo $FrameHeight ?>px;" marginwidth="0" marginheight="0">
   </iframe>
-<?PHP if(isset($Request['url']) && $AutoResize && $ExternalUrl) { ?>
+<?PHP if(isset($urlwrap) && $AutoResize && $ExternalUrl) { ?>
 
 <!---------------- Buffer ----------------->
 <DIV id="buffer" style="display: none;">
@@ -655,7 +517,7 @@ if (empty($filewrap)){
 /****************** Wrap Outout ******************/ 
 function wrap_output($msg, $filewrap, $checked, $idx="0", $type="file") {
 global $PHP_SELF; 
-if (phpversion() < "4.1.0") global $_GET, $_POST, $_REQUEST, $_FILES, $_SERVER;
+
 $idx = ($idx>=0 || $idx<=4) ? $idx : "0";
 	$text[0] = _NWLayout0; // "Default view - Left column only";
 	$text[1] = _NWLayout1; // "Home page (Left, Right and Center blocks with Admin message)";
@@ -988,319 +850,4 @@ global $DocRoot;
     return $file;
 }
 
-/******************* Debugging *******************/
-function debugtable() { 
-if (!pnSecAuthAction(0, 'Wrapper::', '::', ACCESS_ADMIN)) {
-	return;
-} 
-if (phpversion() < "4.1.0") global $_GET, $_POST, $_REQUEST, $_FILES, $_SERVER;
-global $SiteRoot, $DocRoot, $nukeroot, $PostnukeDir, $PHPdir, $PHPdirs, $HTMLdir, $HTMLdirs, $HTMLroot, $FullPath, $WebDir, $AllowPHP, $AllowURLs, $extension, $URLwrap, $URLs, $filewrap, $filewrapname;
-?>
-<style type="text/css">
-<!-- 
- DIV#DebugWrapper  { padding-left: 1.5em; padding-right: 1.5em; }
- DIV#DebugWrapper H2 {font-size: 18px; font-weight: bold; text-align: center; }
- DIV#DebugWrapper TABLE#Debug TD, 
- DIV#DebugWrapper TABLE#Debug td div, 
- DIV#DebugWrapper table#Debug td p { font-size: 12px; color: #000000; background-color: #FFFFEE; }
- DIV#DebugWrapper TABLE#Debug TD { width: 50%; border: 1px solid #CCCCFF;}
- DIV#DebugWrapper TABLE#Debug TH { border: 1px solid #CCCCFF; background: #DDDDFF;}
--->
-</style>
-<div id="DebugWrapper"> 
-<?PHP OpenTable(); ?>
-<H2>Debug Table</H2>
-<table ID="Debug" style="border: 3px solid #CCCCFF;" cellpadding="5" align="center" cellspacing="0" width="95%" bgcolor="#FFFFEE" bordercolor="#CCCCFF">
-  <tr><!----------------- POSTNUKE SECTION ----------------->
-    <th style="color:black;" height="30" colspan="2" bgcolor="#DDDDFF">Postnuke</th>
-  </tr>
-  <tr>
-    <td valign="top" align="right">Fullpath:<br />DocRoot:
-    <?PHP if (!empty($GLOBALS['DocumentRoot'])) echo "<br />\$DocumentRoot:"; ?></td>
-    <td width="50%"><?PHP echo "$FullPath<br />$DocRoot<br />"
-    .(!empty($GLOBALS['DocumentRoot']) ? $GLOBALS['DocumentRoot'].'<br />' : '')
-    .(strpos($FullPath, $DocRoot)===false 
-    ? " <span style=\"color:red\">Filepath <strong>OUTSIDE</strong> document root!</span>" 
-    : " <span style=\"color:green\"><strong>File in document root.</strong></span>") ?>&nbsp;</td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$_SERVER['SCRIPT_FILENAME']:</td>
-    <td width="50%"><?PHP echo $_SERVER['SCRIPT_FILENAME'] ?>&nbsp;</td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">__FILE__ (translated):</td>
-    <td width="50%"><?PHP echo str_replace("\\", "/", __FILE__); ?>&nbsp;</td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$PostnukeDir:</td>
-    <td width="50%"><?PHP echo $GLOBALS['PostnukeDir'] ?> </td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">PostNuke $SiteRoot:<br /></td>
-    <td><?PHP echo $GLOBALS['SiteRoot'] ?> </td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$WebRoot:<br /></td>
-    <td><?PHP echo $GLOBALS['WebRoot'] ?> </td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$RelDir:<br /></td>
-    <td><?PHP echo $GLOBALS['RelDir'] ?> </td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$WebDir:<br /></td>
-    <td><?PHP echo $GLOBALS['WebDir'] ?> </td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">Relative path to site $nukeroot:</td>
-    <td width="50%"><?PHP echo $GLOBALS['nukeroot'] ?> &nbsp;</td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">pnGetBaseURI() ($nukeurl)</td>
-    <td width="50%"><?PHP echo pnGetBaseURI() ?>&nbsp; </td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">pnGetBaseURL()</td>
-    <td width="50%"><?PHP echo pnGetBaseURL() ?>&nbsp; </td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">Path to scriptfile:<br />(URL minus scriptfile)</td>
-    <td><?PHP echo "http".($_SERVER['HTTPS']=="on"?"s":"")."://".$_SERVER['SERVER_NAME'].(dirname($_SERVER['PHP_SELF'])=="\\" ? "" : dirname($_SERVER['PHP_SELF']))."/"
-    ."<br />http".($_SERVER['HTTPS']=="on"?"s":"")."://".$_SERVER['SERVER_NAME'].substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'],"/"))."/"; // strrev(strstr(strrev($_SERVER['PHP_SELF']),"/"))?></td>
-  </tr>
-<?PHP if ($isPHP=strstr($GLOBALS['extension'],'php')) { ?>
-  <tr>
-    <td valign="top" align="right">PHP dir:<br />PHP root:</td>
-    <td><?PHP echo $DocRoot.$PHPdir.(is_dir($DocRoot.$PHPdir) ? " &nbsp;&nbsp;is a valid directory<br />\n" : " &nbsp;&nbsp;is NOT a valid directory<br />\n");
-        if ($isPHP and is_dir($DocRoot.$PHPdir)) { echo $GLOBALS['PHProot']."<br />"; } else { echo "PHP root not set<br />"; } 
-	if ($AllowPHP) echo "PHP allowed"; else echo "PHP NOT allowed";  ?></td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">PHPdirs array:</td>
-    <td><?PHP 
-if (is_array($PHPdirs) && !empty($PHPdirs)){
-    foreach($PHPdirs as $dir) {
-	if (substr($dir, -1)=="/")  $dir=substr($dir, 0, strlen($dir)-1); 
-	$dir=(substr($dir, 0, 1)=="/" ? "" : "/").$dir;
- 	echo "<div style='margin-bottom: 0.5em;'>$dir<br />".$DocRoot.$dir." &nbsp;".(is_dir($DocRoot.$dir) ? "<span style='color: green;'>Valid directory</span>" : "<span style='color: red;'>Not valid directory</span>")."<br />"
-	.$DocRoot.$dir.$filewrapname." &nbsp;".(is_file($DocRoot.$dir.$filewrapname) ? "<span style='color: green;'>File</span>" : "<span style='color: red;'>Not a file</span>")."<br />"
-	.$DocRoot.$filewrapname." &nbsp;".(is_file($DocRoot.$filewrapname) && strstr($DocRoot.$filewrapname, $dir) ? "<span style='color: green;'>Valid File & in dir</span>" : "<span style='color: red;'>Not a file in valid dir</span>")."<br /></div>\n";
-    }
-  }  ?>
-    </td>
-  </tr>
-<?PHP }
-if ($isHTML=strstr($GLOBALS['extension'],'htm')) { ?>
-  <tr>
-    <td valign="top" align="right">HTML dir:<br />HTML root:</td>
-    <td><?PHP echo $DocRoot.$HTMLdir.(is_dir($DocRoot.$HTMLdir) ? " &nbsp;&nbsp;is a valid directory<br />\n" : " &nbsp;&nbsp;is NOT a valid directory<br />\n");
-        if ($isHTML and is_dir($DocRoot.$HTMLdir)) { echo $HTMLroot; } else { echo "HTML root not set"; } ?></td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">HTMLdirs array:</td>
-    <td><?PHP 
-  if (is_array($HTMLdirs) && !empty($HTMLdirs)){
-    foreach($HTMLdirs as $dir) {
-	if (substr($dir, -1)=="/")  $dir=substr($dir, 0, strlen($dir)-1); 
-	$dir=(substr($dir, 0, 1)=="/" ? "" : "/").$dir; // .(substr($dir, -1)=="/" ? "" : "/");
-	echo "<div style='margin-bottom: 0.5em;'>$dir<br />".$DocRoot.$dir." &nbsp;".(is_dir($DocRoot.$dir) ? "<span style='color: green;'>Valid directory</span>" : "<span style='color: red;'>Not valid directory</span>")."<br />"
-	.$DocRoot.$dir.$filewrapname." &nbsp;".(is_file($DocRoot.$dir.$filewrapname) ? "<span style='color: green;'>File</span>" : "<span style='color: red;'>Not a file</span>")."<br />"
-	.$DocRoot.$filewrapname." &nbsp;".(is_file($DocRoot.$filewrapname) && strstr($DocRoot.$filewrapname, $dir) ? "<span style='color: green;'>Valid File & in dir</span>" : "<span style='color: red;'>Not a file in valid dir</span>")."<br /></div>\n";
-    }
-  } ?>
-    </td>
-  </tr>
-<?PHP } 
- if (!empty($URLwrap)) { ?>
-  <tr>
-    <td valign="top" align="right">Allow URLs?</td>
-    <td width="50%"><?PHP echo ($AllowURLs ? "URLs allowed" : "URLs <strong>not</strong> allowed") ?></td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">Allowed URLs:</td>
-    <td width="50%"><?PHP 
-if (!is_array($URLs['allow']) or empty($URLs['allow'])) {
-	echo "All"; 
-} else {
-   $urlOK = false;
-    foreach($URLs['allow'] as $url) {
-	echo "$url".(stristr($URLwrap, $url)!==false ? " - Matched $URLwrap" : "")."<br />\n"; 
-	if (stristr($URLwrap, $url)!==false)  $urlOK = true;  
-    }
-    echo $urlOK ? "URL allowed" : "URL <strong>not</strong> allowed"; 
-} ?>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">Disallowed URLs:</td>
-    <td width="50%"><?PHP 
-if (!is_array($URLs['deny']) or empty($URLs['deny'])) {
-	echo "None";
-} else {
-   $urlOK = true;
-     foreach($URLs['deny'] as $url) {
-	echo "$url".(stristr($URLwrap, $url)!==false ? " - Matched $URLwrap" : "")."<br />\n"; 
-	if (stristr($URLwrap, $url)!==false)  $urlOK = false;  
-    }
-    echo $urlOK ? "URL allowed" : "URL <strong>not</strong> allowed"; 
-} ?>
-    </td>
-  </tr>
-<?PHP } ?>
-<!--  <tr>
-    <td valign="top" align="right">URLencoded Filepath:</td>
-    <td><?PHP echo htmlentities(urlencode($GLOBALS['filewrap'])) ?></td>
-  </tr> -->
-  <tr>
-    <td valign="top" align="right"><?PHP echo (empty($GLOBALS['URLwrap']) ? "File (filewrap):" : "URL (URLwrap):") ?></td>
-    <td><?PHP echo (empty($GLOBALS['URLwrap']) ? $GLOBALS['filewrap'] : $GLOBALS['URLwrap']) ?>&nbsp;</td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">Query string:</td>
-    <td><?PHP echo $_SERVER['QUERY_STRING']; ?>&nbsp;</td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">First part of Query:</td>
-    <td><?PHP echo strtok($_SERVER['QUERY_STRING'], '?&'); ?>&nbsp;</td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">Sub-Query:</td>
-    <td><?PHP echo $GLOBALS['query']; ?>&nbsp;</td>
-  </tr>
-<?PHP if (empty($URLwrap)) { ?>  <tr>
-    <td valign="top" align="right">realpath(<?PHP echo $filewrap ?>)</td>
-    <td><?PHP echo $GLOBALS['FullPath']; // realpath($DocRoot.$filewrap) ?>&nbsp;</td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">Is file in Postnuke site?</td>
-    <td><?PHP if (strpos($FullPath, $PostnukeDir)===false) { echo "No\n"; }
-		else { echo "<span style=\"color:green\"><strong>File onsite</strong></span>\n";}
-    echo "<p>Postnuke Site: &nbsp;".$PostnukeDir."<br />Filepath:".str_repeat("&nbsp;",11).$FullPath."\n" ?></td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">pathinfo(<?PHP echo $filewrap ?>):</div></td>
-    <td><pre><?PHP DebugPrint(pathinfo($filewrap)) ?></pre></td>
-  </tr><?PHP } ?>
-  <tr>
-    <td valign="top" align="right">parse_url($REQUEST_URI):</td>
-    <td><pre><?PHP DebugPrint(parse_url($_SERVER['REQUEST_URI'])) ?></pre></td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">basename(request_uri):</td>
-    <td><?PHP echo basename($_SERVER['REQUEST_URI']) ?></td>
-  </tr>
-<!--  <tr>
-    <td valign="top" align="right">$_ENV:</td>
-    <td><pre><?PHP DebugPrint($_ENV) ?></pre></td>
-  </tr> -->
-  <tr>
-    <td valign="top" align="right">$PHP_SELF:</td>
-    <td><?PHP echo $_SERVER['PHP_SELF'] ?>&nbsp;</td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">basename($PHP_SELF):</td>
-    <td><?PHP echo basename($_SERVER['PHP_SELF']) ?></td>
-  </tr> 
-  <tr>
-    <td valign="top" align="right">$REQUEST_METHOD:</td>
-    <td><?PHP echo $_SERVER['REQUEST_METHOD'] ?>&nbsp;</td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$_GET:</td>
-    <td><pre><?PHP DebugPrint($_GET) ?></pre></td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$_POST:</td>
-    <td><pre><?PHP DebugPrint($_POST) ?></pre></td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$_COOKIE:</td>
-    <td><pre><?PHP DebugPrint($_COOKIE) ?></pre></td>
-  </tr>
-<!-- 
-  <tr>  
-    <td valign="top" align="right">$GLOBALS</td>
-    <td><pre><?PHP /* DebugPrint($GLOBALS) */ ?></pre>&nbsp;</td>
-  </tr>
---> 
-  <tr>
-    <td valign="top" align="right">$php_errormsg:</td>
-    <td><pre><?PHP DebugPrint($php_errormsg) ?></pre>&nbsp;</td>
-  </tr>
-
-  <tr><!----------------- APACHE SECTION ----------------->
-  <th style="color:black; background: #DDDDFF;" colspan="2" height="30" bgcolor="#DDDDFF">Server</th>
-  <tr>
-    <td valign="top" align="right">PHP version:</td>
-    <td><?PHP echo phpversion(); ?></td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$HTTP_HOST:</td>
-    <td><?PHP echo $_SERVER['HTTP_HOST'] ?></td>
-  </tr>
-  <tr>
-    <td align="right">Server Address:</td>
-    <td><?PHP echo $_SERVER['SERVER_ADDR'] ?></td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$REMOTE_HOST:</td>
-    <td><?PHP echo $_SERVER['REMOTE_HOST'] ?>&nbsp;</td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">Remote Address:</td>
-    <td><?PHP echo Wrapper_user_getip(); ?></td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$PATH_TRANSLATED:</td>
-    <td><?PHP echo $_SERVER['PATH_TRANSLATED'] ?></td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$REQUEST_URI:</td>
-    <td><?PHP echo $_SERVER['REQUEST_URI'] ?></td>
-    <!-- If server can't use $REQUEST_URI (like IIS), use $location = $PHP_SELF."?".$HTTP_SERVER_VARS['QUERY_STRING']; -->
-  </tr>
-  <tr>
-    <td valign="top" align="right">$_REQUEST:</td>
-    <td><pre><?PHP DebugPrint($_REQUEST) ?></pre> </td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$_FILES:</td>
-    <td><pre><?PHP DebugPrint($_FILES) ?></pre> </td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$_SESSION:</td>
-    <td><pre><?PHP DebugPrint($_SESSION) ?></pre> </td>
-  </tr>
-  <tr><!-- Can choke on Apache 2; remove if problem -->
-    <td valign="top" align="right">$_SERVER['HTTP_REFERER']<br />HTTP Referer host:</td>
-    <td><?PHP echo $_SERVER['HTTP_REFERER']."<br />".dirname($_SERVER['HTTP_REFERER']) ?></td>
-  </tr>
-  <tr>
-    <td valign="top" align="right">$_SERVER:</td>
-    <td><pre><?PHP DebugPrint($_SERVER) ?></pre></td>
-  </tr><?PHP if (function_exists('getallheaders')) { ?>
-  <tr>
-    <td valign="top" align="right">Headers (Apache):</td>
-    <td><pre><?PHP DebugPrint(getallheaders()) ?></pre></td>
-  </tr>
-<?PHP 
-} 
- if (function_exists('apache_lookup_uri')) { ?>  <tr>
-    <td valign="top" align="right">apache_lookup_uri(<?PHP echo $filewrap ?>):</td>
-    <td><pre><?PHP DebugPrint(apache_lookup_uri($filewrap)) ?></pre></td>
-  </tr>
-<?PHP } ?>
-</table>
-<?PHP 
-CloseTable(); ?>
-</div>
-<? 
-}
-
-/********* Format Debug output *************/
-function DebugPrint($array) {
-    foreach ($array as $key=>$value) {
-        echo "[$key] => ".wordwrap($value, 70, "\n           ", 1)."\n"; 
-    }
-}
-?>
+include("Debug.php");
