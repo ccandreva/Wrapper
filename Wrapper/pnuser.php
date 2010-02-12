@@ -228,12 +228,12 @@ elseif (!empty($urlwrap) && $AutoResize) {
   }
   
   // Javascript in HEAD to resize iFrame.
-//  if ($ExternalUrl) {
+  if ($ExternalUrl) {
     PageUtil::AddVar('javascript', "modules/$ModName/pnjavascript/writeiframe.js");
-//  } else {
+  } else {
     PageUtil::AddVar('javascript', "modules/$ModName/pnjavascript/iFrameHeight.js");
-    PageUtil::AddVar('javascript', "modules/$ModName/pnjavascript/adjustIFrameSize.js");
-//  }
+//    PageUtil::AddVar('javascript', "modules/$ModName/pnjavascript/adjustIFrameSize.js");
+  }
 
   // Target site not local, process page and embed in local page
   if ($ExternalUrl) {
