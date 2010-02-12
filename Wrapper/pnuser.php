@@ -1,39 +1,19 @@
-<?PHP
-//////////////////////////////////////////////////////////////////////////////////////////
-// $Id:                                                                               $ //
-//                                                                                      //
-// Wrapper v1.0 for Postnuke                                                            //
-// ==================================================================================== //
-// (c) 2005 Martin Stær Andersen                                                        //
-// msandersen@tpg.com.au                                                                //
-//                                                                                      //
-// This script will integrate any local HTML, PHP or txt file as well as                //
-// external web pages into your Postnuke site (wrap the Postnuke site around the file). //
-// ------------------------------------------------------------------------------------ //
-// POST-NUKE Content Management System                                                  //
-// Copyright (C) 2002 by the PostNuke Development Team.                                 //
-// http://www.postnuke.com/                                                             //
-//                                                                                      //
-// Based on:                                                                            //
-// PHP-NUKE Web Portal System - http://phpnuke.org/                                     //
-// Thatware - http://thatware.org/                                                      //
-// ------------------------------------------------------------------------------------ //
-// LICENSE                                                                              //
-//                                                                                      //
-// This program is free software; you can redistribute it and/or                        //
-// modify it under the terms of the GNU General Public License (GPL)                    //
-// as published by the Free Software Foundation; either version 2                       //
-// of the License, or (at your option) any later version.                               //
-//                                                                                      //
-// This program is distributed in the hope that it will be useful,                      //
-// but WITHOUT ANY WARRANTY; without even the implied warranty of                       //
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                        //
-// GNU General Public License for more details.                                         //
-//                                                                                      //
-// To read the license please visit http://www.gnu.org/copyleft/gpl.html                //
-//                                                                                      //
-//////////////////////////////////////////////////////////////////////////////////////////
-
+<?php
+/**
+ * Wrapper : Wrap plain files in Zikula theme and permissions
+ *
+ * @copyright (c) 2010 Chris Candreva, Martin Stær Andersen
+ * @link http://code.ziklula.org/wrapper/
+ * @version $Id:                                              $
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package Wrapper
+ *
+ *
+ * Based on NukeWrapper by Martin Stær Andersen msandersen@tpg.com.au
+ * This script will integrate any local HTML, PHP or txt file as well as
+ * external web pages into your Zikula site (wrap the Zikula site around the file).
+ */
+ 
 global $ModName, $DocRoot, $FullPath, $RelDir, $WebRoot, $nukeurl, $nukeroot;
 $ModName = basename( dirname( __FILE__ ) );
 $DocumentRoot = "";  // Set this if your ISP has no Document Root set. Else for your own server ensure the Document Root/Home directory is set.

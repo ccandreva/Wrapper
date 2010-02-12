@@ -1,15 +1,14 @@
 <?php
-
 /**
- * Zikula Application Framework
- * $Id:                                                                               $
- * @copyright (c) 2009, Chris Candreva <chris@westnet.com>
- * 
- * 
- * 
- * 
+ * Wrapper : Wrap plain files in Zikula theme and permissions
+ *
+ * @copyright (c) 2010 Chris Candreva, Martin Stær Andersen
+ * @link http://code.ziklula.org/wrapper/
+ * @version $Id:                                              $
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package Wrapper
+ *
  */
-
 
 require_once('Common.php');
 

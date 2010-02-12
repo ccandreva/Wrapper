@@ -1,4 +1,14 @@
 <?php
+/**
+ * Wrapper : Wrap plain files in Zikula theme and permissions
+ *
+ * @copyright (c) 2010 Chris Candreva, Martin Stær Andersen
+ * @link http://code.ziklula.org/wrapper/
+ * @version $Id:                                              $
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package Wrapper
+ *
+ */
 
 /******************* Debugging *******************/
 function debugtable() { 

@@ -1,5 +1,15 @@
 <?php
-// $Id: pnversion.php,v 1.1.1.1 2002/09/15 22:26:15 root Exp $
+/**
+ * Wrapper : Wrap plain files in Zikula theme and permissions
+ *
+ * @copyright (c) 2010 Chris Candreva, Martin Stær Andersen
+ * @link http://code.ziklula.org/wrapper/
+ * @version $Id:                                              $
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @package Wrapper
+ *
+ */
+
 $modversion['name'] = 'Wrapper';
 $modversion['version'] = '0.0';
 $modversion['description'] = 'Wraps local and external pages in Zikula site';
