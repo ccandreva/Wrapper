@@ -72,19 +72,22 @@ if ($WrapDebug && !pnSecAuthAction(0, 'Wrapper::', '::', ACCESS_ADMIN)) {
 //$starturl = pnModGetVar($GLOBALS['ModName'], 'StartPage');
 //if (!empty($starturl)) $StartPage=$starturl;
 
-if (phpversion() < "4.1.0") {
-	if (isset($HTTP_GET_VARS) and !empty($HTTP_GET_VARS)) 
-	    $_GET = $HTTP_GET_VARS;
-	if (isset($HTTP_POST_VARS) and !empty($HTTP_POST_VARS)) 
-	    $_POST = $_FILES = $HTTP_POST_VARS;
-	$_REQUEST = array_merge($_POST, $_GET);
-	if (isset($HTTP_SERVER_VARS) and !empty($HTTP_SERVER_VARS)) 
- 	    $_SERVER = $HTTP_SERVER_VARS;
-} 
 $Request = array_merge($args, $_POST, $_GET);
 
-$filewrap = $Request['file']; $URLwrap=""; $msg=""; $checked="0"; $ValidDir="1";
-$query=$_SERVER['QUERY_STRING'];
+//$filewrap = $Request['file']; 
+$filewrap = pnVarCleanFromInput('file');
+$urlwrap = pnVarCleanFromInput('url');
+$url2wrap = pnVarCleanFromInput('url2');
+$opt = pnVarCleanFromInput('opt');
+if (empty($opt)) $opt=$UseTables;
+$index = pnVarCleanFromInput('idx');
+if (empty($index)) $index = $Layout;
+$FrameHeight=pnVarCleanFromInput('height');
+if (! (isset($FrameHeight) && is_numeric($FrameHeight) )) $FrameHeight='600';
+
+$URLwrap=""; $msg=""; $checked="0"; $ValidDir="1";
+
+// $query=$_SERVER['QUERY_STRING'];
 $nukeurl = pnGetBaseURI(); // dirname($_SERVER['PHP_SELF']); // dirname returns \ if empty! // URI of index file, eg /nuke
 $pnconfig['nukeurl']=$nukeurl;
 $SiteRoot = $WebRoot.$nukeroot."/"; // $nukeurl Can also use $SERVER_NAME
