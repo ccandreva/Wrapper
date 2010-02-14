@@ -78,7 +78,7 @@ function Wrapper_checkperm($filewrap, $NWkeywords)
           if (stristr($filewrap, $key)!==false) { 
 		if (!pnSecAuthAction(0, 'Wrapper::file', $filebase.":$key:$extension", ACCESS_READ)) { 
 			if ($WrapDebug)  echo "<span style=\"color: red;\">failed</span><br />";
-                        return false; //Wrapper_errorpage('403', 'Forbidden', _NWNoAuthorityForFile);
+                        return false; //Wrapper_errorpage('403', 'Forbidden', __('You are not authorised to view this file, sorry!', $dom));
     		} 
     		$fileOK=true;
           } 

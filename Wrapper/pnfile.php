@@ -29,7 +29,7 @@ global $FileDirs;
   $filename = $FullPath;
 
   $FileOK = Wrapper_checkperm($FullPath, $NWkeywords);
-  if (!$FileOK) return Wrapper_errorpage('403', 'Forbidden', _NWNoAuthorityForFile);
+  if (!$FileOK) return Wrapper_errorpage('403', 'Forbidden', __('You are not authorised to view this file, sorry!', $dom));
 
     if(!is_file($filename)) {
 	return Wrapper_errorpage('403', 'Forbidden');

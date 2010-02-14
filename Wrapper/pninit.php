@@ -62,7 +62,7 @@ return true; // temporarily disabled
     // Check for an error with the database code, and if so set an
     // appropriate error message and return
     if ($dbconn->ErrorNo() != 0) {
-        pnSessionSetVar('errormsg', _CREATETABLEFAILED.$dbconn->ErrorMsg());
+        pnSessionSetVar('errormsg', __('Error! Sorry! Table creation failed.', $dom).$dbconn->ErrorMsg());
         return false;
     }
 ////////// HTMLdirs allowed static page directories //////////
@@ -76,7 +76,7 @@ return true; // temporarily disabled
     $dbconn->Execute($sql);
 
     if ($dbconn->ErrorNo() != 0) {
-        pnSessionSetVar('errormsg', _CREATETABLEFAILED.$dbconn->ErrorMsg()." HTMLdirs. Query: $sql");
+        pnSessionSetVar('errormsg', __('Error! Sorry! Table creation failed.', $dom).$dbconn->ErrorMsg()." HTMLdirs. Query: $sql");
         return false;
     }
     if (is_array($HTMLdirs) && !empty($HTMLdirs)) { // Insert $HTMLdirs array into database
@@ -87,7 +87,7 @@ return true; // temporarily disabled
         }
     	$dbconn->Execute($sql);
     	if ($dbconn->ErrorNo() != 0) {
-    	    pnSessionSetVar('errormsg', _INSERTVALUEFAILED.$dbconn->ErrorMsg()." HTMLdirs. Query: $sql");
+    	    pnSessionSetVar('errormsg', __('Database value insertion falied.', $dom).$dbconn->ErrorMsg()." HTMLdirs. Query: $sql");
     	    return false;
     	}
     }
@@ -102,7 +102,7 @@ return true; // temporarily disabled
     $dbconn->Execute($sql);
 
     if ($dbconn->ErrorNo() != 0) {
-        pnSessionSetVar('errormsg', _CREATETABLEFAILED.$dbconn->ErrorMsg()." PHPdirs. Query: $sql");
+        pnSessionSetVar('errormsg', __('Error! Sorry! Table creation failed.', $dom).$dbconn->ErrorMsg()." PHPdirs. Query: $sql");
         return false;
     }
     if (is_array($PHPdirs) && !empty($PHPdirs)) { // Insert $PHPdirs array into database
@@ -113,7 +113,7 @@ return true; // temporarily disabled
         }
     	$dbconn->Execute($sql);
     	if ($dbconn->ErrorNo() != 0) {
-    	    pnSessionSetVar('errormsg', _INSERTVALUEFAILED.$dbconn->ErrorMsg()." PHPdirs. Query: $sql");
+    	    pnSessionSetVar('errormsg', __('Database value insertion falied.', $dom).$dbconn->ErrorMsg()." PHPdirs. Query: $sql");
     	    return false;
     	}
     } 
@@ -122,7 +122,7 @@ return true; // temporarily disabled
     		        VALUES ( NULL, '/PHPpages')";
   	$dbconn->Execute($sql);
     	if ($dbconn->ErrorNo() != 0) {
-    	    pnSessionSetVar('errormsg', _INSERTVALUEFAILED.$dbconn->ErrorMsg()." PHPdirs Query: $sql");
+    	    pnSessionSetVar('errormsg', __('Database value insertion falied.', $dom).$dbconn->ErrorMsg()." PHPdirs Query: $sql");
     	    return false;
     	}
     }
@@ -137,7 +137,7 @@ return true; // temporarily disabled
     $dbconn->Execute($sql);
 
     if ($dbconn->ErrorNo() != 0) {
-        pnSessionSetVar('errormsg', _CREATETABLEFAILED.$dbconn->ErrorMsg()." Allow rules. Query: $sql");
+        pnSessionSetVar('errormsg', __('Error! Sorry! Table creation failed.', $dom).$dbconn->ErrorMsg()." Allow rules. Query: $sql");
         return false;
     }
     if (is_array($URLs['allow']) && !empty($URLs['allow'])) { // Insert $URLs['allow'] array into database
@@ -148,7 +148,7 @@ return true; // temporarily disabled
         }
     	$dbconn->Execute($sql);
     	if ($dbconn->ErrorNo() != 0) {
-    	    pnSessionSetVar('errormsg', _INSERTVALUEFAILED.$dbconn->ErrorMsg()." Allow rules. Query: $sql");
+    	    pnSessionSetVar('errormsg', __('Database value insertion falied.', $dom).$dbconn->ErrorMsg()." Allow rules. Query: $sql");
     	    return false;
     	}
     } 
@@ -163,7 +163,7 @@ return true; // temporarily disabled
     $dbconn->Execute($sql);
 
     if ($dbconn->ErrorNo() != 0) {
-        pnSessionSetVar('errormsg', _CREATETABLEFAILED.$dbconn->ErrorMsg()." Deny rules. Query: $sql");
+        pnSessionSetVar('errormsg', __('Error! Sorry! Table creation failed.', $dom).$dbconn->ErrorMsg()." Deny rules. Query: $sql");
         return false;
     }
     if (is_array($URLs['deny']) && !empty($URLs['deny'])) { // Insert $URLs['deny'] array into database
@@ -174,7 +174,7 @@ return true; // temporarily disabled
         }
     	$dbconn->Execute($sql);
     	if ($dbconn->ErrorNo() != 0) {
-    	    pnSessionSetVar('errormsg', _INSERTVALUEFAILED.$dbconn->ErrorMsg()." Deny rules. Query: $sql");
+    	    pnSessionSetVar('errormsg', __('Database value insertion falied.', $dom).$dbconn->ErrorMsg()." Deny rules. Query: $sql");
     	    return false;
     	}
     } 
@@ -190,7 +190,7 @@ return true; // temporarily disabled
     $dbconn->Execute($sql);
 
     if ($dbconn->ErrorNo() != 0) {
-        pnSessionSetVar('errormsg', _CREATETABLEFAILED.$dbconn->ErrorMsg()." WrapURL. Query: $sql");
+        pnSessionSetVar('errormsg', __('Error! Sorry! Table creation failed.', $dom).$dbconn->ErrorMsg()." WrapURL. Query: $sql");
         return false;
     }
     if (is_array($wrapUrl) && !empty($wrapUrl)) { // Insert $$wrapUrl array into database
@@ -201,7 +201,7 @@ return true; // temporarily disabled
         } // NULL,
     	$dbconn->Execute($sql);
     	if ($dbconn->ErrorNo() != 0) {
-    	    pnSessionSetVar('errormsg', _INSERTVALUEFAILED.$dbconn->ErrorMsg()." WrapURL. Query: $sql");
+    	    pnSessionSetVar('errormsg', __('Database value insertion falied.', $dom).$dbconn->ErrorMsg()." WrapURL. Query: $sql");
     	    return false;
     	}
     } 
@@ -218,7 +218,7 @@ return true; // temporarily disabled
     $dbconn->Execute($sql);
 
     if ($dbconn->ErrorNo() != 0) {
-        pnSessionSetVar('errormsg', _CREATETABLEFAILED.$dbconn->ErrorMsg()." Replace column. Query: $sql");
+        pnSessionSetVar('errormsg', __('Error! Sorry! Table creation failed.', $dom).$dbconn->ErrorMsg()." Replace column. Query: $sql");
         return false;
     }
     if (is_array($wrapIn) && !empty($wrapIn) && is_array($wrapOut) && !empty($wrapOut)) { 
@@ -235,7 +235,7 @@ return true; // temporarily disabled
         }
     	$dbconn->Execute($sql);
     	if ($dbconn->ErrorNo() != 0) {
-    	    pnSessionSetVar('errormsg', _CREATEFAILED.$dbconn->ErrorMsg()." Replace rules. Query: $sql");
+    	    pnSessionSetVar('errormsg', __('Error! Creation attempt failed.', $dom).$dbconn->ErrorMsg()." Replace rules. Query: $sql");
     	    return false;
     	}
     } 
@@ -244,7 +244,7 @@ return true; // temporarily disabled
     	        VALUES (NULL, 'all', '', '')"; // id, 
   	$dbconn->Execute($sql);
     	if ($dbconn->ErrorNo() != 0) {
-    	    pnSessionSetVar('errormsg', _INSERTVALUEFAILED.$dbconn->ErrorMsg()." Replace rules. Query: $sql");
+    	    pnSessionSetVar('errormsg', __('Database value insertion falied.', $dom).$dbconn->ErrorMsg()." Replace rules. Query: $sql");
     	    return false;
     	}
     }
@@ -261,7 +261,7 @@ return true; // temporarily disabled
     $dbconn->Execute($sql);
 
     if ($dbconn->ErrorNo() != 0) {
-        pnSessionSetVar('errormsg', _CREATETABLEFAILED.$dbconn->ErrorMsg()." RegEx replace rules. Query: $sql");
+        pnSessionSetVar('errormsg', __('Error! Sorry! Table creation failed.', $dom).$dbconn->ErrorMsg()." RegEx replace rules. Query: $sql");
         return false;
     }
     if (is_array($wrapIn2) && !empty($wrapIn2) && is_array($wrapOut2) && !empty($wrapOut2)) { 
@@ -278,7 +278,7 @@ return true; // temporarily disabled
         }
     	$dbconn->Execute($sql);
     	if ($dbconn->ErrorNo() != 0) {
-    	    pnSessionSetVar('errormsg', _INSERTVALUEFAILED.$dbconn->ErrorMsg()." RegEx replace rules. Query: $sql");
+    	    pnSessionSetVar('errormsg', __('Database value insertion falied.', $dom).$dbconn->ErrorMsg()." RegEx replace rules. Query: $sql");
     	    return false;
     	}
     } 
@@ -287,7 +287,7 @@ return true; // temporarily disabled
     	        VALUES ('all', '', '')"; // id, NULL, 
   	$dbconn->Execute($sql);
     	if ($dbconn->ErrorNo() != 0) {
-    	    pnSessionSetVar('errormsg', _INSERTVALUEFAILED.$dbconn->ErrorMsg()." RegEx replace rules. Query: $sql");
+    	    pnSessionSetVar('errormsg', __('Database value insertion falied.', $dom).$dbconn->ErrorMsg()." RegEx replace rules. Query: $sql");
     	    return false;
     	}
     }
@@ -346,7 +346,7 @@ echo "Old version: $oldversion  ";
             // Check for an error with the database code, and if so set an
             // appropriate error message and return
  //           if ($dbconn->ErrorNo() != 0) {
- //               pnSessionSetVar('errormsg', _UPDATETABLEFAILED);
+ //               pnSessionSetVar('errormsg', __('Error! Table update failed.', $dom));
  //               return false;
  //           }
 

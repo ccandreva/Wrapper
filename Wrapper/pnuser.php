@@ -29,7 +29,7 @@ require_once('Common.php');
 function Wrapper_user_main($args) {
     // Security check - lowest level is generally either 'overview' or 'read'
     if (!pnSecAuthAction(0, 'Wrapper::', '::', ACCESS_READ)) {
-      return Wrapper_errorpage('403', 'Forbidden', _NWNOAUTHORITY);
+      return Wrapper_errorpage('403', 'Forbidden', __('You are not authorised to use this module, sorry!', $dom));
     }
 
     global $ModName, $DocRoot, $SiteRoot, $FullPath, $RelDir, $WebRoot, $WebDir, $nukeurl, $nukeroot, $PostnukeDir, 
@@ -78,7 +78,8 @@ function Wrapper_user_main($args) {
     // As Referer is easily spoofed and unreliable, use IP even though a server may host many domains on the one IP
     if (!empty($urlwrap) and $AllowExtLink==false and !empty($_SERVER['SERVER_ADDR']) and Wrapper_user_getip() !== $_SERVER['SERVER_ADDR']) 
     {
-        return Wrapper_errorpage('403', 'Forbidden', _FopenDisallowed1);
+        return Wrapper_errorpage('403', 'Forbidden', __('The server does not allow linking to external URLs, please use <b>url2</b> instead for a non-autoresizing frame.<br>
+Optionally set the height in the URL with <b>&height=xxx</b> where xxx is the height in pixels, eg height=1000.', $dom));
     }
 
     if(empty($filewrap) and empty($urlwrap) and empty($url2wrap) and !empty($StartPage))  {
@@ -123,7 +124,8 @@ if (!empty($filewrap) && $ValidFile) { // Filename set & with valid extension
 	if ($WrapDebug) echo " File: $filewrap<br />\n";
 
  	if ($direxists==false){
-		$AllowPHP="0"; $ValidDir="0"; $msg=_NoValidPHPDir;
+		$AllowPHP="0"; $ValidDir="0"; $msg=__('<b>No valid directory for PHP pages set. You cannot execute PHP in the main directory.</b>
+', $dom);
   	} // Needs to have a valid directory to use PHP pages
 	if (strpos($filewrap, $PHPdir)===false)  $filewrap=$PHPdir.$filewrap; 
 	if ($WrapDebug) echo " File: $filewrap<br />\n";
@@ -141,7 +143,7 @@ if (!empty($filewrap) && $ValidFile) { // Filename set & with valid extension
 		if ($WrapDebug)  echo "Matched <em>$key</em> &nbsp;\n"; 
 		if (!pnSecAuthAction(0, 'Wrapper::file', basename($filewrap).":$key:$extension", ACCESS_READ)) { 
 			if ($WrapDebug)  echo "<span style=\"color: red;\">failed</span><br />";
-                        return Wrapper_errorpage('403', 'Forbidden', _NWNoAuthorityForFile);
+                        return Wrapper_errorpage('403', 'Forbidden', __('You are not authorised to view this file, sorry!', $dom));
     		} 
           $fileOK=true;
           if ($WrapDebug)  echo "<span style=\"color: green;\">passed</span><br />";
@@ -158,7 +160,7 @@ if (!empty($filewrap) && $ValidFile) { // Filename set & with valid extension
   $fileOK = Wrapper_checkperm($filewrap, $NWkeywords);
   // If we still haven't passed, return an error.
   if ($fileOK==false) { 
-    return Wrapper_errorpage('403', 'Forbidden', _NWNoAuthorityForFile);  
+    return Wrapper_errorpage('403', 'Forbidden', __('You are not authorised to view this file, sorry!', $dom));  
   }
   if ($WrapDebug)  echo "<span style=\"color: green;\">passed</span><br />";
   // end file check
@@ -199,7 +201,8 @@ elseif (!empty($urlwrap) && $AutoResize) {
   // If target site not local, read target page for processing, and embed in local page
   if ($ExternalUrl) {
   	if (ini_get('allow_url_fopen')==false) {
-            return Wrapper_errorpage('500', 'Internal Server Error', _FopenDisallowed1);
+            return Wrapper_errorpage('500', 'Internal Server Error', __('The server does not allow linking to external URLs, please use <b>url2</b> instead for a non-autoresizing frame.<br>
+Optionally set the height in the URL with <b>&height=xxx</b> where xxx is the height in pixels, eg height=1000.', $dom));
 	}
   	if (!empty($_SERVER['HTTP_USER_AGENT'])) { // Valid User-Agent required for some sites
 		ini_set('user_agent','$_SERVER["HTTP_USER_AGENT"]');
@@ -222,7 +225,7 @@ elseif (!empty($urlwrap) && $AutoResize) {
 	    fclose($URLhandle);
   	} else {
     	    /* There was a problem opening the file. */
-    	    $msg = _FileCantOpen1.$URLwrap._FileCantOpen2.$URLwrap._FileCantOpen3; 
+    	    $msg = __('The requested page <b><a href="', $dom).$URLwrap.__('"><span style="color: red;">', $dom).$URLwrap.__('</span></a></b> could not be opened;<br>try clicking Reload, correct URL below, or try later.', $dom); 
             return Wrapper_errorpage('500', 'Internal Server Error', $msg);
 	}
   }
@@ -359,7 +362,7 @@ if (is_array($URLkeys) OR $all1 OR $all2) {
 
 ////////// Local file output //////////
 if (empty($filewrap)){ 
-  $msg = _NoFileSelected1.$SiteRoot."index.php?module=Wrapper&"._NoFileSelected2.$SiteRoot."index.php?module=Wrapper&"._NoFileSelected3; $checked=$opt; $opt="1";
+  $msg = __('<b>No file selected. Please enter filename and try again.<br>URL is in format <span style="color: red;">', $dom).$SiteRoot."index.php?module=Wrapper&".__('file=SomePage.html</span><br><nobr><span style="margin-left:9em;">or <span style="color: red;">', $dom).$SiteRoot."index.php?module=Wrapper&".__('url=www.somesite.com</span></span></nobr></b>', $dom); $checked=$opt; $opt="1";
   // $msg="<strong>No file selected. Please enter filename and try again.<br />URL is in format <span style=\"color: red;\">www.yoursite.com/wrap.php?file=SomePage.html</span><br /><nobr><span style=\"margin-left:9em;\">or <span style=\"color: red;\">www.yoursite.com/wrap.php?url=www.somesite.com</span></span></nobr></strong>"; $checked=$opt; $opt="1";
   wrap_opentable($opt); wrap_output($msg, $filewrap, $checked, $index); wrap_closetable($opt, $WrapDebug); exit;
 } else {
@@ -475,11 +478,12 @@ if (empty($filewrap)){
 	wrap_closetable($opt, $WrapDebug, true); 
 	exit;
   } elseif (!$ValidFile) { // AND $ValidDir
-  	$msg = _FileWrongType1.$filewrapname._FileWrongType2.($AllowPHP ? ", php, php3, asp, jsp, cfm, cgi, pl," : "")._FileWrongType3.($AllowPHP ? "" : _FileWrongType4)."<br />"._FileWrongType5;
+  	$msg = __('<b>File <span style="color: red;">', $dom).$filewrapname.__('</span> wrong file type.<br>
+Must be html, shtml', $dom).($AllowPHP ? ", php, php3, asp, jsp, cfm, cgi, pl," : "").__(' or txt file. ', $dom).($AllowPHP ? "" : __('PHP support disabled.', $dom))."<br />".__('Please correct and try again.</b>', $dom);
 //  	$msg="<strong>File <span style='color: red;'>$filewrap</span> wrong file type.<br />\nMust be html, shtml".($AllowPHP ? ", php, php3, asp, jsp, cfm, cgi, pl," : "")." or txt file. ".($AllowPHP ? "" : "PHP support disabled.")." <br />Please correct and try again.</strong>";
   	$checked=$opt; $opt="1"; $filewrap=$filewrapname;
   } else {
-  	$msg = _FileNotFound1.$filewrapname._FileNotFound2; 
+  	$msg = __('<b>File <span style="color: red;">', $dom).$filewrapname.__("</span> not found or couldn't be opened. Please correct and try again.</b>", $dom); 
 //  	$msg.="<strong>File <span style=\"color: red;\">$filewrap</span> not found or couldn't be opened. Please correct and try again.</strong>";
   	$checked=$opt; $opt="1"; $filewrap=$filewrapname;
   }
@@ -500,11 +504,11 @@ function wrap_output($msg, $filewrap, $checked, $idx="0", $type="file") {
 global $PHP_SELF; 
 
 $idx = ($idx>=0 || $idx<=4) ? $idx : "0";
-	$text[0] = _NWLayout0; // "Default view - Left column only";
-	$text[1] = _NWLayout1; // "Home page (Left, Right and Center blocks with Admin message)";
-	$text[2] = _NWLayout2; // "Left and Right blocks, no Center blocks or Admin message";
-	$text[3] = _NWLayout3; // "Right blocks, no Left blocks, reverse of default";
-	$text[4] = _NWLayout4; // "No side blocks, only wrapped page with Header and Footer";
+	$text[0] = __('Default view - Left column only', $dom); // "Default view - Left column only";
+	$text[1] = __('Home page (Left, Right and Center blocks with Admin message)', $dom); // "Home page (Left, Right and Center blocks with Admin message)";
+	$text[2] = __('Left and Right blocks, no Center blocks or Admin message', $dom); // "Left and Right blocks, no Center blocks or Admin message";
+	$text[3] = __('Right blocks, no Left blocks, reverse of default', $dom); // "Right blocks, no Left blocks, reverse of default";
+	$text[4] = __('No side blocks, only wrapped page with Header and Footer', $dom); // "No side blocks, only wrapped page with Header and Footer";
 echo "<script type='text/javascript'>
 	var text = new Array(5);
 	text[0] = '$text[0]';
@@ -529,10 +533,11 @@ echo "<center>$msg</center><br /><br />\n"; ?>
           <nobr>
           <input type="hidden" name="module" value="Wrapper">
           <input type="text" name="<?PHP echo $type ?>" size="35" value="<? echo $filewrap ?>">
-          &nbsp;<?PHP echo _NWThemeTable."\n"; // Theme table ?>
+          &nbsp;<?PHP echo __('Theme table', $dom)."\n"; // Theme table ?>
           <input type="checkbox" name="opt" value="1" <?PHP if ($checked) echo "checked" ?>>
           <input type="submit" value="<?PHP echo _SUBMIT ?>"></nobr><br /><!-- style="margin-right: 6em;" -->
-<?PHP if ($type=="file") echo "          "._PathRelToRoot; ?>
+<?PHP if ($type=="file") echo "          ".__('Path is relative to site root.<br>
+', $dom); ?>
 <!--          <p><?PHP echo _NWLayout ?> 
           <select name="idx" id="idx" onChange="ChangeText();">
             <option value="0"<?PHP echo ($idx==0 ? " selected":"") ?>>0</option>
@@ -651,11 +656,11 @@ return $remoteIP;
 /********** Wrapper_admin_checkurl **********/
 function Wrapper_admin_checkurl($url, $WrapDebug=false) {
 global $URLs, $URLkeys, $AllowURLs;
-  $backbutton = "<FORM>\n<INPUT TYPE=\"Button\" VALUE=\""._Back."\" onClick=\"history.go(-1)\">\n</FORM>\n"; 
+  $backbutton = "<FORM>\n<INPUT TYPE=\"Button\" VALUE=\"".__('Back', $dom)."\" onClick=\"history.go(-1)\">\n</FORM>\n"; 
   if (!$AllowURLs) { 
     // session_write_close();
     // header("Location: ".$SiteRoot."index.php?URL_links_not_allowed."); exit(); 
-    wrap_opentable(1); echo "<div style=\"padding: 30px 6px;\" align=\"center\">"._NWNoAuthorityForURL.$backbutton."</div>\n"; wrap_closetable(1, 0); exit;
+    wrap_opentable(1); echo "<div style=\"padding: 30px 6px;\" align=\"center\">".__('<b><span style="color: red">You are not authorised to view webpages, sorry!</span></b>', $dom).$backbutton."</div>\n"; wrap_closetable(1, 0); exit;
   } 
   if (substr($url, 0, 1)=="/") $url = $GLOBALS['WebRoot'].$url; // allow url=/somedir/somefile.html for local files in frame
   $url = $URLwrap = strtok($url,"?&");
@@ -673,7 +678,7 @@ global $URLs, $URLkeys, $AllowURLs;
 		if (!pnSecAuthAction(0, 'Wrapper::url', basename($URLwrap).":$key:$extension", ACCESS_READ)) { // basename($URLwrap)
 			if ($WrapDebug)  echo "<span style=\"color: red;\">failed</span><br />";
     			wrap_opentable(1); 
-    			echo "<div style=\"padding: 30px 6px;\" align=\"center\">"._NWNoAuthorityForThisURL.$backbutton."</div>\n"; 
+    			echo "<div style=\"padding: 30px 6px;\" align=\"center\">".__('<b><span style="color: red">You are not authorised to view this page, sorry!</span></b>', $dom).$backbutton."</div>\n"; 
     			wrap_closetable(1, 0); exit;
     		} else { $urlOK=true; if ($WrapDebug)  echo "<span style=\"color: green;\">passed</span><br />"; }
   //        } 
@@ -682,7 +687,7 @@ global $URLs, $URLkeys, $AllowURLs;
   } 
   if ($urlOK==false && !pnSecAuthAction(0, 'Wrapper::url', basename($URLwrap)."::$extension", ACCESS_READ)) {
     	wrap_opentable(1); 
-    	echo "<div style=\"padding: 30px 6px;\" align=\"center\">"._NWNoAuthorityForExt.$backbutton."</div>\n"; 
+    	echo "<div style=\"padding: 30px 6px;\" align=\"center\">".__('<b><span style="color: red">You are not authorised to view pages with this extension, sorry!</span></b>', $dom).$backbutton."</div>\n"; 
     	wrap_closetable(1, 0); exit;
   } // end file check
 
@@ -699,7 +704,7 @@ global $URLs, $URLkeys, $AllowURLs;
     if ($urlOK==false) {
       // session_write_close(); header("Location: ".$SiteRoot."index.php?URL_not_allowed."); exit(); 
     	wrap_opentable(1); 
-    	echo "<div style=\"padding: 30px 6px;\" align=\"center\">\n"._NWNoAuthorityForThisURL.$backbutton."</div>\n"; 
+    	echo "<div style=\"padding: 30px 6px;\" align=\"center\">\n".__('<b><span style="color: red">You are not authorised to view this page, sorry!</span></b>', $dom).$backbutton."</div>\n"; 
     	wrap_closetable(1, 0); exit;
     }
   } // elseif
@@ -715,7 +720,7 @@ global $URLs, $URLkeys, $AllowURLs;
     if ($urlOK==false) {
     	// session_write_close();  header("Location: ".$SiteRoot."index.php?URL_with_".$url."_not_allowed."); exit(); 
       	wrap_opentable(1); 
-    	echo "<div style=\"padding: 30px 6px;\" align=\"center\">\n"._NWNoAuthorityForThisURL.$backbutton."</div>\n"; 
+    	echo "<div style=\"padding: 30px 6px;\" align=\"center\">\n".__('<b><span style="color: red">You are not authorised to view this page, sorry!</span></b>', $dom).$backbutton."</div>\n"; 
     	wrap_closetable(1, 0); exit;	
     }
   }
