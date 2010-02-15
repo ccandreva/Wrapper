@@ -16,7 +16,10 @@
  * module instance
  */
 function Wrapper_init() {
-return true; // temporarily disabled
+
+  pnModSetVar('Wrapper', 'modulestylesheet', 'wrapper.css');
+  return true; // temporarily disabled
+
     // Get old configuration in configuration file
     if (is_file("Wrapper.conf.php")) include("Wrapper.conf.php"); 
     // If array list from standalone wrap.php file, convert to regular expression syntax. 

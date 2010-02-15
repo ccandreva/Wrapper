@@ -1,0 +1,9 @@
+
+iframe#ContentFrame {
+	border: none;
+	width: 100%;
+}
+
+div#buffer {
+	display: none;
+}
