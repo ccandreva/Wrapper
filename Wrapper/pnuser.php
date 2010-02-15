@@ -53,9 +53,22 @@ function Wrapper_user_main($args) {
     //$starturl = pnModGetVar($GLOBALS['ModName'], 'StartPage');
     //if (!empty($starturl)) $StartPage=$starturl;
 
-    $filewrap = FormUtil::getPassedValue('file');
+
+    /* If a URL is set, call the wrapurl function directly */
     $urlwrap = FormUtil::getPassedValue('url');
     $url2wrap = FormUtil::getPassedValue('url2');
+    if ($urlwrap || $url2wrap) return Wrapper_user_wrapurl($args);
+
+    $filewrap = FormUtil::getPassedValue('file');
+    if(empty($filewrap) and !empty($StartPage))  {
+        if (substr($StartPage,0,7)=="http://" || substr($StartPage,0,8)=="https://") { 
+    	    $urlwrap = $StartPage;
+            return Wrapper_user_wrapurl($args);
+        } else { 
+    	    $filewrap = $StartPage;
+        }
+    }
+
     $opt = FormUtil::getPassedValue('opt', $UseTables);
     $index = FormUtil::getPassedValue('idx', $Layout);
     $FrameHeight=FormUtil::getPassedValue('height');
@@ -74,21 +87,6 @@ function Wrapper_user_main($args) {
 
     if ($WrapDebug) echo " Remote Address: ".Wrapper_user_getip()." <br> Server Address: &nbsp;".$_SERVER['SERVER_ADDR']."<br>\n";
 
-    // If not allowing external connections, display error page.
-    // As Referer is easily spoofed and unreliable, use IP even though a server may host many domains on the one IP
-    if (!empty($urlwrap) and $AllowExtLink==false and !empty($_SERVER['SERVER_ADDR']) and Wrapper_user_getip() !== $_SERVER['SERVER_ADDR']) 
-    {
-        return Wrapper_errorpage('403', 'Forbidden', __('The server does not allow linking to external URLs, please use <b>url2</b> instead for a non-autoresizing frame.<br>
-Optionally set the height in the URL with <b>&height=xxx</b> where xxx is the height in pixels, eg height=1000.', $dom));
-    }
-
-    if(empty($filewrap) and empty($urlwrap) and empty($url2wrap) and !empty($StartPage))  {
-        if (substr($StartPage,0,7)=="http://" || substr($StartPage,0,8)=="https://") { 
-    	    $urlwrap = $StartPage;
-        } else { 
-    	    $filewrap = $StartPage;
-        }
-    }
 
     // Make sure $filewrap has a leading slash
     if (substr($filewrap, 0, 1) != "/") $filewrap = '/' . $filewrap;
@@ -189,175 +187,6 @@ if ($WrapDebug) echo "<br /> WebDir: $WebDir<br /> FileDir: $FileDir &nbsp;&nbsp
   	$URLwrap=$filewrap; $AutoResize=false; // If a PDF file, wrap in an iFrame.
   }
 } 
-
-////////// Target is a URL //////////
-elseif (!empty($urlwrap) && $AutoResize) {
-  $URLwrap = Wrapper_admin_checkurl($urlwrap, $WrapDebug);
-  $URLarray = parse_url($URLwrap);
-  $wrapHost = $_SERVER['HTTP_HOST'];
-  $ExternalUrl = ($URLarray['host'] != $wrapHost);
-  if ($WrapDebug) echo " Requested Host: $URLarray[host]<br /> Site Host: $wrapHost<br /> ".($URLarray['host']==$wrapHost ? "Same host" : "Different host")."<br />\n";
-  
-  // If target site not local, read target page for processing, and embed in local page
-  if ($ExternalUrl) {
-  	if (ini_get('allow_url_fopen')==false) {
-            return Wrapper_errorpage('500', 'Internal Server Error', __('The server does not allow linking to external URLs, please use <b>url2</b> instead for a non-autoresizing frame.<br>
-Optionally set the height in the URL with <b>&height=xxx</b> where xxx is the height in pixels, eg height=1000.', $dom));
-	}
-  	if (!empty($_SERVER['HTTP_USER_AGENT'])) { // Valid User-Agent required for some sites
-		ini_set('user_agent','$_SERVER["HTTP_USER_AGENT"]');
-  	} else {  ini_set('user_agent','Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)'); }  //'MSIE 4\.0b2;'
-	// header('Content-Type: text/html; charset=utf-8'); // charset=ISO-8859-1
-	//  header("Cache-Control:");
-	//  header("Cache-Control: no-store, no-cache, must-revalidate");  // HTTP/1.1
-	if (isset($_COOKIE)) { 
-		foreach ($_COOKIE as $key=>$cookie) { setcookie($key, $cookie); }
-	} 
-  	$URLhandle=@fopen($URLwrap, "r"); 
-  	if ($URLhandle) {
-    	// $contents = file_get_contents($URLwrap); 
-	    $contents = "";
-	    do {
-	      $data = fread($URLhandle, 8192);
-	      if (strlen($data) == 0) {  break; }
-	      $contents .= $data;
-	    } while (true);
-	    fclose($URLhandle);
-  	} else {
-    	    /* There was a problem opening the file. */
-    	    $msg = __('The requested page <b><a href="', $dom).$URLwrap.__('"><span style="color: red;">', $dom).$URLwrap.__('</span></a></b> could not be opened;<br>try clicking Reload, correct URL below, or try later.', $dom); 
-            return Wrapper_errorpage('500', 'Internal Server Error', $msg);
-	}
-  }
-  
-  // Javascript in HEAD to resize iFrame.
-  if ($ExternalUrl) {
-    PageUtil::AddVar('javascript', "modules/$ModName/pnjavascript/writeiframe.js");
-  } else {
-    PageUtil::AddVar('javascript', "modules/$ModName/pnjavascript/iFrameHeight.js");
-//    PageUtil::AddVar('javascript', "modules/$ModName/pnjavascript/adjustIFrameSize.js");
-  }
-
-  // Target site not local, process page and embed in local page
-  if ($ExternalUrl) {
-  // Determine domain from URL
-  $domain=""; 
-  $endstring=substr(strrchr($URLwrap, "/"),1); 
-  if (substr($URLwrap,-1)=="/") { 
-	$domain = $URLwrap;
-  } elseif((strrpos(substr($URLwrap,8), "/")===false) OR !preg_match("/(\.htm|\.cgi|\.asp|\.iasp|\.jsp|\.php|\.cfm|\.pl|\.adp|\.orm)/i", $endstring)) {
-	$domain = $URLwrap."/"; 
-  } elseif(strrchr(substr($URLwrap,8), "/")!==false) {
-	$pos = strrpos($URLwrap, "/");
-	$domain = substr($URLwrap, 0, $pos + 1);	
-  } else {
-	$domain = $URLwrap;
-  }
- // Open links in new window if not the same host
-$target="";
-if ($OpenInNewWindow) $target=" target=\"_blank\""; // and ($URLarray['host'] != $wrapHost)
-$BaseURL = "<base href=\"$domain\"$target>\n";
-
-  // Removes 3 types of frame-breaking code in page
-  $pattern = array('/top\.location\s*=\s*(self|window)(\.document)?\.location/',
-	'/top\.location\.replace\(self\.location\)/', 
-	'|if\s+\(parent\.location\s*!=[^)]+\)\s*(\{)?[^{}]*parent\.location\s*=[^;]+;(?(1)[^}]*\})|Us',
-	'|if\s+\(self\.parent\.frames\.length\s*!=\s*0\)\s*(\{)?[^{}]*(self\.)?parent\.location\s*=[^;]+;(?(1)[^}]*\})|Us'); 
-  $contents = preg_replace($pattern, "var donothing=0; // Let's not break out of this lovely frame", $contents); 
-
-  // Apply BASE tag to fix links in external page
-  if(!preg_match('|<base\s+href\s*=[^>]+>|Usi', $contents)) {
-	// No BASE tag, apply our own
-  	if (preg_match('|<head>|i', $contents))
-  		$contents = preg_replace('|<head>|i', "<head>\n".$BaseURL, $contents,1); 
-  	else 
-		$contents = $BaseURL.$contents;
-  } else { 
-	// Existing BASE tag, set _blank TARGET attribute to open links in new window
-	if (!preg_match('|<base.+target[^>]+>|Usi', $contents)) // BASE with no Target
-		$contents = preg_replace('|<(base[^>]+)>|Usi', "<$1 target=\"_blank\">", $contents,1);
-	elseif (preg_match('|<base.+target\s*=[^_]*_top[^>]*>|Usi', $contents)) // target="_top" to "_blank"
-		$contents = preg_replace('|<(base.+)target\s*=[^>]+>|Usi', "<$1target=\"_blank\">", $contents,1);
-//	elseif (preg_match('|<base.+target\s*=[^>]+>|Usi', $contents)) 
-//		$contents = preg_replace('|<(base.+)target\s*=[^>]+>|Usi', "<$1target=\"_blank\">", $contents,1);
-  }
-  } // end if external host
-} // end URL
-elseif(!empty($url2wrap) or $AutoResize==false) { 
-  if ($AutoResize==false && !empty($urlwrap)) 
-      $url2wrap=$urlwrap; 
-  $URLwrap = Wrapper_admin_checkurl($url2wrap, $WrapDebug);
-}
-
-
-////////// URL Output //////////
-if (!empty($URLwrap)) {
-  wrap_opentable($opt); 
-  if ($ShowLink) { ?>
-  <p class="wrapURL" align="center"><a href="<?PHP echo $URLwrap ?>" target="_blank"><strong>Open in a new window</strong></a></p>
-  <?PHP 
-  if ($WrapDebug) echo "     <div align=\"center\" id=\"dimensions\">Height: <span id=\"Height\">-</span> &nbsp;Width: <span id=\"Width\">-</span>
-  <!--<br />
-	Computed Height: <span id=\"CompHeight\">-</span>--></div><br />\n"; ?>
-  <hr>
-<?PHP } ?>
-<noscript><div align="center"><strong><?PHP echo _EnableJS ?></strong></div></noscript>
-  <iframe id="ContentFrame" name="ContentFrame" scrolling="auto" frameborder="no" 
-        <?PHP echo ((!empty($url2wrap) or !$AutoResize or !$ExternalUrl) ? "src=\"$URLwrap\" " : 'src="" ') ?> 
-	onLoad="window.setTimeout('iFrameHeight(this)',50);" 
-	style="width: 100%; height: <?PHP echo $FrameHeight ?>px;" marginwidth="0" marginheight="0">
-  </iframe>
-<?PHP if(isset($urlwrap) && $AutoResize && $ExternalUrl) { ?>
-
-<!---------------- Buffer ----------------->
-<DIV id="buffer" style="display: none;">
-<?PHP 
-$input = array('<', '>', '"'); $output = array('&l2;', '&g2;', '&q2;'); /* Escape < > to avoid rendering */
-$all1 = (is_array($wrapIn['all']) && is_array($wrapOut['all'])); 
-$all2 = (is_array($wrapIn2['all']) && is_array($wrapOut2['all']));
-if (is_array($URLkeys) OR $all1 OR $all2) {
-	// $key = array_search($domain, $URLkeys);
-	if ($WrapDebug) echo " <strong>URLkeys:</strong><br />\n";
-	$key=false;
-	foreach ($URLkeys as $k=>$url) {
-		if ($WrapDebug) echo "<strong>Key:</strong> $k &nbsp;<strong>url:</strong> $url ".(strpos($domain, $url)!==false?' &nbsp;<span style="color: green;">Match</span>':' &nbsp;<span style="color: red;">No match</span>')."<br />\n"; 
-		if (strpos($domain, $url) !==false) { $key=$k; break; }
-	}
-	if ($WrapDebug) echo " <strong>Domain:</strong> $domain &nbsp;&nbsp;".($key!==false ? "<span style='color: green'>Key match</span>" : "No key match")."<br />\n";
-	if ($all1) { 
-		$input = array_merge($wrapIn['all'], $input); 
-		$output = array_merge($wrapOut['all'], $output);
-	}
-	if (($key!==false) && is_array($wrapIn[$key]) && is_array($wrapOut[$key])) { //  && in_array($domain, $URLkeys)
-		$input = array_merge($wrapIn[$key], $input); 
-		$output = array_merge($wrapOut[$key], $output);
-	}
-	if ($all2) {
-		$contents = preg_replace($wrapIn2['all'], $wrapOut2['all'], $contents);
-	}
-	if (($key!==false) && is_array($wrapIn2[$key]) && is_array($wrapOut2[$key])) {
-		$contents = preg_replace($wrapIn2[$key], $wrapOut2[$key], $contents);
-	}
-}
-//if (is_array($wrapIn) && is_array($wrapOut)) {
-//	$input = array_merge($wrapIn, $input); 
-//	$output = array_merge($wrapOut, $output);
-//}
-//if (is_array($wrapIn2) && is_array($wrapOut2)) {
-//	$contents = preg_replace($wrapIn2, $wrapOut2, $contents);
-//}
- $contents = str_replace($input, $output, $contents);
-
- echo $contents ?>
-</DIV>
-<script language="JavaScript" type="text/javascript">writeiframe();<!--  iFrameHeight(); -->
-</script>
-<!-------------- End Buffer --------------->
-
-<?PHP }
-  wrap_closetable($opt, $WrapDebug); 
-  exit;
-}
 
 
 ////////// Local file output //////////
@@ -495,6 +324,215 @@ Must be html, shtml', $dom).($AllowPHP ? ", php, php3, asp, jsp, cfm, cgi, pl," 
     // Return the output that has been generated by this function
 //    return $output->GetOutput();
 } // End Wrapper_user_main
+
+
+/**
+ * URL Wrapping Function
+ * This function will wrap URL's only, and is part of the rewrite.
+ */
+function Wrapper_user_wrapurl($args) {
+
+    // Security check - lowest level is generally either 'overview' or 'read'
+    if (!pnSecAuthAction(0, 'Wrapper::', '::', ACCESS_READ)) {
+      return Wrapper_errorpage('403', 'Forbidden', __('You are not authorised to use this module, sorry!', $dom));
+    }
+
+    global $ModName, $DocRoot, $SiteRoot, $FullPath, $RelDir, $WebRoot, $WebDir, $nukeurl, $nukeroot, $PostnukeDir, 
+	$PHPdir, $PHPdirs, $HTMLdir, $HTMLdirs, $URLkeys, $HTMLroot, $FullPath, $AllowPHP, $AllowURLs, 
+	$extension, $URLwrap, $URLs, $query, $filewrap, $filewrapname, $FileBase, $PNGsuffix;
+
+    $NWrap=true;
+
+    // Load config file from Zikulz config directory.
+    $NWconfigload = include("config/Wrapper.conf.php");  // Configuration variables
+    if($NWconfigload==false) return Wrapper_errorpage('500', 'Internal Error', __('Config file load failed.', $dom));
+
+    if (is_array($URLkeys2))
+        $URLkeys = array_merge($URLkeys, $URLkeys2);
+
+    if ($WrapDebug && !pnSecAuthAction(0, 'Wrapper::', '::', ACCESS_ADMIN)) {
+	$WrapDebug = false; // Only show debug info for Admins
+    }
+
+    $urlwrap = FormUtil::getPassedValue('url');
+    $url2wrap = FormUtil::getPassedValue('url2');
+    $opt = FormUtil::getPassedValue('opt', $UseTables);
+    $index = FormUtil::getPassedValue('idx', $Layout);
+    $FrameHeight=FormUtil::getPassedValue('height');
+    if (! (isset($FrameHeight) && is_numeric($FrameHeight) )) $FrameHeight='600';
+
+    $URLwrap=""; $msg=""; $checked="0"; $ValidDir="1";
+
+    if ($WrapDebug) echo " Remote Address: ".Wrapper_user_getip()." <br> Server Address: &nbsp;".$_SERVER['SERVER_ADDR']."<br>\n";
+
+    // If not allowing external connections, display error page.
+    // As Referer is easily spoofed and unreliable, use IP even though a server may host many domains on the one IP
+    if (!empty($urlwrap) and $AllowExtLink==false and !empty($_SERVER['SERVER_ADDR']) and Wrapper_user_getip() !== $_SERVER['SERVER_ADDR']) 
+    {
+        return Wrapper_errorpage('403', 'Forbidden', __('You are not authorised to view this file, sorry!', $dom));
+    }
+
+    if(empty($urlwrap) and empty($url2wrap) and !empty($StartPage))  {
+        $urlwrap = $StartPage;
+    }
+
+    if (!empty($urlwrap) && $AutoResize) {
+      $URLwrap = Wrapper_admin_checkurl($urlwrap, $WrapDebug);
+      $URLarray = parse_url($URLwrap);
+      $wrapHost = $_SERVER['HTTP_HOST'];
+      $ExternalUrl = ($URLarray['host'] != $wrapHost);
+      if ($WrapDebug) echo " Requested Host: $URLarray[host]<br /> Site Host: $wrapHost<br /> ".($URLarray['host']==$wrapHost ? "Same host" : "Different host")."<br />\n";
+  
+      // If target site not local, read target page for processing, and embed in local page
+      if ($ExternalUrl) {
+  	if (ini_get('allow_url_fopen')==false) {
+            return Wrapper_errorpage('500', 'Internal Server Error', __('You are not authorised to view this file, sorry!', $dom));
+	}
+  	if (!empty($_SERVER['HTTP_USER_AGENT'])) { // Valid User-Agent required for some sites
+		ini_set('user_agent','$_SERVER["HTTP_USER_AGENT"]');
+  	} else {  ini_set('user_agent','Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)'); }
+
+  	// Reset each cookie, but why ?
+/*	if (isset($_COOKIE)) { 
+		foreach ($_COOKIE as $key=>$cookie) { setcookie($key, $cookie); }
+	} 
+*/
+
+  	$URLhandle=@fopen($URLwrap, "r"); 
+  	if ($URLhandle) {
+    	// $contents = file_get_contents($URLwrap); 
+	    $contents = "";
+	    do {
+	      $data = fread($URLhandle, 8192);
+	      if (strlen($data) == 0) {  break; }
+	      $contents .= $data;
+	    } while (true);
+	    fclose($URLhandle);
+  	} else {
+    	    /* There was a problem opening the file. */
+            return Wrapper_errorpage('500', 'Internal Server Error', __('The requested page could not be opened.', $dom));
+	}
+    }
+  
+    // Javascript in HEAD to resize iFrame.
+    if ($ExternalUrl) {
+      PageUtil::AddVar('javascript', "modules/$ModName/pnjavascript/writeiframe.js");
+    } else {
+      PageUtil::AddVar('javascript', "modules/$ModName/pnjavascript/iFrameHeight.js");
+//    PageUtil::AddVar('javascript', "modules/$ModName/pnjavascript/adjustIFrameSize.js");
+    }
+
+    // Target site not local, process page and embed in local page
+    if ($ExternalUrl) {
+      // Determine domain from URL
+      $domain=""; 
+      $endstring=substr(strrchr($URLwrap, "/"),1); 
+      if (substr($URLwrap,-1)=="/") { 
+	$domain = $URLwrap;
+      } elseif((strrpos(substr($URLwrap,8), "/")===false) OR !preg_match("/(\.htm|\.cgi|\.asp|\.iasp|\.jsp|\.php|\.cfm|\.pl|\.adp|\.orm)/i", $endstring)) {
+	$domain = $URLwrap."/"; 
+      } elseif(strrchr(substr($URLwrap,8), "/")!==false) {
+	$pos = strrpos($URLwrap, "/");
+	$domain = substr($URLwrap, 0, $pos + 1);	
+      } else {
+	$domain = $URLwrap;
+      }
+
+      // Open links in new window if not the same host
+      $target="";
+      if ($OpenInNewWindow) $target=" target=\"_blank\""; // and ($URLarray['host'] != $wrapHost)
+      $BaseURL = "<base href=\"$domain\"$target>\n";
+
+      // Removes 3 types of frame-breaking code in page
+      $pattern = array('/top\.location\s*=\s*(self|window)(\.document)?\.location/',
+	'/top\.location\.replace\(self\.location\)/', 
+	'|if\s+\(parent\.location\s*!=[^)]+\)\s*(\{)?[^{}]*parent\.location\s*=[^;]+;(?(1)[^}]*\})|Us',
+	'|if\s+\(self\.parent\.frames\.length\s*!=\s*0\)\s*(\{)?[^{}]*(self\.)?parent\.location\s*=[^;]+;(?(1)[^}]*\})|Us'); 
+      $contents = preg_replace($pattern, "var donothing=0; // Let's not break out of this lovely frame", $contents); 
+
+      // Apply BASE tag to fix links in external page
+      if(!preg_match('|<base\s+href\s*=[^>]+>|Usi', $contents)) {
+	// No BASE tag, apply our own
+  	if (preg_match('|<head>|i', $contents))
+  		$contents = preg_replace('|<head>|i', "<head>\n".$BaseURL, $contents,1); 
+  	else 
+		$contents = $BaseURL.$contents;
+      } else { 
+	// Existing BASE tag, set _blank TARGET attribute to open links in new window
+	if (!preg_match('|<base.+target[^>]+>|Usi', $contents)) // BASE with no Target
+		$contents = preg_replace('|<(base[^>]+)>|Usi', "<$1 target=\"_blank\">", $contents,1);
+
+	elseif (preg_match('|<base.+target\s*=[^_]*_top[^>]*>|Usi', $contents)) // target="_top" to "_blank"
+		$contents = preg_replace('|<(base.+)target\s*=[^>]+>|Usi', "<$1target=\"_blank\">", $contents,1);
+
+//	elseif (preg_match('|<base.+target\s*=[^>]+>|Usi', $contents)) 
+//		$contents = preg_replace('|<(base.+)target\s*=[^>]+>|Usi', "<$1target=\"_blank\">", $contents,1);
+
+      }
+    } // end if external host
+  } // end URL
+
+  elseif(!empty($url2wrap) or $AutoResize==false) { 
+    if ($AutoResize==false && !empty($urlwrap)) 
+      $url2wrap=$urlwrap; 
+    $URLwrap = Wrapper_admin_checkurl($url2wrap, $WrapDebug);
+  }
+
+
+  // Prepare template data for output
+  $render = pnRender::getInstance('Wrapper');
+  $render->assign('ShowLink',$ShowLink);
+  $render->assign('FrameHeight', $FrameHeight);
+  
+  ////////// URL Output //////////
+  if (!empty($URLwrap)) {
+
+
+  if(isset($urlwrap) && $AutoResize && $ExternalUrl) { 
+
+    $input = array('<', '>', '"'); $output = array('&l2;', '&g2;', '&q2;'); /* Escape < > to avoid rendering */
+    $all1 = (is_array($wrapIn['all']) && is_array($wrapOut['all'])); 
+    $all2 = (is_array($wrapIn2['all']) && is_array($wrapOut2['all']));
+    if (is_array($URLkeys) OR $all1 OR $all2) {
+	// $key = array_search($domain, $URLkeys);
+	if ($WrapDebug) echo " <strong>URLkeys:</strong><br />\n";
+	$key=false;
+	foreach ($URLkeys as $k=>$url) {
+		if ($WrapDebug) echo "<strong>Key:</strong> $k &nbsp;<strong>url:</strong> $url ".(strpos($domain, $url)!==false?' &nbsp;<span style="color: green;">Match</span>':' &nbsp;<span style="color: red;">No match</span>')."<br />\n"; 
+		if (strpos($domain, $url) !==false) { $key=$k; break; }
+	}
+	if ($WrapDebug) echo " <strong>Domain:</strong> $domain &nbsp;&nbsp;".($key!==false ? "<span style='color: green'>Key match</span>" : "No key match")."<br />\n";
+	if ($all1) { 
+		$input = array_merge($wrapIn['all'], $input); 
+		$output = array_merge($wrapOut['all'], $output);
+	}
+	if (($key!==false) && is_array($wrapIn[$key]) && is_array($wrapOut[$key])) { //  && in_array($domain, $URLkeys)
+		$input = array_merge($wrapIn[$key], $input); 
+		$output = array_merge($wrapOut[$key], $output);
+	}
+	if ($all2) {
+		$contents = preg_replace($wrapIn2['all'], $wrapOut2['all'], $contents);
+	}
+	if (($key!==false) && is_array($wrapIn2[$key]) && is_array($wrapOut2[$key])) {
+		$contents = preg_replace($wrapIn2[$key], $wrapOut2[$key], $contents);
+	}
+    }
+    //if (is_array($wrapIn) && is_array($wrapOut)) {
+    //	$input = array_merge($wrapIn, $input); 
+    //	$output = array_merge($wrapOut, $output);
+    //}
+    //if (is_array($wrapIn2) && is_array($wrapOut2)) {
+    //	$contents = preg_replace($wrapIn2, $wrapOut2, $contents);
+    //}
+
+    $contents = str_replace($input, $output, $contents);
+    $render->assign('contents', $contents);
+}
+}
+
+  return $render->fetch('wrapper_user_wrapurl.html');
+
+} // End Wrapper_user_wrapurl
 
 
 /******************* Functions *******************/

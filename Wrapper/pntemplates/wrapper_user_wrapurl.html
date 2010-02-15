@@ -1,0 +1,23 @@
+<!-- This is the pnRender version -->
+
+<!--[if $ShowLink]-->
+<p class="wrapURL">
+<a href="<!--[$URLwrap]-->" target="_blank"><!--[gt text='Open in a new window']--></a>
+</p>
+<noscript><div id="WrapNoscript">
+<!--[gt text='Please enable Javascript and reload to see the page.']-->
+</div></noscript>
+<!--[/if]-->
+
+<iframe id="ContentFrame" name="ContentFrame" scrolling="auto"
+src="<!--[$FrameSrc]-->" style="height: <!--[$FrameHeight]-->px" >
+</iframe>
+
+<!---------------- Buffer --------------- -->
+<div id="buffer" >
+<!--[$contents]-->
+</div>
+<script language="JavaScript" type="text/javascript">writeiframe();<!--  iFrameHeight(); -->
+</script>
+<!-------------- End Buffer ------------- -->
+
